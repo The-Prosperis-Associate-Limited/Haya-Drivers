@@ -13,7 +13,7 @@ import { useSubmitData } from "@/hooks/use-submit-data";
 import { personName, statusBadgeClass, statusLabel } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { DOCUMENT_LABELS, formatDate } from "@/lib/utils";
-import { Download, Eye } from "lucide-react";
+import { Download, ExternalLink, Eye, FileText } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import type { APIResponse } from "@/types/response";
@@ -28,6 +28,13 @@ const REJECTION_REASONS = [
   "Information does not match profile",
   "Suspected forgery or tampering",
 ];
+
+const isPdf = (document: DriverDocument) =>
+  document.mime_type === "application/pdf" || /\.pdf($|\?)/i.test(document.url);
+
+// Cloudinary stores "auto" PDFs as image resources, so swapping the extension renders page 1.
+const pdfThumbnailUrl = (url: string) =>
+  url.includes("/image/upload/") ? url.replace(/\.pdf($|\?)/i, ".jpg$1") : null;
 
 interface Props {
   userId: string;
@@ -167,62 +174,79 @@ export const DriverDocuments = function ({ userId }: Props) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        {documents.map((document) => (
-          <div
-            key={document.id}
-            className="border-border overflow-hidden rounded-xl border bg-white"
-          >
-            <div className="relative h-36 w-full bg-slate-50">
-              <Image
-                src={document.url}
-                alt={DOCUMENT_LABELS[document.type] ?? document.type}
-                fill
-                unoptimized
-                className="object-cover"
-              />
-            </div>
+        {documents.map((document) => {
+          const thumbnail = isPdf(document)
+            ? pdfThumbnailUrl(document.url)
+            : document.url;
 
-            <div className="space-y-3 p-4">
-              <div className="flex items-start justify-between gap-2">
-                <AppText type="caption" className="font-semibold">
-                  {DOCUMENT_LABELS[document.type] ?? document.type}
-                </AppText>
-                <StatusBadge
-                  label={statusLabel(document.status)}
-                  className={statusBadgeClass(document.status)}
-                />
+          return (
+            <div
+              key={document.id}
+              className="border-border overflow-hidden rounded-xl border bg-white"
+            >
+              <div className="relative h-36 w-full bg-slate-50">
+                {thumbnail ? (
+                  <Image
+                    src={thumbnail}
+                    alt={DOCUMENT_LABELS[document.type] ?? document.type}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <FileText className="text-muted-foreground h-10 w-10" />
+                  </div>
+                )}
+                {isPdf(document) && (
+                  <span className="absolute top-2 left-2 rounded bg-slate-900/80 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                    PDF
+                  </span>
+                )}
               </div>
 
-              {document.rejection_reason && (
-                <AppText type="caption" className="text-destructive block">
-                  {document.rejection_reason}
-                </AppText>
-              )}
+              <div className="space-y-3 p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <AppText type="caption" className="font-semibold">
+                    {DOCUMENT_LABELS[document.type] ?? document.type}
+                  </AppText>
+                  <StatusBadge
+                    label={statusLabel(document.status)}
+                    className={statusBadgeClass(document.status)}
+                  />
+                </div>
 
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setViewing(document)}
-                  className="flex-1"
-                >
-                  <Eye className="h-4 w-4" />
-                  View
-                </Button>
-                <a
-                  href={document.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  download
-                  className="border-border hover:bg-muted inline-flex flex-1 items-center justify-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors"
-                >
-                  <Download className="h-4 w-4" />
-                  Download
-                </a>
+                {document.rejection_reason && (
+                  <AppText type="caption" className="text-destructive block">
+                    {document.rejection_reason}
+                  </AppText>
+                )}
+
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setViewing(document)}
+                    className="flex-1"
+                  >
+                    <Eye className="h-4 w-4" />
+                    View
+                  </Button>
+                  <a
+                    href={document.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    download
+                    className="border-border hover:bg-muted inline-flex flex-1 items-center justify-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors"
+                  >
+                    <Download className="h-4 w-4" />
+                    Download
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* View + decide on a single document */}
@@ -263,17 +287,35 @@ export const DriverDocuments = function ({ userId }: Props) {
           )
         }
       >
-        {viewing && (
-          <div className="relative h-96 w-full overflow-hidden rounded-lg bg-slate-50">
-            <Image
-              src={viewing.url}
-              alt={DOCUMENT_LABELS[viewing.type] ?? viewing.type}
-              fill
-              unoptimized
-              className="object-contain"
-            />
-          </div>
-        )}
+        {viewing &&
+          (isPdf(viewing) ? (
+            <div className="space-y-2">
+              <iframe
+                src={viewing.url}
+                title={DOCUMENT_LABELS[viewing.type] ?? viewing.type}
+                className="h-[28rem] w-full rounded-lg border bg-slate-50"
+              />
+              <a
+                href={viewing.url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand inline-flex items-center gap-1 text-sm font-medium hover:underline"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Open PDF in a new tab
+              </a>
+            </div>
+          ) : (
+            <div className="relative h-96 w-full overflow-hidden rounded-lg bg-slate-50">
+              <Image
+                src={viewing.url}
+                alt={DOCUMENT_LABELS[viewing.type] ?? viewing.type}
+                fill
+                unoptimized
+                className="object-contain"
+              />
+            </div>
+          ))}
       </AppDialog>
 
       {/* Reject a single document with actionable reasons */}
