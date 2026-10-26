@@ -231,10 +231,10 @@ export default function TermsOfService() {
           Nigeria, and the courts of Nigeria have jurisdiction over disputes
           arising from them. Questions about these terms:{" "}
           <a
-            href="mailto:support@hayadrivers.com"
+            href="mailto:hayadrivers@prosperisassociates.com"
             className="text-brand underline underline-offset-2"
           >
-            support@hayadrivers.com
+            hayadrivers@prosperisassociates.com
           </a>
           . See also our{" "}
           <Link
