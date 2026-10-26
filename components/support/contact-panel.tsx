@@ -12,7 +12,7 @@ interface Props {
   onDone: () => void;
 }
 
-const SUPPORT_EMAIL = "support@hayadrivers.com";
+const SUPPORT_EMAIL = "hayadrivers@prosperisassociates.com";
 const SUPPORT_LINE = "+234 700 8342 800";
 const HEAD_OFFICE = "14 Admiralty Way, Lekki, Lagos";
 

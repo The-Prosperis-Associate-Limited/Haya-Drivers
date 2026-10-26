@@ -169,10 +169,10 @@ export default function PrivacyPolicy() {
           data, object to certain processing, and withdraw consent where
           processing is based on consent. Write to{" "}
           <a
-            href="mailto:support@hayadrivers.com"
+            href="mailto:hayadrivers@prosperisassociates.com"
             className="text-brand underline underline-offset-2"
           >
-            support@hayadrivers.com
+            hayadrivers@prosperisassociates.com
           </a>{" "}
           and we will respond within the timelines set by the Nigeria Data
           Protection Act. Note that some data must be retained where the law
@@ -205,10 +205,10 @@ export default function PrivacyPolicy() {
           We may update this policy from time to time; material changes will be
           announced on the platform or by email. Questions about this policy:{" "}
           <a
-            href="mailto:support@hayadrivers.com"
+            href="mailto:hayadrivers@prosperisassociates.com"
             className="text-brand underline underline-offset-2"
           >
-            support@hayadrivers.com
+            hayadrivers@prosperisassociates.com
           </a>
           . See also our{" "}
           <Link
