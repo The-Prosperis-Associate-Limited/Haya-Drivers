@@ -59,6 +59,7 @@ export interface AdminUserRow {
   role: User["role"];
   account_status: AccountStatus;
   has_validated_email: boolean;
+  anonymised_at: string | null;
   lastLogin: string;
   createdAt: string;
   driver_profile: {
@@ -252,6 +253,7 @@ export interface AdminActivityRow {
 
 export interface AdminUserDetail extends User {
   lastLogin: string;
+  anonymised_at: string | null;
   driver_profile:
     | (DriverProfile & {
         work_experiences: WorkExperience[];

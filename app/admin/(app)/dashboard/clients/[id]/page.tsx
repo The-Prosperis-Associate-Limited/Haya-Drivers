@@ -50,6 +50,7 @@ function ClientDetail() {
               "this client"
             }
             backHref="/admin/dashboard/clients"
+            anonymisedAt={user.anonymised_at}
           />
         )}
       </div>
