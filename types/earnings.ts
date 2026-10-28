@@ -67,3 +67,47 @@ export interface Payout {
   createdAt: string;
   bankAccount: BankAccount | null;
 }
+
+export interface EarningsStatement {
+  month: string;
+  reference: string;
+  period_start: string;
+  period_end: string;
+  generated_at: string;
+  currency: string;
+  driver: {
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+    state_of_residence: string | null;
+  } | null;
+  payout_account: {
+    bank_name: string;
+    account_name: string;
+    account_number_last4: string;
+  } | null;
+  lines: {
+    id: string;
+    reference: string;
+    type: WalletTransactionType;
+    status: WalletTransactionStatus;
+    description: string | null;
+    amount_minor: number;
+    createdAt: string;
+    booking: {
+      reference: string;
+      title: string;
+      client: {
+        first_name: string | null;
+        last_name: string | null;
+        client_profile: { organisation_name: string | null } | null;
+      };
+    } | null;
+  }[];
+  totals: {
+    earned_minor: number;
+    deducted_minor: number;
+    net_minor: number;
+    on_hold_minor: number;
+  };
+}

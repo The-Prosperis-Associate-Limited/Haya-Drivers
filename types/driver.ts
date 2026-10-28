@@ -105,6 +105,7 @@ export interface DriverProfile {
   availability: AvailabilitySlot[] | null;
   verification_status: DriverVerificationStatus;
   is_discoverable: boolean;
+  open_to_work: boolean;
   trust_score: number;
   onboarding_step: OnboardingStep;
   onboarding_completed_at: string | null;
@@ -217,6 +218,7 @@ export interface PublicDriverProfile extends DriverSearchResult {
   completed_jobs: number;
   response_time_minutes: number | null;
   on_time_rate: number | null;
+  open_to_work?: boolean;
   work_experiences: WorkExperience[];
 }
 

@@ -10,7 +10,7 @@ interface Props {
 
 export const Sidebar = function ({ status, user }: Props) {
   return (
-    <aside className="border-border hidden h-screen w-[220px] shrink-0 border-r lg:block">
+    <aside className="border-border hidden h-screen w-[264px] shrink-0 border-r lg:block print:hidden">
       <NavContent status={status} user={user} />
     </aside>
   );

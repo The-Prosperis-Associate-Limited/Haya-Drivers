@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Client Overview - Haya Drivers redesign</title>
+    <link rel="stylesheet" href="assets/haya.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sb-head">
+        <a class="brand" href="#"><img src="../public/logo.svg" alt="" /><span>Haya Drivers<small>Client workspace</small></span></a>
+        <button class="sb-close" aria-label="Close menu"><i data-i="x"></i></button>
+      </div>
+      <div class="sb-scroll">
+        <p class="sb-label">Menu</p>
+        <nav class="sb-nav">
+          <a class="active" href="#"><i data-i="grid"></i>Overview</a>
+          <a href="#"><i data-i="search"></i>Find drivers</a>
+          <a href="#"><i data-i="users"></i>My hire<span class="count">3</span></a>
+          <a href="#"><i data-i="list"></i>Requests<span class="count">1</span></a>
+          <a href="#"><i data-i="receipt"></i>Billing &amp; invoices</a>
+        </nav>
+        <p class="sb-label">Account</p>
+        <nav class="sb-nav">
+          <a href="#"><i data-i="settings"></i>Settings</a>
+          <a href="#"><i data-i="headset"></i>Help &amp; support</a>
+        </nav>
+        <div class="sb-promo">
+          <strong>Need another driver?</strong>
+          <p>Tell us what you need and our team sends you a vetted shortlist, usually within 48 hours.</p>
+          <a class="btn btn-white btn-sm" href="#"><i data-i="plus" class="ic-sm"></i>Request a driver</a>
+        </div>
+      </div>
+      <div class="sb-user">
+        <div class="avatar av-3">AL</div>
+        <div class="who"><strong>Acme Logistics</strong><span>Victoria Island, Lagos</span></div>
+        <a class="icon-btn" href="#" aria-label="Sign out"><i data-i="logout" class="ic-sm"></i></a>
+      </div>
+    </aside>
+    <div class="scrim"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" aria-label="Open menu"><i data-i="menu"></i></button>
+        <div class="tb-title"><h1>Overview</h1><p>Tuesday, 28 October</p></div>
+        <label class="search"><i data-i="search" class="ic-sm"></i><input placeholder="Search drivers, invoices…" /><kbd>Ctrl K</kbd></label>
+        <div class="tb-actions">
+          <button class="icon-btn" aria-label="Notifications, 2 unread"><i data-i="bell"></i><span class="dot">2</span></button>
+          <button class="icon-btn" aria-label="Support"><i data-i="headset"></i></button>
+          <div class="tb-user"><div class="avatar sm av-3">AL</div><strong>Acme Logistics</strong><i data-i="down" class="ic-sm"></i></div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="split top">
+          <div class="hero">
+            <img class="cloud c1" src="../public/cloud-top-right.svg" alt="" />
+            <img class="cloud c2" src="../public/cloud-bottom-left.svg" alt="" />
+            <div class="hero-body">
+              <span class="hero-eyebrow"><span class="online"></span>3 drivers on duty right now</span>
+              <h2>Good morning, Acme Logistics</h2>
+              <p class="lead">Your drivers have checked in for today. One invoice is waiting for payment, and we're confirming drivers for your Lekki request.</p>
+              <div class="hero-actions">
+                <a class="btn btn-white" href="#"><i data-i="plus" class="ic-sm"></i>Request a driver</a>
+                <a class="btn btn-glass" href="#"><i data-i="search" class="ic-sm"></i>Browse drivers</a>
+              </div>
+            </div>
+            <div class="hero-art"><img src="../public/driver-hero.svg" alt="" /></div>
+          </div>
+
+          <div class="invoice">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+              <div><p class="stat-label">Invoice due · INV-2041</p><p class="big-num">₦592,500</p></div>
+              <span class="chip amber"><i data-i="clock"></i>Due 5 Nov</span>
+            </div>
+            <dl>
+              <div><dt>Salaries (3 drivers × ₦180,000)</dt><dd>₦540,000</dd></div>
+              <div><dt>VAT (7.5%)</dt><dd>₦40,500</dd></div>
+              <div><dt>Service fee</dt><dd>₦12,000</dd></div>
+            </dl>
+            <p class="sub">November salaries for your hired drivers. Drivers receive their salary in full.</p>
+            <div class="invoice-actions">
+              <a class="btn btn-primary" href="#"><i data-i="card" class="ic-sm"></i>Pay now</a>
+              <a class="btn btn-outline" href="#"><i data-i="download" class="ic-sm"></i>PDF</a>
+            </div>
+          </div>
+        </section>
+
+        <section class="stats">
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon"><i data-i="users"></i></span><svg class="spark" viewBox="0 0 64 28"><path d="M2 22 14 22 26 16 38 16 50 10 62 10" fill="none" stroke="#2f6bf6" stroke-width="2" stroke-linecap="round" /></svg></div>
+            <div><p class="stat-label">Active drivers</p><p class="stat-value">3</p></div>
+            <p class="stat-foot"><span class="delta up">+1</span>this month</p>
+          </div>
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon amber"><i data-i="list"></i></span></div>
+            <div><p class="stat-label">Open requests</p><p class="stat-value">1</p></div>
+            <p class="stat-foot">2 seats · confirming drivers</p>
+          </div>
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon green"><i data-i="wallet"></i></span><svg class="spark" viewBox="0 0 64 28"><path d="M2 20 14 18 26 18 38 12 50 12 62 7" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" /></svg></div>
+            <div><p class="stat-label">Monthly spend</p><p class="stat-value">₦592,500</p></div>
+            <p class="stat-foot"><span class="delta up">▲ 8.4%</span>vs last month</p>
+          </div>
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon violet"><i data-i="clock"></i></span></div>
+            <div><p class="stat-label">Drivers on time</p><p class="stat-value">97<small>%</small></p></div>
+            <p class="stat-foot">Across your team, last 30 days</p>
+          </div>
+        </section>
+
+        <section class="split">
+          <div class="stack">
+            <div class="card">
+              <div class="card-h">
+                <div><h3>Request HR-2057 · 2 personal drivers</h3><p>Lekki, Lagos · Mon - Fri · Automatic · from 10 Nov</p></div>
+                <a class="link" href="#">View request<i data-i="chevron" class="ic-xs"></i></a>
+              </div>
+              <div class="card-b" style="display: grid; gap: 18px">
+                <ol class="stepper">
+                  <li class="done"><span class="node"><i data-i="check" class="ic-xs"></i></span><div><strong>Request received</strong><span>24 Oct, 10:12</span></div></li>
+                  <li class="done"><span class="node"><i data-i="check" class="ic-xs"></i></span><div><strong>Shortlisting drivers</strong><span>Our team picked 4 vetted candidates</span></div></li>
+                  <li class="now"><span class="node">3</span><div><strong>Drivers confirming availability</strong><span>3 of 4 have confirmed · usually done within 24 hours</span></div></li>
+                  <li><span class="node">4</span><div><strong>Invoice sent</strong><span>Salaries, VAT and service fee in one invoice</span></div></li>
+                  <li><span class="node">5</span><div><strong>Payment confirmed</strong><span>Driver contact details unlock here</span></div></li>
+                  <li><span class="node">6</span><div><strong>Drivers start</strong><span>Planned for 10 Nov</span></div></li>
+                </ol>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div><h3>Hired staff</h3><p>Today's check-ins from your drivers</p></div><a class="link" href="#">My hire<i data-i="chevron" class="ic-xs"></i></a></div>
+              <div style="margin-top: 14px">
+                <table class="rtable">
+                  <thead><tr><th>Driver</th><th>Role</th><th>Today</th><th>Salary</th><th></th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td class="primary"><div class="who-cell"><div class="ring sm"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="#eef2f7" stroke-width="4" /><circle cx="22" cy="22" r="19" fill="none" stroke="#2f6bf6" stroke-width="4" stroke-linecap="round" stroke-dasharray="105 120" /></svg><div class="val"><strong>88</strong></div></div><div><strong>Tunde Bakare</strong><span>Executive driver · since Jun</span></div></div></td>
+                      <td data-label="Role">MD's car<span class="sub">Mon - Fri</span></td>
+                      <td data-label="Today"><span class="chip green chip-dot">On duty · 06:52</span></td>
+                      <td data-label="Salary">₦180,000<span class="sub">per month</span></td>
+                      <td class="act"><a class="btn btn-outline btn-sm" href="#">View</a></td>
+                    </tr>
+                    <tr>
+                      <td class="primary"><div class="who-cell"><div class="ring sm"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="#eef2f7" stroke-width="4" /><circle cx="22" cy="22" r="19" fill="none" stroke="#2f6bf6" stroke-width="4" stroke-linecap="round" stroke-dasharray="98 120" /></svg><div class="val"><strong>82</strong></div></div><div><strong>Musa Ibrahim</strong><span>Corporate driver · since Aug</span></div></div></td>
+                      <td data-label="Role">Staff bus<span class="sub">Mon - Sat</span></td>
+                      <td data-label="Today"><span class="chip green chip-dot">On duty · 07:04</span></td>
+                      <td data-label="Salary">₦180,000<span class="sub">per month</span></td>
+                      <td class="act"><a class="btn btn-outline btn-sm" href="#">View</a></td>
+                    </tr>
+                    <tr>
+                      <td class="primary"><div class="who-cell"><div class="ring sm"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="19" fill="none" stroke="#eef2f7" stroke-width="4" /><circle cx="22" cy="22" r="19" fill="none" stroke="#2f6bf6" stroke-width="4" stroke-linecap="round" stroke-dasharray="91 120" /></svg><div class="val"><strong>76</strong></div></div><div><strong>Chidi Eze</strong><span>Personal driver · since Oct</span></div></div></td>
+                      <td data-label="Role">Logistics run<span class="sub">Mon - Fri</span></td>
+                      <td data-label="Today"><span class="chip amber chip-dot">Not started yet</span></td>
+                      <td data-label="Salary">₦180,000<span class="sub">per month</span></td>
+                      <td class="act"><a class="btn btn-outline btn-sm" href="#">View</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="card">
+              <div class="card-h"><h3>Recent payments</h3><a class="link" href="#">Billing<i data-i="chevron" class="ic-xs"></i></a></div>
+              <div class="rows" style="margin-top: 6px">
+                <div class="row"><span class="stat-icon green"><i data-i="receipt" class="ic-sm"></i></span><div class="grow"><strong>INV-1987 · October salaries</strong><span class="sub">Paid 3 Oct</span></div><div class="end"><strong>₦546,750</strong><span class="chip green">Paid</span></div></div>
+                <div class="row"><span class="stat-icon amber"><i data-i="receipt" class="ic-sm"></i></span><div class="grow"><strong>INV-2012 · Chidi Eze</strong><span class="sub">Proof uploaded 26 Oct</span></div><div class="end"><strong>₦205,500</strong><span class="chip amber">In review</span></div></div>
+                <div class="row"><span class="stat-icon green"><i data-i="receipt" class="ic-sm"></i></span><div class="grow"><strong>INV-1904 · September salaries</strong><span class="sub">Paid 2 Sep</span></div><div class="end"><strong>₦364,500</strong><span class="chip green">Paid</span></div></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div><h3>Top drivers near you</h3><p>Verified and available in Lagos</p></div></div>
+              <div style="margin-top: 6px">
+                <div class="talent"><div class="avatar av-1">SA</div><div class="grow" style="flex: 1; min-width: 0"><strong style="font-weight: 600">Samuel Ade</strong><span class="sub">94 trust · Automatic · 10 yrs</span></div><a class="btn btn-outline btn-sm" href="#">View</a></div>
+                <div class="talent"><div class="avatar av-5">GO</div><div class="grow" style="flex: 1; min-width: 0"><strong style="font-weight: 600">Grace Ojo</strong><span class="sub">91 trust · Manual · 7 yrs</span></div><a class="btn btn-outline btn-sm" href="#">View</a></div>
+                <div class="talent"><div class="avatar av-2">YK</div><div class="grow" style="flex: 1; min-width: 0"><strong style="font-weight: 600">Yusuf Kano</strong><span class="sub">89 trust · Both · 12 yrs</span></div><a class="btn btn-outline btn-sm" href="#">View</a></div>
+              </div>
+            </div>
+
+            <div class="help">
+              <span class="stat-icon" style="background: rgba(255, 255, 255, 0.12); color: #fff"><i data-i="chat"></i></span>
+              <div><strong>Talk to our team</strong><p>Live chat · replies in about 5 min</p></div>
+              <a class="btn btn-white btn-sm" href="#">Chat</a>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="assets/haya.js"></script>
+  </body>
+</html>

@@ -9,10 +9,7 @@ import { showToast } from "@/lib/show-toast";
 import { formatMoney, toMajorUnits } from "@/lib/utils";
 import Link from "next/link";
 import { useState } from "react";
-import {
-  useBankAccounts,
-  useRequestWithdrawal,
-} from "../../_hooks/use-earnings";
+import { useBankAccounts, useRequestWithdrawal } from "../_hooks/use-earnings";
 
 interface Props {
   open: boolean;
@@ -95,9 +92,7 @@ export const WithdrawDialog = function ({
           </AppText>
 
           <Button asChild className="h-11 w-full rounded-lg">
-            <Link href="/driver/dashboard/settings?tab=earnings">
-              Add a bank account
-            </Link>
+            <Link href="/driver/dashboard/earnings">Add a bank account</Link>
           </Button>
         </div>
       ) : (

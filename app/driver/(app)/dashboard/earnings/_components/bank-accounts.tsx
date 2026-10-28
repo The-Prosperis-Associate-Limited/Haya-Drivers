@@ -13,7 +13,7 @@ import {
   useAddBankAccount,
   useBankAccounts,
   useBanks,
-} from "../../_hooks/use-earnings";
+} from "../_hooks/use-earnings";
 
 export const BankAccounts = function () {
   const [adding, setAdding] = useState(false);

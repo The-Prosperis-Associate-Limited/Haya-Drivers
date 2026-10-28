@@ -23,6 +23,7 @@ import {
   driverTypeLabel,
   formatDate,
   formatMoney,
+  invoiceLines,
   getInitials,
   HIRE_ENGAGEMENT_LABELS,
   TRANSMISSION_OPTIONS,
@@ -485,38 +486,24 @@ export default function HireRequestDetail({
               </AppText>
 
               <div className="mt-4 space-y-2.5">
-                {[
-                  ...(invoice.breakdown?.length
-                    ? invoice.breakdown.map((line) => ({
-                        label: line.label,
-                        value: formatMoney(line.amount_minor, invoice.currency),
-                      }))
-                    : [
-                        {
-                          label: "Service fee",
-                          value: formatMoney(
-                            invoice.fee_minor,
-                            invoice.currency,
-                          ),
-                        },
-                      ]),
-                  {
-                    label: `VAT (${invoice.vat_percent}%)`,
-                    value: formatMoney(invoice.vat_minor, invoice.currency),
-                  },
-                ].map((row) => (
-                  <span
-                    key={row.label}
-                    className="flex items-center justify-between gap-3"
-                  >
-                    <AppText type="caption" className="text-muted-foreground">
-                      {row.label}
-                    </AppText>
-                    <AppText type="label" className="shrink-0 text-sm">
-                      {row.value}
-                    </AppText>
-                  </span>
-                ))}
+                {invoiceLines(invoice)
+                  .map((line) => ({
+                    label: line.label,
+                    value: formatMoney(line.amount_minor, invoice.currency),
+                  }))
+                  .map((row) => (
+                    <span
+                      key={row.label}
+                      className="flex items-center justify-between gap-3"
+                    >
+                      <AppText type="caption" className="text-muted-foreground">
+                        {row.label}
+                      </AppText>
+                      <AppText type="label" className="shrink-0 text-sm">
+                        {row.value}
+                      </AppText>
+                    </span>
+                  ))}
 
                 <span className="border-border flex items-center justify-between border-t pt-2.5">
                   <AppText type="label" className="text-sm font-bold">
@@ -527,7 +514,9 @@ export default function HireRequestDetail({
                   </AppText>
                 </span>
 
-                {invoice.per_driver_minor ? (
+                {invoice.per_driver_minor &&
+                (invoice.breakdown?.length ||
+                  invoice.amount_minor === invoice.fee_minor) ? (
                   <AppText
                     type="caption"
                     className="text-muted-foreground block pt-1 text-xs"

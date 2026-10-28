@@ -65,6 +65,8 @@ export const API_ENDPOINTS = {
 
   driverProfile: {
     workPreferences: "/driver/profile/work-preferences",
+    openToWork: "/driver/profile/open-to-work",
+    preview: "/driver/profile/preview",
   },
 
   jobRequests: {
@@ -95,6 +97,7 @@ export const API_ENDPOINTS = {
     history: ({ page, limit }: { page: number; limit: number }) =>
       `/driver/earnings/history?page=${page}&limit=${limit}`,
     trend: "/driver/earnings/trend",
+    statement: (month: string) => `/driver/earnings/statements/${month}`,
     banks: ({ country, currency }: { country: string; currency: string }) =>
       `/driver/earnings/banks?country=${country}&currency=${currency}`,
     resolveAccount: "/driver/earnings/banks/resolve",
@@ -295,6 +298,19 @@ export const API_ENDPOINTS = {
     detail: (reference: string) => `/client/hire-requests/${reference}`,
     proof: (reference: string) => `/client/hire-requests/${reference}/proof`,
     cancel: (reference: string) => `/client/hire-requests/${reference}/cancel`,
+  },
+
+  invoices: {
+    list: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status?: string;
+    }) =>
+      `/client/invoices?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
   },
 
   adminHires: {

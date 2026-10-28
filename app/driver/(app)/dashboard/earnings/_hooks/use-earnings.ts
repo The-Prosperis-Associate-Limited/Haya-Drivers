@@ -11,9 +11,10 @@ import type {
   WalletTransaction,
 } from "@/types/earnings";
 
-export const useEarningsSummary = function () {
+export const useEarningsSummary = function (shouldFetch = true) {
   const { data, isFetching } = useGetData<APIResponse<EarningsSummary>>({
     url: API_ENDPOINTS.earnings.summary,
+    shouldFetch,
   });
 
   return { summary: data?.data, isFetching };
@@ -39,9 +40,10 @@ export const useEarningsHistory = function ({
   };
 };
 
-export const useEarningsTrend = function () {
+export const useEarningsTrend = function (shouldFetch = true) {
   const { data, isFetching } = useGetData<APIResponse<EarningsTrendPoint[]>>({
     url: API_ENDPOINTS.earnings.trend,
+    shouldFetch,
   });
 
   return { trend: data?.data ?? [], isFetching };

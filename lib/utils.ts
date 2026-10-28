@@ -27,6 +27,7 @@ import type {
   DriversNeededRange,
   HiringTimeline,
 } from "@/types/auth";
+import type { HireInvoice } from "@/types/hire";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -195,7 +196,11 @@ export const formatMoney = function (
   const symbol =
     currencyMapper[currency as keyof typeof currencyMapper] ?? `${currency} `;
 
-  return `${symbol}${((minor ?? 0) / 100).toLocaleString(undefined, {
+  const value = minor ?? 0;
+
+  return `${value < 0 ? "-" : ""}${symbol}${(
+    Math.abs(value) / 100
+  ).toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;
@@ -281,6 +286,51 @@ export const formatPay = function (
   engagement: EngagementType,
 ) {
   return `${formatMoney(minor, currency)} / ${PAY_PERIOD_LABELS[engagement]}`;
+};
+
+export const INVOICE_STATUS_STYLES: Record<
+  HireInvoice["status"],
+  { label: string; tone: string }
+> = {
+  UNPAID: {
+    label: "Unpaid",
+    tone: "border-amber-200 bg-amber-50 text-amber-700",
+  },
+  PAYMENT_REVIEW: {
+    label: "Under review",
+    tone: "border-brand/20 bg-brand-soft text-brand",
+  },
+  PAID: {
+    label: "Paid",
+    tone: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  },
+  VOID: { label: "Void", tone: "border-slate-200 bg-slate-50 text-slate-500" },
+};
+
+// Pre-fee-only invoices have no breakdown and carried the salaries apart from the fee.
+export const invoiceLines = function (
+  invoice: Pick<
+    HireInvoice,
+    "breakdown" | "amount_minor" | "fee_minor" | "vat_percent" | "vat_minor"
+  >,
+) {
+  const lines: { label: string; amount_minor: number }[] = invoice.breakdown
+    ?.length
+    ? invoice.breakdown.map(({ label, amount_minor }) => ({
+        label,
+        amount_minor,
+      }))
+    : invoice.amount_minor !== invoice.fee_minor
+      ? [
+          { label: "Salaries", amount_minor: invoice.amount_minor },
+          { label: "Service fee", amount_minor: invoice.fee_minor },
+        ]
+      : [{ label: "Service fee", amount_minor: invoice.fee_minor }];
+
+  return [
+    ...lines,
+    { label: `VAT (${invoice.vat_percent}%)`, amount_minor: invoice.vat_minor },
+  ];
 };
 
 export const formatPosted = function (date: string | Date) {

@@ -1,4 +1,5 @@
 import type { DriverType } from "./driver";
+import type { HireInvoice, HireRequest, HireRequestStatus } from "./hire";
 
 export type BookingStatus =
   | "REQUESTED"
@@ -47,6 +48,9 @@ export interface Booking {
   city: string | null;
   starts_at: string;
   ends_at: string | null;
+  schedule: string | null;
+  resumption_time: string | null;
+  closing_time: string | null;
   amount: number;
   currency: string;
   status: BookingStatus;
@@ -78,6 +82,7 @@ export interface DashboardStats {
   verification_status: string;
   client_review_average: number;
   client_review_count: number;
+  on_time_rate: number | null;
   certifications_earned: number;
   training_completed: number;
 }
@@ -149,33 +154,69 @@ export interface HireDetail extends Hire {
   driver_review_count: number;
 }
 
+export type OverviewInvoice = Pick<
+  HireInvoice,
+  | "reference"
+  | "status"
+  | "amount_minor"
+  | "per_driver_minor"
+  | "vat_percent"
+  | "vat_minor"
+  | "fee_minor"
+  | "total_minor"
+  | "breakdown"
+  | "currency"
+  | "proof_submitted_at"
+  | "proof_rejected_reason"
+  | "createdAt"
+>;
+
+export interface OverviewHireRequest extends Omit<
+  HireRequest,
+  "assignments" | "invoice" | "driver"
+> {
+  shortlist: {
+    total: number;
+    confirmed: number;
+    pending: number;
+    declined: number;
+  };
+  invoice: Pick<
+    HireInvoice,
+    "status" | "total_minor" | "currency" | "proof_rejected_reason"
+  > | null;
+}
+
 export interface OverviewData {
   stats: {
     active_drivers: number;
     open_requests: number;
-    request_list: number;
     monthly_spend_minor: number;
+    spend_last_month_minor: number;
     spend_delta_percent: number | null;
+    on_time_rate: number | null;
   };
   hired_staff: Hire[];
-  open_requests: {
-    id: string;
+  hired_total: number;
+  hire_requests: OverviewHireRequest[];
+  invoice_due: {
     reference: string;
-    title: string;
-    driver_type: DriverType;
-    createdAt: string;
-    driver: { first_name: string | null; last_name: string | null } | null;
-  }[];
+    status: HireRequestStatus;
+    drivers_needed: number;
+    driver_type: DriverType | null;
+    invoice: OverviewInvoice;
+  } | null;
   recent_payments: {
     id: string;
-    amount_minor: number;
+    reference: string;
+    total_minor: number;
     currency: string;
-    description: string | null;
-    createdAt: string;
-    booking: {
+    paid_at: string;
+    hire_request: {
       reference: string;
-      driver: { first_name: string | null; last_name: string | null } | null;
-    } | null;
+      drivers_needed: number;
+      driver_type: DriverType | null;
+    };
   }[];
   currency: string;
 }

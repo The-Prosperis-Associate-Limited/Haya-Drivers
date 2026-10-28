@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard Redesign - Haya Drivers</title>
+    <link rel="stylesheet" href="assets/haya.css" />
+    <style>
+      body {
+        background: #eef2f7;
+      }
+
+      .wrap {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 24px 16px 64px;
+      }
+
+      .head {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .head h1 {
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .head p {
+        max-width: 640px;
+        color: var(--muted);
+      }
+
+      .switch {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 24px 0 16px;
+      }
+
+      .switch button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+        padding: 0 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--ink-2);
+        font-weight: 600;
+      }
+
+      .switch button.on {
+        border-color: var(--brand);
+        background: var(--brand);
+        color: #fff;
+      }
+
+      .notes {
+        display: grid;
+        gap: 16px;
+        margin-bottom: 20px;
+        padding: 18px;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: #fff;
+      }
+
+      .notes ul {
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        padding-left: 18px;
+        color: var(--ink-2);
+      }
+
+      .notes-h {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .label {
+        margin: 24px 0 10px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .device {
+        overflow: hidden;
+        border: 1px solid #d5dce6;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.3);
+      }
+
+      .device .bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 30px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--border);
+        background: #f8fafc;
+        font-size: 11px;
+        color: var(--faint);
+      }
+
+      .device .bar i {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #e2e8f0;
+      }
+
+      .device .bar span {
+        margin-left: 8px;
+      }
+
+      .frame {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .frame iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 0;
+        transform-origin: 0 0;
+        background: var(--bg);
+      }
+
+      .small {
+        display: grid;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .phone {
+        width: 100%;
+        max-width: 330px;
+        justify-self: center;
+        padding: 10px;
+        border-radius: 40px;
+        background: #0f172a;
+        box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.5);
+      }
+
+      .phone .frame {
+        border-radius: 30px;
+      }
+
+      .tablet {
+        padding: 12px;
+        border-radius: 28px;
+        background: #0f172a;
+        box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.5);
+      }
+
+      .tablet .frame {
+        border-radius: 16px;
+      }
+
+      @media (min-width: 900px) {
+        .wrap {
+          padding: 40px 32px 80px;
+        }
+
+        .small {
+          grid-template-columns: 1fr 330px;
+        }
+
+        .notes {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <div>
+          <a class="brand" href="#"><img src="../public/logo.svg" alt="" /><span>Haya Drivers<small>Dashboard redesign · mockup v1</small></span></a>
+          <h1 style="margin-top: 18px">Dashboard redesign</h1>
+          <p>The overview screen for each of the three dashboards, shown at laptop, tablet and phone sizes. Every frame is the real page, so you can scroll, open the menu and click around. The landing pages are unchanged.</p>
+        </div>
+      </div>
+
+      <div class="switch" role="tablist">
+        <button class="on" data-page="driver"><i data-i="car" class="ic-sm"></i>Driver dashboard</button>
+        <button data-page="client"><i data-i="users" class="ic-sm"></i>Client dashboard</button>
+        <button data-page="admin"><i data-i="shield" class="ic-sm"></i>Admin dashboard</button>
+      </div>
+
+      <section class="notes">
+        <div>
+          <div class="notes-h"><h3 id="notes-title" style="font-size: 16px; font-weight: 600">What changed</h3><a id="open-full" class="btn btn-primary btn-sm" target="_blank" href="driver-dashboard.html"><i data-i="arrow" class="ic-xs"></i>Open full page</a></div>
+          <ul id="notes-a" style="margin-top: 12px"></ul>
+        </div>
+        <div>
+          <h3 style="font-size: 16px; font-weight: 600">Why</h3>
+          <ul id="notes-b" style="margin-top: 12px"></ul>
+        </div>
+      </section>
+
+      <p class="label">Laptop · 1440px</p>
+      <div class="device">
+        <div class="bar"><i></i><i></i><i></i><span id="url">hayadrivers.com/driver/dashboard</span></div>
+        <div class="frame" data-w="1440" data-h="900"><iframe title="Laptop preview"></iframe></div>
+      </div>
+
+      <div class="small">
+        <div>
+          <p class="label">Tablet · 820px</p>
+          <div class="tablet"><div class="frame" data-w="820" data-h="1100"><iframe title="Tablet preview"></iframe></div></div>
+        </div>
+        <div>
+          <p class="label">Phone · 390px</p>
+          <div class="phone"><div class="frame" data-w="390" data-h="844"><iframe title="Phone preview"></iframe></div></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/haya.js"></script>
+    <script>
+      const PAGES = {
+        driver: {
+          file: "driver-dashboard.html",
+          url: "hayadrivers.com/driver/dashboard",
+          changed: [
+            "A blue welcome banner with the driver's verified status, key details and an 'Available for work' switch, replacing the plain greeting line.",
+            "The trust score sits beside the banner as a ring, with a checklist of what is building it (identity, licence, guarantor, training).",
+            "Shortlist invitations are a highlighted panel with job details as easy-to-scan tags and a reply-by countdown.",
+            "Four stat cards with icons and small trend lines: ongoing jobs, monthly earnings, on-time rate and rating.",
+            "My jobs is a proper table (stacked cards on phones) with a 'Start shift' button, plus an earnings chart with available and on-hold balances.",
+            "Right-hand column: this week's schedule with today's shift, recent reviews and training progress.",
+          ],
+          why: [
+            "On a laptop, the old overview left most of the screen empty. The new layout uses the width with a main column and a side column.",
+            "Drivers see their most urgent actions first: reply to shortlists, start today's shift.",
+            "The trust score, earnings and training are what keep drivers coming back, so they are always visible.",
+            "On phones it collapses to a single column: stats in a 2 × 2 grid, tables become cards, and the menu becomes a slide-out drawer.",
+          ],
+        },
+        client: {
+          file: "client-dashboard.html",
+          url: "hayadrivers.com/dashboard",
+          changed: [
+            "A welcome banner showing how many drivers are on duty, with 'Request a driver' and 'Browse drivers' buttons.",
+            "The next invoice due sits beside it with its full breakdown (salaries, VAT, service fee), 'Pay now' and a PDF download.",
+            "A step-by-step tracker for open hire requests, so clients can see exactly where their request is.",
+            "Hired staff shows each driver's trust score and today's check-in time.",
+            "Recent payments, suggested top drivers and a live chat shortcut in the right-hand column.",
+          ],
+          why: [
+            "Clients mostly ask three things: are my drivers working, what do I owe, and where is my request? Each now has a clear answer on the first screen.",
+            "Showing the cost breakdown up front builds trust and cuts down on billing questions.",
+            "The request tracker means fewer 'any update?' messages to the team.",
+            "The phone layout keeps the same order, with tables turned into cards and the menu as a drawer.",
+          ],
+        },
+        admin: {
+          file: "admin-dashboard.html",
+          url: "hayadrivers.com/admin/dashboard",
+          changed: [
+            "A 'Needs action' row at the top with four tiles: verifications to review, payment proofs to check, shortlists to trim and chats waiting.",
+            "Menu items show live counts, so the team can see where work is piling up from any page.",
+            "A hire pipeline chart showing how many requests are at each stage.",
+            "A 'Hires needing action' table with candidate status tags (green confirmed, amber pending, red declined) and how long each has been waiting.",
+            "Verification queue, support inbox preview and a team activity log in the side column.",
+          ],
+          why: [
+            "The admin overview should work as a to-do list for the operations team, not just a set of totals.",
+            "Showing waiting times makes slow hires obvious before a client complains.",
+            "The activity log shows who confirmed or rejected what, which helps with accountability.",
+            "It still works on a phone for checking things on the go.",
+          ],
+        },
+      };
+
+      const frames = [...document.querySelectorAll(".frame")];
+
+      const fit = () => {
+        frames.forEach((frame) => {
+          const w = +frame.dataset.w;
+          const h = +frame.dataset.h;
+          const scale = frame.clientWidth / w;
+          const iframe = frame.querySelector("iframe");
+          iframe.style.width = w + "px";
+          iframe.style.height = h + "px";
+          iframe.style.transform = `scale(${scale})`;
+          frame.style.height = h * scale + "px";
+        });
+      };
+
+      const show = (key) => {
+        const page = PAGES[key];
+        frames.forEach((frame) => (frame.querySelector("iframe").src = page.file));
+        document.getElementById("url").textContent = page.url;
+        document.getElementById("open-full").href = page.file;
+        document.getElementById("notes-a").innerHTML = page.changed.map((t) => `<li>${t}</li>`).join("");
+        document.getElementById("notes-b").innerHTML = page.why.map((t) => `<li>${t}</li>`).join("");
+        document.querySelectorAll(".switch button").forEach((b) => b.classList.toggle("on", b.dataset.page === key));
+        fit();
+      };
+
+      document.querySelector(".switch").addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (button) show(button.dataset.page);
+      });
+
+      window.addEventListener("resize", fit);
+      show("driver");
+    </script>
+  </body>
+</html>

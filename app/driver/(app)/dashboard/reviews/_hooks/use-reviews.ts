@@ -14,12 +14,15 @@ export const useReviewSummary = function () {
 export const useReviews = function ({
   page,
   limit,
+  shouldFetch = true,
 }: {
   page: number;
   limit: number;
+  shouldFetch?: boolean;
 }) {
   const { data, isFetching } = useGetData<PaginatedResponse<Review>>({
     url: API_ENDPOINTS.driverReviews.list({ page, limit }),
+    shouldFetch,
   });
 
   return {

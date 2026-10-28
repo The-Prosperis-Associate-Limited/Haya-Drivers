@@ -189,3 +189,31 @@ export interface HireRequest {
   combo_pack?: ComboPack[] | null;
   payment_account?: PaymentAccount | null;
 }
+
+export interface ClientInvoiceRow {
+  id: string;
+  reference: string;
+  status: HireInvoiceStatus;
+  total_minor: number;
+  currency: string;
+  paid_at: string | null;
+  proof_submitted_at: string | null;
+  proof_rejected_reason: string | null;
+  createdAt: string;
+  hire_request: {
+    reference: string;
+    status: HireRequestStatus;
+    drivers_needed: number;
+    driver_type: DriverType | null;
+    engagement_type: EngagementType;
+    starts_at: string;
+  };
+}
+
+export interface InvoiceSummary {
+  outstanding_minor: number;
+  outstanding_count: number;
+  in_review_count: number;
+  paid_minor: number;
+  paid_count: number;
+}

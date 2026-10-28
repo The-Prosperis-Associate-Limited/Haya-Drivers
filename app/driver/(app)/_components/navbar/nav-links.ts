@@ -4,6 +4,7 @@ import {
   Settings,
   ShieldCheck,
   Star,
+  Wallet,
   type LucideIcon,
 } from "lucide-react";
 
@@ -14,16 +15,11 @@ export interface NavLink {
   children?: { label: string; href: string }[];
 }
 
-/*
-  Earnings is no longer a top-level destination - the wallet, withdrawals and
-  payout accounts live on the Settings > Earnings tab, and /dashboard/earnings
-  redirects there. Every endpoint behind it still 403s an unverified driver, so
-  nothing here is a security boundary.
-*/
+// The earnings endpoints 403 an unverified driver; the nav is never the security boundary.
 export const NAV_LINKS: NavLink[] = [
   { label: "Overview", href: "/driver/dashboard", icon: LayoutGrid },
   {
-    label: "Job Request",
+    label: "My jobs",
     href: "/driver/dashboard/job-request",
     icon: Briefcase,
   },
@@ -33,7 +29,12 @@ export const NAV_LINKS: NavLink[] = [
     icon: Star,
   },
   {
-    label: "Trust Score",
+    label: "Earnings",
+    href: "/driver/dashboard/earnings",
+    icon: Wallet,
+  },
+  {
+    label: "Trust score",
     href: "/driver/dashboard/trust-score",
     icon: ShieldCheck,
   },

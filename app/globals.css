@@ -1,18 +1,9 @@
 /*
-  General Sans is not on Google Fonts. Served from Fontshare here; swapping to
-  next/font/local once the woff2 files are in /public is a change to this line
-  and the --font-general-sans value only.
-*/
-@import url("https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=zodiak@400&display=swap");
-
-/*
   The driver's course certificate is the one surface that is not General Sans -
-  Zodiak for the title (same Fontshare request as above) and a formal script for
-  the name. Fontshare has no script face, which is the only reason a second
-  provider appears in this file. Nothing outside the certificate may use these.
+  Zodiak for the title and a formal script for the name. Nothing outside the
+  certificate may use these. All three faces load through next/font in
+  app/_lib/fonts.ts; a remote @import here is dropped by the CSS pipeline.
 */
-@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
-
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -22,9 +13,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-general-sans: "General Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-certificate-serif: "Zodiak", ui-serif, Georgia, serif;
-  --font-certificate-script: "Great Vibes", ui-serif, cursive;
+  --font-general-sans:
+    var(--font-general-sans-face), ui-sans-serif, system-ui, sans-serif;
+  --font-certificate-serif: var(--font-zodiak-face), ui-serif, Georgia, serif;
+  --font-certificate-script: var(--font-great-vibes-face), ui-serif, cursive;
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -157,10 +149,22 @@
     margin: 0;
     border: 0;
     padding: 0;
+    page: certificate;
   }
 
   @page {
+    size: A4 portrait;
+    margin: 14mm;
+  }
+
+  @page certificate {
     size: landscape;
     margin: 12mm;
   }
+
+  [data-print-document],
+  [data-print-document] * {
+    visibility: visible;
+  }
+
 }

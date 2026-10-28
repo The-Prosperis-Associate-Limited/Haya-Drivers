@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Overview - Haya Drivers redesign</title>
+    <link rel="stylesheet" href="assets/haya.css" />
+  </head>
+  <body>
+    <aside class="sidebar">
+      <div class="sb-head">
+        <a class="brand" href="#"><img src="../public/logo.svg" alt="" /><span>Haya Drivers<small>Admin console</small></span></a>
+        <button class="sb-close" aria-label="Close menu"><i data-i="x"></i></button>
+      </div>
+      <div class="sb-scroll">
+        <p class="sb-label">Operations</p>
+        <nav class="sb-nav">
+          <a class="active" href="#"><i data-i="grid"></i>Overview</a>
+          <a href="#"><i data-i="car"></i>Drivers<span class="count">12</span></a>
+          <a href="#"><i data-i="users"></i>Clients</a>
+          <a href="#"><i data-i="briefcase"></i>Hires<span class="count">5</span></a>
+          <a href="#"><i data-i="receipt"></i>Transactions<span class="count">3</span></a>
+          <a href="#"><i data-i="inbox"></i>Support<span class="count">4</span></a>
+        </nav>
+        <p class="sb-label">System</p>
+        <nav class="sb-nav">
+          <a href="#"><i data-i="settings"></i>Settings</a>
+        </nav>
+        <div class="sb-promo">
+          <strong>Team on shift</strong>
+          <p>Aisha, Femi and you are online. 4 live chats are waiting for an agent.</p>
+          <a class="btn btn-white btn-sm" href="#"><i data-i="chat" class="ic-sm"></i>Open inbox</a>
+        </div>
+      </div>
+      <div class="sb-user">
+        <div class="avatar av-4">BO</div>
+        <div class="who"><strong>Bisi Olawale</strong><span>Super admin</span></div>
+        <a class="icon-btn" href="#" aria-label="Sign out"><i data-i="logout" class="ic-sm"></i></a>
+      </div>
+    </aside>
+    <div class="scrim"></div>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" aria-label="Open menu"><i data-i="menu"></i></button>
+        <div class="tb-title"><h1>Overview</h1><p>Tuesday, 28 October</p></div>
+        <label class="search"><i data-i="search" class="ic-sm"></i><input placeholder="Search drivers, clients, references…" /><kbd>Ctrl K</kbd></label>
+        <div class="tb-actions">
+          <button class="icon-btn" aria-label="Notifications, 9 unread"><i data-i="bell"></i><span class="dot">9</span></button>
+          <div class="tb-user"><div class="avatar sm av-4">BO</div><strong>Bisi</strong><i data-i="down" class="ic-sm"></i></div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="section-title" style="flex-wrap: wrap; align-items: center">
+          <div><h2 style="font-size: 22px; font-weight: 600; letter-spacing: -0.02em">Good morning, Bisi</h2><p class="sub" style="font-size: 13px">Here's what needs the team's attention today.</p></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <div class="tabs"><button>7 days</button><button class="on">30 days</button><button>90 days</button></div>
+            <button class="btn btn-outline btn-sm"><i data-i="download" class="ic-sm"></i>Export</button>
+          </div>
+        </section>
+
+        <section class="action-tiles">
+          <a class="tile" href="#"><span class="stat-icon"><i data-i="shield"></i></span><span class="n">12</span><p>Driver verifications waiting for review</p><span class="link">Review queue<i data-i="chevron" class="ic-xs"></i></span></a>
+          <a class="tile" href="#"><span class="stat-icon amber"><i data-i="receipt"></i></span><span class="n">3</span><p>Payment proofs to confirm or reject</p><span class="link">Check payments<i data-i="chevron" class="ic-xs"></i></span></a>
+          <a class="tile" href="#"><span class="stat-icon violet"><i data-i="users"></i></span><span class="n">2</span><p>Shortlists ready to trim and invoice</p><span class="link">Open hires<i data-i="chevron" class="ic-xs"></i></span></a>
+          <a class="tile" href="#"><span class="stat-icon green"><i data-i="chat"></i></span><span class="n">4</span><p>Live chats waiting for an agent</p><span class="link">Go to inbox<i data-i="chevron" class="ic-xs"></i></span></a>
+        </section>
+
+        <section class="stats">
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon"><i data-i="users"></i></span><svg class="spark" viewBox="0 0 64 28"><path d="M2 22 14 19 26 17 38 12 50 9 62 5" fill="none" stroke="#2f6bf6" stroke-width="2" stroke-linecap="round" /></svg></div>
+            <div><p class="stat-label">Total users</p><p class="stat-value">2,481</p></div>
+            <p class="stat-foot"><span class="delta up">▲ 6.2%</span>vs last 30 days</p>
+          </div>
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon green"><i data-i="car"></i></span><svg class="spark" viewBox="0 0 64 28"><path d="M2 18 14 18 26 15 38 14 50 10 62 9" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" /></svg></div>
+            <div><p class="stat-label">Active drivers</p><p class="stat-value">318</p></div>
+            <p class="stat-foot"><span class="delta up">+24</span>approved this month</p>
+          </div>
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon amber"><i data-i="list"></i></span><svg class="spark" viewBox="0 0 64 28"><path d="M2 12 14 16 26 10 38 14 50 8 62 10" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" /></svg></div>
+            <div><p class="stat-label">Open hire requests</p><p class="stat-value">27</p></div>
+            <p class="stat-foot">Avg. 31h to shortlist</p>
+          </div>
+          <div class="card stat">
+            <div class="stat-top"><span class="stat-icon violet"><i data-i="wallet"></i></span><svg class="spark" viewBox="0 0 64 28"><path d="M2 22 14 20 26 21 38 14 50 11 62 6" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" /></svg></div>
+            <div><p class="stat-label">Invoices paid</p><p class="stat-value">₦24.6m</p></div>
+            <p class="stat-foot"><span class="delta up">▲ 14%</span>₦1.1m in service fees</p>
+          </div>
+        </section>
+
+        <section class="split">
+          <div class="stack">
+            <div class="card">
+              <div class="card-h"><div><h3>Hire pipeline</h3><p>Where every open request is right now</p></div><a class="link" href="#">All hires<i data-i="chevron" class="ic-xs"></i></a></div>
+              <div class="card-b funnel">
+                <div class="f"><span>New requests</span><div class="track"><i style="width: 30%"></i></div><b>8</b></div>
+                <div class="f"><span>Shortlisting</span><div class="track"><i style="width: 22%"></i></div><b>6</b></div>
+                <div class="f"><span>Confirming</span><div class="track"><i style="width: 18%"></i></div><b>5</b></div>
+                <div class="f"><span>Invoiced</span><div class="track"><i style="width: 15%; background: #f59e0b"></i></div><b>4</b></div>
+                <div class="f"><span>Payment review</span><div class="track"><i style="width: 11%; background: #f59e0b"></i></div><b>3</b></div>
+                <div class="f"><span>Active hires</span><div class="track"><i style="width: 100%; background: #16a34a"></i></div><b>142</b></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h">
+                <div><h3>Hires needing action</h3><p>Oldest first</p></div>
+                <div class="tabs"><button class="on">All</button><button>Shortlisting</button><button>Payments</button></div>
+              </div>
+              <div style="margin-top: 14px">
+                <table class="rtable">
+                  <thead><tr><th>Request</th><th>Seats</th><th>Candidates</th><th>Waiting</th><th></th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td class="primary"><div class="who-cell"><div class="avatar av-3">AL</div><div><strong>Acme Logistics</strong><span>HR-2057 · Personal · Lekki</span></div></div></td>
+                      <td data-label="Seats">2</td>
+                      <td data-label="Candidates"><div class="facts"><span class="chip green"><i data-i="check"></i>3</span><span class="chip amber"><i data-i="clock"></i>1</span></div></td>
+                      <td data-label="Waiting"><span class="chip amber">Trim to 2</span></td>
+                      <td class="act"><a class="btn btn-primary btn-sm" href="#">Open</a></td>
+                    </tr>
+                    <tr>
+                      <td class="primary"><div class="who-cell"><div class="avatar av-1">TF</div><div><strong>Temi Fashola</strong><span>HR-2049 · Family · Ikeja GRA</span></div></div></td>
+                      <td data-label="Seats">1</td>
+                      <td data-label="Candidates"><div class="facts"><span class="chip green"><i data-i="check"></i>1</span></div></td>
+                      <td data-label="Waiting"><span class="chip blue">Proof uploaded</span></td>
+                      <td class="act"><a class="btn btn-primary btn-sm" href="#">Confirm</a></td>
+                    </tr>
+                    <tr>
+                      <td class="primary"><div class="who-cell"><div class="avatar av-2">GB</div><div><strong>Greenfield Bank</strong><span>HR-2044 · Executive · VI</span></div></div></td>
+                      <td data-label="Seats">4</td>
+                      <td data-label="Candidates"><div class="facts"><span class="chip green"><i data-i="check"></i>2</span><span class="chip amber"><i data-i="clock"></i>2</span><span class="chip red">1 declined</span></div></td>
+                      <td data-label="Waiting"><span class="chip red">3 days</span></td>
+                      <td class="act"><a class="btn btn-outline btn-sm" href="#">Open</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><div><h3>Invoices paid</h3><p>Last 6 months</p></div><span class="delta up">▲ 14%</span></div>
+              <div class="card-b">
+                <div class="bars">
+                  <div class="b"><i style="height: 40%"></i><span>May</span></div>
+                  <div class="b"><i style="height: 48%"></i><span>Jun</span></div>
+                  <div class="b"><i style="height: 55%"></i><span>Jul</span></div>
+                  <div class="b"><i style="height: 62%"></i><span>Aug</span></div>
+                  <div class="b"><i style="height: 78%"></i><span>Sep</span></div>
+                  <div class="b on"><i style="height: 90%"></i><span>Oct</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="card">
+              <div class="card-h"><div><h3>Verification queue</h3><p>12 drivers waiting</p></div><a class="link" href="#">See all<i data-i="chevron" class="ic-xs"></i></a></div>
+              <div class="rows" style="margin-top: 6px">
+                <div class="row"><div class="avatar av-5">KA</div><div class="grow"><strong>Kehinde Ajayi</strong><span class="sub">4 of 4 documents · 2h ago</span></div><a class="btn btn-outline btn-sm" href="#">Review</a></div>
+                <div class="row"><div class="avatar av-2">IN</div><div class="grow"><strong>Ifeanyi Nnaji</strong><span class="sub">4 of 4 documents · 5h ago</span></div><a class="btn btn-outline btn-sm" href="#">Review</a></div>
+                <div class="row"><div class="avatar av-1">HS</div><div class="grow"><strong>Halima Sule</strong><span class="sub">Resubmitted licence · 1d ago</span></div><a class="btn btn-outline btn-sm" href="#">Review</a></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h"><h3>Support inbox</h3><span class="chip green chip-dot">3 agents online</span></div>
+              <div class="rows" style="margin-top: 6px">
+                <div class="row"><div class="avatar sm av-3">AL</div><div class="grow"><strong>Acme Logistics</strong><span class="sub">"Can we move the start date to the 12th?"</span></div><span class="chip blue">2m</span></div>
+                <div class="row"><div class="avatar sm av-1">EO</div><div class="grow"><strong>Emeka Okafor</strong><span class="sub">"My withdrawal is still pending…"</span></div><span class="chip blue">14m</span></div>
+                <div class="row"><div class="avatar sm av-4">RM</div><div class="grow"><strong>Rita Mba</strong><span class="sub">"How do I upload my guarantor form?"</span></div><span class="chip">1h</span></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-h" style="padding-bottom: 14px"><h3>Recent activity</h3></div>
+              <ul class="timeline">
+                <li><span class="pin green"></span><div><p><b>Femi</b> confirmed payment for HR-2031</p><span>12 min ago · 2 bookings created</span></div></li>
+                <li><span class="pin"></span><div><p><b>Aisha</b> approved driver Samuel Ade</p><span>40 min ago · all documents approved</span></div></li>
+                <li><span class="pin amber"></span><div><p>Greenfield Bank uploaded payment proof</p><span>1h ago · HR-2044</span></div></li>
+                <li><span class="pin gray"></span><div><p><b>You</b> rejected proof for HR-2019</p><span>3h ago · "Amount does not match invoice"</span></div></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="assets/haya.js"></script>
+  </body>
+</html>

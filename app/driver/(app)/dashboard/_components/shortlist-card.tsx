@@ -12,7 +12,16 @@ import {
   TRANSMISSION_OPTIONS,
   WORK_SCHEDULE_LABELS,
 } from "@/lib/utils";
-import { CalendarCheck, XCircle } from "lucide-react";
+import {
+  CalendarDays,
+  Car,
+  Clock,
+  House,
+  MapPin,
+  XCircle,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import { useState } from "react";
 import type { APIResponse } from "@/types/response";
 import type { DriverShortlist } from "@/types/hire";
@@ -41,52 +50,89 @@ export const ShortlistCard = function () {
   if (!shortlists.length) return null;
 
   return (
-    <div className="border-brand/30 bg-brand-soft/40 rounded-xl border p-4 md:p-5">
-      <span className="flex items-center gap-2">
-        <CalendarCheck className="text-brand h-5 w-5" />
-        <AppText type="h4" className="text-base font-semibold">
-          You've been shortlisted - confirm your availability
-        </AppText>
-      </span>
-      <AppText type="caption" className="text-muted-foreground mt-1 block">
-        A client is hiring and you're a candidate. Quick replies keep you at the
-        top of the list.
-      </AppText>
+    <div className="space-y-4 rounded-2xl border border-[#c9d8fd] bg-gradient-to-b from-[#f3f7ff] to-white p-4 md:p-5">
+      <div className="flex items-start gap-3">
+        <span className="bg-brand grid size-10 shrink-0 place-items-center rounded-xl text-white">
+          <Zap className="size-5" />
+        </span>
+        <div>
+          <AppText type="h4" className="text-[15px] font-semibold">
+            {shortlists.length > 1
+              ? `You've been shortlisted for ${shortlists.length} jobs`
+              : "You've been shortlisted for a job"}
+          </AppText>
+          <AppText type="caption" className="text-muted-foreground block">
+            A client is hiring and you're a candidate. Quick replies keep you at
+            the top of the list.
+          </AppText>
+        </div>
+      </div>
 
-      <div className="mt-4 space-y-3">
+      <div className="grid gap-3 md:grid-cols-2">
         {shortlists.map((entry) => {
           const request = entry.hire_request;
+          const area = [request.nearest_area, request.state]
+            .filter(Boolean)
+            .join(", ");
           const facts = [
-            driverTypeLabel(request.driver_type ?? undefined),
-            `Starts ${formatDate(request.starts_at)}`,
-            WORK_SCHEDULE_LABELS[request.schedule],
+            {
+              icon: CalendarDays,
+              label: WORK_SCHEDULE_LABELS[request.schedule],
+            },
             request.resumption_time && request.closing_time
-              ? `${request.resumption_time} - ${request.closing_time}`
+              ? {
+                  icon: Clock,
+                  label: `${request.resumption_time} - ${request.closing_time}`,
+                }
               : null,
             request.transmission
-              ? TRANSMISSION_OPTIONS.find(
-                  (option) => option.value === request.transmission,
-                )?.label
+              ? {
+                  icon: Car,
+                  label: TRANSMISSION_OPTIONS.find(
+                    (option) => option.value === request.transmission,
+                  )?.label,
+                }
               : null,
-            [request.nearest_area, request.state].filter(Boolean).join(", ") ||
-              null,
-            request.duration_months
-              ? `${request.duration_months} month${request.duration_months > 1 ? "s" : ""}`
+            area ? { icon: MapPin, label: area } : null,
+            request.provides_accommodation
+              ? { icon: House, label: "Accommodation provided" }
               : null,
-            request.provides_accommodation ? "Accommodation provided" : null,
-          ].filter(Boolean);
+          ].filter((fact): fact is { icon: LucideIcon; label: string } =>
+            Boolean(fact?.label),
+          );
 
           return (
             <div
               key={entry.id}
-              className="border-border rounded-lg border bg-white p-4"
+              className="border-border flex flex-col gap-3 rounded-xl border bg-white p-4"
             >
-              <AppText type="caption" className="text-muted-foreground block">
-                {facts.join(" · ")}
-              </AppText>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <AppText type="label" className="text-sm font-semibold">
+                  {driverTypeLabel(request.driver_type ?? undefined)}
+                  {request.duration_months
+                    ? ` · ${request.duration_months} month${request.duration_months > 1 ? "s" : ""}`
+                    : ""}
+                </AppText>
+                <span className="bg-brand-soft text-brand rounded-full px-2.5 py-0.5 text-[11.5px] font-semibold">
+                  Starts {formatDate(request.starts_at)}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5">
+                {facts.map(({ icon: Icon, label }) => (
+                  <span
+                    key={label}
+                    className="border-border text-foreground/80 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11.5px] font-medium"
+                  >
+                    <Icon className="size-3.5" />
+                    {label}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-auto flex gap-2">
                 <Button
-                  className="h-9 rounded-lg px-4 text-xs"
+                  className="h-9 flex-1 rounded-xl text-xs"
                   isLoading={isPending && decliningId === null}
                   onClick={() => respond({ id: entry.id, available: true })}
                 >
@@ -94,7 +140,7 @@ export const ShortlistCard = function () {
                 </Button>
                 <Button
                   variant="outline"
-                  className="text-destructive border-destructive/40 h-9 rounded-lg px-4 text-xs"
+                  className="text-destructive border-destructive/30 h-9 flex-1 rounded-xl text-xs"
                   onClick={() => setDecliningId(entry.id)}
                 >
                   Not available
