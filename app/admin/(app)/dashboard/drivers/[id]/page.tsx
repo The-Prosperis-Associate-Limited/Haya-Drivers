@@ -52,6 +52,7 @@ function DriverDetail() {
               "this driver"
             }
             backHref="/admin/dashboard/drivers"
+            anonymisedAt={user.anonymised_at}
           />
         )}
       </div>
