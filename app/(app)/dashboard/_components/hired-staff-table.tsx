@@ -1,5 +1,6 @@
 import { AppText } from "@/components/shared/app-text";
 import { TrustRing } from "@/components/drivers/trust-ring";
+import { TodayAttendanceBadge } from "@/components/attendance/today-attendance-badge";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,7 +43,7 @@ export const HiredStaffTable = function ({ hires }: Props) {
           <tr className="bg-slate-50 text-[11.5px] font-semibold tracking-wide text-slate-500 uppercase">
             <th className="px-5 py-2.5 font-semibold">Driver</th>
             <th className="px-3 py-2.5 font-semibold">Engagement</th>
-            <th className="px-3 py-2.5 font-semibold">Status</th>
+            <th className="px-3 py-2.5 font-semibold">Today</th>
             <th className="px-3 py-2.5 font-semibold">Salary</th>
             <th className="py-2.5 pr-5 pl-2" />
           </tr>
@@ -96,12 +97,16 @@ export const HiredStaffTable = function ({ hires }: Props) {
                 </td>
                 <td className="md:px-3 md:py-3">
                   <span className="text-muted-foreground mb-1 block text-[11px] md:hidden">
-                    Status
+                    Today
                   </span>
-                  <StatusBadge
-                    label={status.label}
-                    className={cn("whitespace-nowrap", status.tone)}
-                  />
+                  {hire.today_attendance ? (
+                    <TodayAttendanceBadge today={hire.today_attendance} />
+                  ) : (
+                    <StatusBadge
+                      label={status.label}
+                      className={cn("whitespace-nowrap", status.tone)}
+                    />
+                  )}
                 </td>
                 <td className="text-[13px] md:px-3 md:py-3 md:whitespace-nowrap">
                   <span className="text-muted-foreground block text-[11px] md:hidden">

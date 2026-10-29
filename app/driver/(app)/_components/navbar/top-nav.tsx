@@ -1,7 +1,7 @@
 "use client";
 
-import { AppInput } from "@/components/shared/app-input";
 import { NotificationsSheet } from "@/components/notifications/notifications-sheet";
+import { GlobalSearch } from "@/components/search/global-search";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useGetData } from "@/hooks/use-get-data";
@@ -23,6 +23,15 @@ interface Props {
     profile_pic: string | null;
   };
 }
+
+const SEARCH_PAGES = [
+  ...[...NAV_LINKS, ...FOOTER_LINKS].map(({ label, href }) => ({
+    label,
+    href,
+  })),
+  { label: "My public profile", href: "/driver/dashboard/profile-preview" },
+  { label: "Support", href: "/driver/dashboard/support" },
+];
 
 const titleFor = (pathname: string) => {
   if (pathname.startsWith("/driver/dashboard/support")) return "Support";
@@ -72,11 +81,12 @@ export const TopNav = function ({ mobileTrigger, user }: Props) {
           </p>
         </div>
 
-        <div className="max-w-md flex-1">
-          <AppInput
-            type="search"
-            placeholder="Search here...."
-            className="h-10 rounded-xl bg-slate-50"
+        <div className="max-w-md min-w-0 flex-1">
+          <GlobalSearch
+            placeholder="Search jobs, reviews…"
+            searchUrl={API_ENDPOINTS.search.driver}
+            hrefPrefix="/driver"
+            pages={SEARCH_PAGES}
           />
         </div>
 

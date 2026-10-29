@@ -4,6 +4,7 @@ import { clientNameOf, cn, formatDate } from "@/lib/utils";
 import { Clock, MapPin } from "lucide-react";
 import Link from "next/link";
 import type { Booking } from "@/types/booking";
+import { ShiftControl } from "../job-request/_components/shift-control";
 
 interface Props {
   job?: Booking;
@@ -114,11 +115,23 @@ export const WeekCard = function ({ job }: Props) {
                 <span className="truncate">{job.pickup_address}</span>
               </span>
             </div>
-            <Button asChild className="h-9 w-full rounded-xl text-xs">
-              <Link href={`/driver/dashboard/job-request/${job.reference}`}>
-                Open job
-              </Link>
-            </Button>
+            {job.status === "IN_PROGRESS" && job.today_attendance ? (
+              <>
+                <ShiftControl booking={job} className="pt-1" />
+                <Link
+                  href={`/driver/dashboard/job-request/${job.reference}`}
+                  className="text-brand block text-center text-xs font-semibold"
+                >
+                  Open job & attendance
+                </Link>
+              </>
+            ) : (
+              <Button asChild className="h-9 w-full rounded-xl text-xs">
+                <Link href={`/driver/dashboard/job-request/${job.reference}`}>
+                  Open job
+                </Link>
+              </Button>
+            )}
           </>
         ) : (
           <AppText type="caption" className="text-muted-foreground block">

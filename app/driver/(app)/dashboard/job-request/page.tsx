@@ -80,7 +80,7 @@ export default function JobRequests() {
     <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <PageHeader
         title="My jobs"
-        subtitle="Engagements clients have hired you for. Start each job on day one and mark it complete when it ends."
+        subtitle="Engagements clients have hired you for. Start each job on day one, check in and out every working day, and mark it complete when it ends."
       />
 
       {profile && !isVerified ? (
@@ -110,7 +110,7 @@ export default function JobRequests() {
               value={onTime === null ? "-" : `${onTime}%`}
               caption={
                 onTime === null
-                  ? "Measured once you start a job"
+                  ? "Measured from your daily check-ins"
                   : "Start stamps against the scheduled time"
               }
               captionTone="muted"

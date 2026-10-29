@@ -41,6 +41,8 @@ import {
   useStartJob,
 } from "../_hooks/use-job-requests";
 import { UnverifiedNotice } from "../_components/unverified-notice";
+import { JobAttendance } from "../_components/job-attendance";
+import { ShiftControl } from "../_components/shift-control";
 
 interface FactProps {
   icon: typeof MapPin;
@@ -283,9 +285,22 @@ export default function JobRequestDetail() {
               )}
             </div>
           )}
+
+          {["IN_PROGRESS", "COMPLETED"].includes(booking.status) && (
+            <JobAttendance reference={booking.reference} />
+          )}
         </div>
 
         <div className="min-w-0 space-y-5 xl:space-y-6">
+          {booking.status === "IN_PROGRESS" && booking.today_attendance && (
+            <div className={cn(CARD, "p-4 md:p-5")}>
+              <AppText type="h4" className="mb-3 text-[15px] font-semibold">
+                Today
+              </AppText>
+              <ShiftControl booking={booking} />
+            </div>
+          )}
+
           <div className={cn(CARD, "p-4 md:p-5")}>
             <AppText type="h4" className="text-[15px] font-semibold">
               Client contact
@@ -358,8 +373,8 @@ export default function JobRequestDetail() {
         }
         description={
           confirming === "complete"
-            ? `This ends your engagement with ${clientName}. It moves to Completed and can't be reopened.`
-            : "Your start time is recorded against the scheduled start - it counts towards your on-time rate."
+            ? `This ends your engagement with ${clientName} and checks you out if you're on duty. It moves to Completed and can't be reopened.`
+            : "Starting also checks you in for today. Your start time is recorded against the scheduled start and counts towards your on-time rate."
         }
         confirmLabel={confirming === "complete" ? "Mark complete" : "Start job"}
         isLoading={isStarting || isCompleting}

@@ -8,12 +8,14 @@ interface Props {
   greeting: string;
   headline: string;
   activeDrivers?: number;
+  onDuty?: number;
 }
 
 export const ClientHero = function ({
   greeting,
   headline,
   activeDrivers,
+  onDuty,
 }: Props) {
   return (
     <div className="relative isolate flex items-center gap-6 overflow-hidden rounded-[20px] bg-[radial-gradient(120%_140%_at_100%_0%,#5b8cff_0%,transparent_55%),linear-gradient(135deg,#2f6bf6_0%,#1f56d9_60%,#1a46b3_100%)] p-5 text-white sm:p-7 xl:p-8">
@@ -36,7 +38,9 @@ export const ClientHero = function ({
         {!!activeDrivers && (
           <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium">
             <span className="size-2 rounded-full bg-emerald-400 shadow-[0_0_0_3px_rgba(52,211,153,0.25)]" />
-            {activeDrivers} driver{activeDrivers > 1 ? "s" : ""} on your team
+            {onDuty
+              ? `${onDuty} driver${onDuty > 1 ? "s" : ""} on duty right now`
+              : `${activeDrivers} driver${activeDrivers > 1 ? "s" : ""} on your team`}
           </span>
         )}
 

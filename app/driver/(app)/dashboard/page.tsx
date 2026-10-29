@@ -145,8 +145,8 @@ export default function Overview() {
               value={onTime === null ? "-" : `${onTime}%`}
               caption={
                 onTime === null
-                  ? "Measured once you start a job"
-                  : "Across your recent started jobs"
+                  ? "Measured from your daily check-ins"
+                  : "Your last 50 check-ins"
               }
               captionTone="muted"
             />

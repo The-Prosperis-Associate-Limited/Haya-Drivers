@@ -1,6 +1,6 @@
 "use client";
 
-import { AppInput } from "@/components/shared/app-input";
+import { GlobalSearch } from "@/components/search/global-search";
 import { Button } from "@/components/ui/button";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -8,6 +8,11 @@ import { Bell } from "lucide-react";
 import { useState } from "react";
 import type { APIResponse } from "@/types/response";
 import { NotificationsSheet } from "@/components/notifications/notifications-sheet";
+import { ADMIN_FOOTER_LINKS, ADMIN_NAV_LINKS } from "./nav-links";
+
+const SEARCH_PAGES = [...ADMIN_NAV_LINKS, ...ADMIN_FOOTER_LINKS].map(
+  ({ label, href }) => ({ label, href }),
+);
 
 interface Props {
   mobileTrigger?: React.ReactNode;
@@ -27,11 +32,12 @@ export const AdminTopNav = function ({ mobileTrigger }: Props) {
       <header className="border-border flex h-16 shrink-0 items-center gap-3 border-b bg-white px-4 md:px-6">
         {mobileTrigger}
 
-        <div className="max-w-md flex-1">
-          <AppInput
-            type="search"
-            placeholder="Search here...."
-            className="h-10"
+        <div className="max-w-md min-w-0 flex-1">
+          <GlobalSearch
+            placeholder="Search drivers, clients, references…"
+            searchUrl={API_ENDPOINTS.search.admin}
+            hrefPrefix="/admin"
+            pages={SEARCH_PAGES}
           />
         </div>
 

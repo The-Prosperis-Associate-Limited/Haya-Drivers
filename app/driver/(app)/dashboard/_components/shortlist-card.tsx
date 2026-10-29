@@ -7,8 +7,10 @@ import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import {
+  cn,
   driverTypeLabel,
   formatDate,
+  formatTimeLeft,
   TRANSMISSION_OPTIONS,
   WORK_SCHEDULE_LABELS,
 } from "@/lib/utils";
@@ -18,11 +20,12 @@ import {
   Clock,
   House,
   MapPin,
+  Timer,
   XCircle,
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { APIResponse } from "@/types/response";
 import type { DriverShortlist } from "@/types/hire";
 
@@ -30,12 +33,20 @@ import type { DriverShortlist } from "@/types/hire";
 // this card is where the driver answers. No client identity before payment.
 export const ShortlistCard = function () {
   const [decliningId, setDecliningId] = useState<string | null>(null);
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(timer);
+  }, []);
 
   const { data } = useGetData<APIResponse<DriverShortlist[]>>({
     url: API_ENDPOINTS.shortlists.list,
   });
 
-  const shortlists = data?.data ?? [];
+  const shortlists = (data?.data ?? []).filter(
+    (entry) => !entry.respond_by || new Date(entry.respond_by).getTime() > now,
+  );
 
   const { mutate: respond, isPending } = useSubmitData<{
     available: boolean;
@@ -129,6 +140,20 @@ export const ShortlistCard = function () {
                   </span>
                 ))}
               </div>
+
+              {entry.respond_by && (
+                <span
+                  className={cn(
+                    "inline-flex items-center gap-1.5 text-[11.5px] font-semibold",
+                    new Date(entry.respond_by).getTime() - now < 2 * 3_600_000
+                      ? "text-red-500"
+                      : "text-amber-600",
+                  )}
+                >
+                  <Timer className="size-3.5" />
+                  Reply within {formatTimeLeft(entry.respond_by, now)}
+                </span>
+              )}
 
               <div className="mt-auto flex gap-2">
                 <Button

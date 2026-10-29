@@ -21,6 +21,7 @@ import {
   cn,
   driverTypeLabel,
   formatDate,
+  formatDateTime,
   formatMoney,
   getInitials,
   HIRE_ENGAGEMENT_LABELS,
@@ -67,6 +68,8 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
             driverId: request.driver.id,
             status: "PENDING" as const,
             responded_at: null,
+            respond_by: null,
+            expired_at: null,
             driver: request.driver,
           },
         ]
@@ -331,6 +334,13 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
                 <span title="Confirmed available">
                   <BadgeCheck className="h-3.5 w-3.5 text-emerald-600" />
                 </span>
+              ) : entry.expired_at ? (
+                <span
+                  className="text-muted-foreground text-[10px] font-semibold"
+                  title={`Didn't reply by ${formatDateTime(entry.respond_by ?? entry.expired_at)}`}
+                >
+                  No reply
+                </span>
               ) : entry.status === "DECLINED" ? (
                 <span
                   className="text-[10px] font-semibold text-red-500"
@@ -339,7 +349,13 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
                   Declined
                 </span>
               ) : (
-                <span title="Awaiting availability">
+                <span
+                  title={
+                    entry.respond_by
+                      ? `Awaiting availability - reply due ${formatDateTime(entry.respond_by)}`
+                      : "Awaiting availability"
+                  }
+                >
                   <Clock3 className="h-3.5 w-3.5 text-amber-500" />
                 </span>
               )}

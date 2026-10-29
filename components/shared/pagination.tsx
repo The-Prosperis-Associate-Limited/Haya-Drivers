@@ -26,6 +26,7 @@ interface PaginationProps {
   onSearchChange?: (search: string) => void;
   searchPlaceholder?: string;
   className?: string;
+  controlsClassName?: string;
 }
 
 type PageItem = number | "ellipsis-start" | "ellipsis-end";
@@ -91,6 +92,7 @@ export function Pagination({
   onSearchChange,
   searchPlaceholder = "Search...",
   className,
+  controlsClassName,
 }: PaginationProps) {
   const showSearch = onSearchChange !== undefined;
   const canGoPrevious = page > 1 && !isLoading;
@@ -124,7 +126,10 @@ export function Pagination({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.15 }}
-        className="flex flex-wrap items-center justify-between gap-4 py-4"
+        className={cn(
+          "flex flex-wrap items-center justify-between gap-4 py-4",
+          controlsClassName,
+        )}
       >
         <div className="flex items-center gap-2">
           {onLimitChange ? (

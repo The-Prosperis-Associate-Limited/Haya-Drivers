@@ -129,12 +129,15 @@ export interface HireAssignment {
   driverId: string;
   status: AvailabilityStatus;
   responded_at: string | null;
+  respond_by: string | null;
+  expired_at: string | null;
   driver: HireRequestDriver;
 }
 
 export interface DriverShortlist {
   id: string;
   status: AvailabilityStatus;
+  respond_by: string | null;
   createdAt: string;
   hire_request: {
     reference: string;

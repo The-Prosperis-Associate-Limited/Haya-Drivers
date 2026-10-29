@@ -1,3 +1,4 @@
+import type { TodayAttendance } from "./attendance";
 import type { DriverType } from "./driver";
 import type { HireInvoice, HireRequest, HireRequestStatus } from "./hire";
 
@@ -59,6 +60,7 @@ export interface Booking {
   client: BookingParty;
   driver: BookingParty | null;
   status_events?: BookingStatusEvent[];
+  today_attendance?: TodayAttendance | null;
 }
 
 // The server owns which statuses each bucket covers. Jobs arrive already
@@ -125,7 +127,11 @@ export interface Hire {
   currency: string;
   status: BookingStatus;
   accepted_at: string | null;
+  schedule: string | null;
+  resumption_time: string | null;
+  closing_time: string | null;
   driver: HireDriver | null;
+  today_attendance?: TodayAttendance | null;
 }
 
 export interface HireReview {
@@ -190,6 +196,7 @@ export interface OverviewHireRequest extends Omit<
 export interface OverviewData {
   stats: {
     active_drivers: number;
+    on_duty: number;
     open_requests: number;
     monthly_spend_minor: number;
     spend_last_month_minor: number;

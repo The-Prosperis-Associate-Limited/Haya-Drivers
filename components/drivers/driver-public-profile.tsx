@@ -85,8 +85,8 @@ export const DriverPublicProfile = function ({
       value: profile.on_time_rate === null ? "-" : `${profile.on_time_rate}%`,
       hint:
         profile.on_time_rate === null
-          ? "No started jobs yet"
-          : "Start time vs schedule",
+          ? "No check-ins yet"
+          : "Daily check-ins vs schedule",
     },
     {
       label: "Experience",

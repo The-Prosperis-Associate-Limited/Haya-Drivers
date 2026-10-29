@@ -6,7 +6,6 @@ import {
 } from "@/components/drivers/search-panel";
 import { TalentCard } from "@/components/drivers/talent-card";
 import { AppText } from "@/components/shared/app-text";
-import { BackLink } from "@/components/shared/back-link";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Pagination } from "@/components/shared/pagination";
 import { Button } from "@/components/ui/button";
@@ -37,8 +36,6 @@ export default function FindTalent() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <BackLink href="/dashboard" label="Take a step back" />
-
       <AppText type="h2" className="mt-3 text-xl font-bold md:text-2xl">
         Find verified talent
       </AppText>

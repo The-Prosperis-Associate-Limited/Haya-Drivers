@@ -2,6 +2,7 @@ import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { Hire, HireDetail } from "@/types/booking";
+import type { AttendanceLog } from "@/types/attendance";
 
 export const useHires = function ({
   page = 1,
@@ -25,4 +26,12 @@ export const useHire = function (reference: string) {
   });
 
   return { hire: data?.data, isFetching };
+};
+
+export const useHireAttendance = function (reference: string, month: string) {
+  const { data, isFetching } = useGetData<APIResponse<AttendanceLog>>({
+    url: API_ENDPOINTS.hires.attendance(reference, month),
+  });
+
+  return { log: data?.data, isFetching };
 };

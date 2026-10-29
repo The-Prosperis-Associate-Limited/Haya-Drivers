@@ -402,11 +402,46 @@ export function formatRelativeTime(date: string | Date) {
   const diffDays = Math.floor(diffHours / 24);
 
   if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins} minutes ago`;
-  if (diffHours < 24) return `${diffHours} hours ago`;
+  if (diffMins < 60)
+    return `${diffMins} minute${diffMins === 1 ? "" : "s"} ago`;
+  if (diffHours < 24)
+    return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
   return then.toLocaleDateString();
 }
+
+export function formatTimeLeft(until: string | Date, now: number) {
+  const mins = Math.max(
+    0,
+    Math.floor((new Date(until).getTime() - now) / 60000),
+  );
+
+  if (mins < 60) return `${mins}m`;
+  if (mins < 48 * 60) return `${Math.floor(mins / 60)}h`;
+  return `${Math.floor(mins / 1440)}d`;
+}
+
+export function formatMinutes(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+
+  if (!hours) return `${rest}m`;
+  return rest ? `${hours}h ${rest}m` : `${hours}h`;
+}
+
+// Attendance months are YYYY-MM on the Lagos calendar, which is the viewer's for every real user.
+export const monthKeyOf = (date: Date) => format(date, "yyyy-MM");
+
+export const shiftMonth = (month: string, delta: number) => {
+  const [year, index] = month.split("-").map(Number);
+  return monthKeyOf(new Date(year, index - 1 + delta, 1));
+};
+
+export const formatMonth = (month: string) =>
+  format(new Date(`${month}-01T00:00:00`), "MMMM yyyy");
+
+export const formatWorkDate = (workDate: string) =>
+  format(new Date(`${workDate}T00:00:00`), "EEE d MMM");
 
 // Notifications group under Today / Yesterday / This week / Earlier
 export function groupByRecency(date: string | Date) {

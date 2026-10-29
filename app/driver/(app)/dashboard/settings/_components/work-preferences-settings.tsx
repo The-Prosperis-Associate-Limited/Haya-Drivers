@@ -20,7 +20,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 export const WorkPreferencesSettings = function () {
   const { profile } = useGetProfile();
   const [rowToRemove, setRowToRemove] = useState<number | null>(null);
-  const [savedCount, setSavedCount] = useState(0);
+  const savedCount = profile?.driver_profile?.availability?.length ?? 0;
 
   const {
     control,
@@ -49,7 +49,6 @@ export const WorkPreferencesSettings = function () {
         : "",
       availability,
     });
-    setSavedCount(availability.length);
   }, [profile, reset]);
 
   const { mutate: savePreferences, isPending } = useSubmitData({

@@ -7,8 +7,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn } from "@/lib/utils";
-import { ReceiptText } from "lucide-react";
-import { useState } from "react";
+import { ReceiptText, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import type { HireRequest, HireRequestStatus } from "@/types/hire";
 import { HireRequestCard } from "./_components/hire-request-card";
 import { PricingGuideDialog } from "./_components/pricing-guide-dialog";
@@ -34,7 +35,9 @@ const FILTERS: { value: Filter; label: string }[] = [
   { value: "CANCELLED", label: "Cancelled" },
 ];
 
-export default function AdminHires() {
+const AdminHiresContent = function () {
+  const router = useRouter();
+  const q = useSearchParams().get("q") ?? undefined;
   const [filter, setFilter] = useState<Filter>("ALL");
   const [page, setPage] = useState(1);
 
@@ -42,6 +45,7 @@ export default function AdminHires() {
     page,
     limit: 10,
     ...(filter !== "ALL" && { status: filter }),
+    q,
   });
 
   const { data, isFetching } = useGetData<InboxPayload>({
@@ -91,6 +95,25 @@ export default function AdminHires() {
         ))}
       </div>
 
+      {q && (
+        <div className="bg-brand-soft text-brand flex items-center justify-between gap-3 rounded-xl px-4 py-2.5 text-sm">
+          <span className="min-w-0 truncate">
+            Showing matches for <strong>{q}</strong>
+          </span>
+          <button
+            type="button"
+            className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold"
+            onClick={() => {
+              setPage(1);
+              router.replace("/admin/dashboard/hires");
+            }}
+          >
+            <X className="size-3.5" />
+            Clear
+          </button>
+        </div>
+      )}
+
       {isFetching && !requests.length ? (
         <div className="space-y-3">
           {Array.from({ length: 4 }).map((_, index) => (
@@ -123,5 +146,13 @@ export default function AdminHires() {
         </Pagination>
       )}
     </div>
+  );
+};
+
+export default function AdminHires() {
+  return (
+    <Suspense fallback={null}>
+      <AdminHiresContent />
+    </Suspense>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { AppInput } from "@/components/shared/app-input";
 import { NotificationsSheet } from "@/components/notifications/notifications-sheet";
+import { GlobalSearch } from "@/components/search/global-search";
 import { SupportSheet } from "@/components/support/support-sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Bell, Headset } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useSupportSheet } from "@/store/use-support-sheet";
 import type { APIResponse } from "@/types/response";
 import { activeNavHref } from "./nav-content";
 import { FOOTER_LINKS, NAV_LINKS } from "./nav-links";
@@ -24,6 +25,14 @@ interface Props {
 const EXTRA_TITLES: [string, string][] = [
   ["/dashboard/my-hire/request", "Request a driver"],
   ["/dashboard/drivers", "Driver profile"],
+];
+
+const SEARCH_PAGES = [
+  ...[...NAV_LINKS, ...FOOTER_LINKS].map(({ label, href }) => ({
+    label,
+    href,
+  })),
+  { label: "Request a driver", href: "/dashboard/my-hire/request" },
 ];
 
 const titleFor = (pathname: string) => {
@@ -42,7 +51,8 @@ const titleFor = (pathname: string) => {
 export const TopNav = function ({ mobileTrigger, user }: Props) {
   const pathname = usePathname();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [supportOpen, setSupportOpen] = useState(false);
+  const supportOpen = useSupportSheet((state) => state.open);
+  const setSupportOpen = useSupportSheet((state) => state.setOpen);
 
   const { data } = useGetData<APIResponse<{ count: number }>>({
     url: API_ENDPOINTS.notifications.unreadCount,
@@ -71,11 +81,11 @@ export const TopNav = function ({ mobileTrigger, user }: Props) {
           </p>
         </div>
 
-        <div className="max-w-md flex-1">
-          <AppInput
-            type="search"
-            placeholder="Search here...."
-            className="h-10 rounded-xl bg-slate-50"
+        <div className="max-w-md min-w-0 flex-1">
+          <GlobalSearch
+            placeholder="Search drivers, invoices…"
+            searchUrl={API_ENDPOINTS.search.client}
+            pages={SEARCH_PAGES}
           />
         </div>
 

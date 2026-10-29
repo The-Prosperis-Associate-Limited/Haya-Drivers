@@ -14,7 +14,9 @@ import {
   getInitials,
   prettifyEnum,
 } from "@/lib/utils";
-import { use } from "react";
+import { use, useState } from "react";
+import { TodayAttendanceBadge } from "@/components/attendance/today-attendance-badge";
+import { HireAttendance } from "../_components/hire-attendance";
 import { ReviewCard } from "../_components/review-card";
 import { useHire } from "../_hooks/use-hires";
 import Link from "next/link";
@@ -27,6 +29,7 @@ export default function HireDetail({
   params: Promise<{ reference: string }>;
 }) {
   const { reference } = use(params);
+  const [now] = useState(() => Date.now());
 
   const { hire, isFetching } = useHire(reference);
 
@@ -51,13 +54,13 @@ export default function HireDetail({
   const profile = hire.driver_details?.driver_profile;
 
   const daysServed = Math.max(
-    Math.floor((Date.now() - new Date(hire.starts_at).getTime()) / DAY_MS),
+    Math.floor((now - new Date(hire.starts_at).getTime()) / DAY_MS),
     0,
   );
   const weeksActive = Math.floor(daysServed / 7);
   const monthsActive = Math.floor(daysServed / 30);
 
-  const started = new Date(hire.starts_at).getTime() <= Date.now();
+  const started = new Date(hire.starts_at).getTime() <= now;
 
   // No stored Haya Drivers ID exists - this is a stable display form of the driver's
   // record id, not a second identifier.
@@ -110,9 +113,14 @@ export default function HireDetail({
             </AvatarFallback>
           </Avatar>
           <div>
-            <AppText type="h2" className="text-lg font-bold">
-              {name}
-            </AppText>
+            <span className="flex flex-wrap items-center gap-2">
+              <AppText type="h2" className="text-lg font-bold">
+                {name}
+              </AppText>
+              {hire.today_attendance && (
+                <TodayAttendanceBadge today={hire.today_attendance} />
+              )}
+            </span>
             <AppText type="caption" className="text-muted-foreground block">
               {driverTypeLabel(hire.driver_type)} · {hire.title}
             </AppText>
@@ -198,6 +206,10 @@ export default function HireDetail({
                 : "no end date"}
             </AppText>
           </div>
+
+          {hire.status === "IN_PROGRESS" && (
+            <HireAttendance reference={hire.reference} driverName={name} />
+          )}
 
           <ReviewCard hire={hire} />
         </div>

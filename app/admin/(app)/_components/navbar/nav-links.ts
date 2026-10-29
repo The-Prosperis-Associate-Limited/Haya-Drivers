@@ -1,5 +1,6 @@
 import {
   ArrowLeftRight,
+  CalendarCheck,
   LayoutGrid,
   MessagesSquare,
   ReceiptText,
@@ -28,6 +29,11 @@ export const ADMIN_NAV_LINKS: AdminNavLink[] = [
     href: "/admin/dashboard/hires",
     label: "Hires",
     icon: ReceiptText,
+  },
+  {
+    href: "/admin/dashboard/attendance",
+    label: "Attendance",
+    icon: CalendarCheck,
   },
   {
     href: "/admin/dashboard/support",

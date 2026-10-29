@@ -6,6 +6,7 @@ import { AppText } from "@/components/shared/app-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useGetProfile } from "@/hooks/use-get-profile";
+import { useIsClient } from "@/hooks/use-is-client";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
@@ -33,6 +34,8 @@ export const ProfileSettings = function () {
   const [preview, setPreview] = useState<string | null>(null);
 
   const status = profile?.driver_profile?.verification_status;
+  // Settings hydrates inside a Suspense boundary after the layout has already cached the profile.
+  const isClient = useIsClient();
 
   const {
     control,
@@ -119,7 +122,7 @@ export const ProfileSettings = function () {
               </AvatarFallback>
             </Avatar>
 
-            {status === "APPROVED" && (
+            {isClient && status === "APPROVED" && (
               <BadgeCheck className="fill-brand absolute right-2 bottom-2 h-8 w-8 text-white" />
             )}
           </div>

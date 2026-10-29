@@ -23,6 +23,7 @@ import { InvoiceDueCard } from "./_components/invoice-due-card";
 import { OnboardingPromptCard } from "./_components/onboarding-prompt-card";
 import { RecentPaymentsCard } from "./_components/recent-payments-card";
 import { RequestTracker } from "./_components/request-tracker";
+import { SupportCard } from "./_components/support-card";
 import { TopDriversCard } from "./_components/top-drivers-card";
 
 const CARD =
@@ -67,6 +68,7 @@ export default function DashboardOverview() {
           greeting={`${greetingForNow()}${displayName ? `, ${displayName}` : ""}`}
           headline={headlineFor(overview)}
           activeDrivers={stats?.active_drivers}
+          onDuty={stats?.on_duty}
         />
         {overview ? (
           <InvoiceDueCard due={overview.invoice_due} />
@@ -146,8 +148,8 @@ export default function DashboardOverview() {
               }
               caption={
                 stats.on_time_rate === null
-                  ? "Measured once a job starts"
-                  : "Start times across your team"
+                  ? "Measured from daily check-ins"
+                  : "Check-ins across your team"
               }
               captionTone="muted"
             />
@@ -173,7 +175,7 @@ export default function DashboardOverview() {
                   Hired staff
                 </AppText>
                 <AppText type="caption" className="text-muted-foreground block">
-                  Drivers working for you, with their trust scores
+                  Your drivers and today&apos;s check-ins
                 </AppText>
               </div>
               <Link
@@ -212,6 +214,7 @@ export default function DashboardOverview() {
             <Skeleton className="h-56 rounded-2xl" />
           )}
           <TopDriversCard state={profile?.state_of_residence} />
+          <SupportCard />
         </div>
       </section>
     </div>

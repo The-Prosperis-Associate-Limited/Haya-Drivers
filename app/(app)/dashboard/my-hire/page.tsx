@@ -3,8 +3,8 @@
 import { AppTabs } from "@/components/shared/app-tabs";
 import { AppText } from "@/components/shared/app-text";
 import { EmptyState } from "@/components/shared/empty-state";
-import { HireRow } from "@/components/hires/hire-row";
 import { HireRequestRow } from "@/components/hires/hire-request-row";
+import { PageHeader } from "@/components/shared/page-header";
 import { Pagination } from "@/components/shared/pagination";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { PaginatedResponse } from "@/types/response";
 import type { HireRequest } from "@/types/hire";
+import { HiredStaffTable } from "../_components/hired-staff-table";
 import { useHires } from "./_hooks/use-hires";
 
 type Tab = "hires" | "requests";
@@ -41,45 +42,40 @@ export default function MyHire() {
   const requests = requestsData?.data ?? [];
 
   return (
-    <div className="mx-auto max-w-5xl">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <AppText type="h2" className="text-xl font-bold md:text-2xl">
-            My Hire
-          </AppText>
-          <AppText
-            type="subtitle"
-            className="text-muted-foreground mt-1 text-sm"
-          >
-            Keep track of the drivers and staff you've brought on board.
-          </AppText>
-        </div>
-        <Button asChild className="h-10 rounded-lg px-4 text-sm">
-          <Link href="/dashboard/my-hire/request">
-            <Plus className="h-4 w-4" />
-            Request a driver
-          </Link>
-        </Button>
-      </div>
-
-      <div className="border-border mt-5 border-t" />
+    <div className="mx-auto max-w-[1360px] space-y-5">
+      <PageHeader
+        title="My hire"
+        subtitle="Keep track of the drivers and staff you've brought on board."
+        action={
+          <Button asChild className="h-10 rounded-xl px-4 text-sm">
+            <Link href="/dashboard/my-hire/request">
+              <Plus className="h-4 w-4" />
+              Request a driver
+            </Link>
+          </Button>
+        }
+      />
 
       <AppTabs
         variant="pill"
         tabs={TABS}
         value={tab}
         onValueChange={(value) => setTab(value as Tab)}
-        className="mt-6"
       />
 
       {tab === "hires" ? (
-        <div className="border-border mt-4 rounded-2xl border bg-white p-5 md:p-6">
-          <AppText type="h3" className="text-base font-semibold">
-            Your hired staff
-          </AppText>
+        <div className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="px-4 pt-4 pb-3 md:px-5 md:pt-5">
+            <AppText type="h3" className="text-[15px] font-semibold">
+              Your hired staff
+            </AppText>
+            <AppText type="caption" className="text-muted-foreground block">
+              Every driver working for you, with their trust score
+            </AppText>
+          </div>
 
           {isFetching && !hires.length ? (
-            <div className="mt-4 space-y-3">
+            <div className="space-y-3 p-4 md:p-5">
               {Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton key={index} className="h-16 rounded-xl" />
               ))}
@@ -88,8 +84,7 @@ export default function MyHire() {
             <EmptyState
               icon={BriefcaseBusiness}
               title="No active hires yet"
-              description="Drivers you hire on a monthly engagement will appear here."
-              className="mt-4"
+              description="Drivers appear here once the invoice for their hire request is paid."
             />
           ) : (
             <Pagination
@@ -98,18 +93,15 @@ export default function MyHire() {
               total={total}
               onPageChange={setPage}
               isLoading={isFetching}
+              controlsClassName="px-4 md:px-5"
             >
-              <div className="divide-y">
-                {hires.map((hire) => (
-                  <HireRow key={hire.id} hire={hire} />
-                ))}
-              </div>
+              <HiredStaffTable hires={hires} />
             </Pagination>
           )}
         </div>
       ) : (
-        <div className="border-border mt-4 rounded-2xl border bg-white p-5 md:p-6">
-          <AppText type="h3" className="text-base font-semibold">
+        <div className="border-border rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6">
+          <AppText type="h3" className="text-[15px] font-semibold">
             Your hire requests
           </AppText>
           <AppText

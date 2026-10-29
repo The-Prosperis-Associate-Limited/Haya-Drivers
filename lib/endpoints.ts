@@ -82,6 +82,12 @@ export const API_ENDPOINTS = {
       `/driver/job-requests?page=${page}&limit=${limit}${bucket ? `&bucket=${bucket}` : ""}`,
     summary: "/driver/job-requests/summary",
     get: (reference: string) => `/driver/job-requests/${reference}`,
+    attendance: (reference: string, month: string) =>
+      `/driver/job-requests/${reference}/attendance?month=${month}`,
+    checkIn: (reference: string) =>
+      `/driver/job-requests/${reference}/check-in`,
+    checkOut: (reference: string) =>
+      `/driver/job-requests/${reference}/check-out`,
     start: (reference: string) => `/driver/job-requests/${reference}/start`,
     complete: (reference: string) =>
       `/driver/job-requests/${reference}/complete`,
@@ -130,6 +136,10 @@ export const API_ENDPOINTS = {
     list: ({ page, limit }: { page: number; limit: number }) =>
       `/client/hires?page=${page}&limit=${limit}`,
     detail: (reference: string) => `/client/hires/${reference}`,
+    attendance: (reference: string, month: string) =>
+      `/client/hires/${reference}/attendance?month=${month}`,
+    flagDay: (reference: string, id: string) =>
+      `/client/hires/${reference}/attendance/${id}/flag`,
   },
 
   requests: {
@@ -318,12 +328,14 @@ export const API_ENDPOINTS = {
       page,
       limit,
       status,
+      q,
     }: {
       page: number;
       limit: number;
       status?: string;
+      q?: string;
     }) =>
-      `/admin/hires?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
+      `/admin/hires?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}`,
     detail: (reference: string) => `/admin/hires/${reference}`,
     assign: (reference: string) => `/admin/hires/${reference}/assign`,
     unassign: (reference: string) => `/admin/hires/${reference}/unassign`,
@@ -336,6 +348,28 @@ export const API_ENDPOINTS = {
     rejectProof: (reference: string) =>
       `/admin/hires/${reference}/reject-proof`,
     decline: (reference: string) => `/admin/hires/${reference}/decline`,
+  },
+
+  search: {
+    client: (q: string) => `/client/search?q=${encodeURIComponent(q)}`,
+    driver: (q: string) => `/driver/search?q=${encodeURIComponent(q)}`,
+    admin: (q: string) => `/admin/search?q=${encodeURIComponent(q)}`,
+  },
+
+  adminAttendance: {
+    flags: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status: "open" | "resolved";
+    }) =>
+      `/admin/attendance/flags?status=${status}&page=${page}&limit=${limit}`,
+    resolve: (id: string) => `/admin/attendance/flags/${id}/resolve`,
+    booking: (reference: string, month: string) =>
+      `/admin/attendance/bookings/${reference}?month=${month}`,
   },
 
   adminChat: {
