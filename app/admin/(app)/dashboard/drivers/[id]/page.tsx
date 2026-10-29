@@ -31,15 +31,21 @@ function DriverDetail() {
   const user = data?.data;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-[1360px] space-y-6">
       <BackLink href="/admin/dashboard/drivers" label="Back to drivers" />
 
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <AppText type="h2" className="text-xl font-bold md:text-2xl">
+          <AppText
+            type="h2"
+            className="text-[22px] font-semibold tracking-tight"
+          >
             Know your Driver.
           </AppText>
-          <AppText type="subtitle" className="text-muted-foreground text-sm">
+          <AppText
+            type="subtitle"
+            className="text-muted-foreground text-[13px]"
+          >
             Review the driver's profile, documents and wallet before making a
             decision.
           </AppText>
@@ -62,7 +68,7 @@ function DriverDetail() {
         onValueChange={(value) =>
           router.replace(`/admin/dashboard/drivers/${params.id}?tab=${value}`)
         }
-        variant="chip"
+        variant="outline"
         tabs={[
           { value: "overview", label: "Overview" },
           { value: "documents", label: "KYC Documents" },

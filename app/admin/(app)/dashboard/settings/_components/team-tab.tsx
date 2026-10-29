@@ -86,7 +86,7 @@ export const TeamTab = function () {
   };
 
   return (
-    <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
+    <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <AppText
@@ -118,9 +118,9 @@ export const TeamTab = function () {
         ) : (
           <>
             <div className="mt-4 hidden overflow-x-auto md:block">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm [&_td:first-child]:pl-3 [&_th]:py-2.5 [&_th:first-child]:pl-3">
                 <thead>
-                  <tr className="text-muted-foreground border-border border-b text-left text-xs tracking-wide uppercase">
+                  <tr className="bg-slate-50 text-left text-[11.5px] font-semibold tracking-wide text-slate-500 uppercase">
                     <th className="py-3 pr-4 font-medium">Admin</th>
                     <th className="py-3 pr-4 font-medium">Role</th>
                     <th className="py-3 pr-4 font-medium">Status</th>

@@ -41,12 +41,12 @@ export default function AdminSupportInbox() {
     null;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
+    <div className="mx-auto max-w-[1360px] space-y-6">
       <div>
-        <AppText type="h2" className="text-xl font-bold md:text-2xl">
+        <AppText type="h2" className="text-[22px] font-semibold tracking-tight">
           Support inbox
         </AppText>
-        <AppText type="subtitle" className="text-muted-foreground text-sm">
+        <AppText type="subtitle" className="text-muted-foreground text-[13px]">
           Live conversations from drivers and clients. Join a chat to reply.
         </AppText>
       </div>

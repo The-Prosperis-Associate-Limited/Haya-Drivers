@@ -182,6 +182,9 @@ export const API_ENDPOINTS = {
   // The admin surface - /api/admin/*, documented in ../tegat-server/docs/admin-api.md.
   adminDashboard: {
     stats: "/admin/dashboard/stats",
+    nav: "/admin/dashboard/nav",
+    overview: (period: "7d" | "30d" | "90d") =>
+      `/admin/dashboard/overview?period=${period}`,
     growth: (period: "7d" | "14d" | "30d") =>
       `/admin/dashboard/growth?period=${period}`,
     visitors: (period: "7d" | "14d" | "30d") =>

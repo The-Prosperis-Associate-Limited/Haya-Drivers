@@ -5,7 +5,7 @@ interface SupportSheetState {
   setOpen: (open: boolean) => void;
 }
 
-// The client top bar owns the sheet; anything on the page can open it through here.
+// The floating support widget reads this; anything on the page (the overview's "Talk to our team" card) can open it.
 export const useSupportSheet = create<SupportSheetState>((set) => ({
   open: false,
   setOpen: (open) => set({ open }),

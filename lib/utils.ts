@@ -410,15 +410,20 @@ export function formatRelativeTime(date: string | Date) {
   return then.toLocaleDateString();
 }
 
-export function formatTimeLeft(until: string | Date, now: number) {
-  const mins = Math.max(
-    0,
-    Math.floor((new Date(until).getTime() - now) / 60000),
-  );
+const compactMinutes = function (minutes: number) {
+  const mins = Math.max(0, minutes);
 
   if (mins < 60) return `${mins}m`;
   if (mins < 48 * 60) return `${Math.floor(mins / 60)}h`;
   return `${Math.floor(mins / 1440)}d`;
+};
+
+export function formatTimeLeft(until: string | Date, now: number) {
+  return compactMinutes(Math.floor((new Date(until).getTime() - now) / 60000));
+}
+
+export function formatAge(since: string | Date, now: number) {
+  return compactMinutes(Math.floor((now - new Date(since).getTime()) / 60000));
 }
 
 export function formatMinutes(minutes: number) {
@@ -857,3 +862,6 @@ export const formatMoneyCompact = function (
 
   return formatMoney(minor, currency);
 };
+
+// No SMS or WhatsApp provider is connected yet, so the switch stays hidden until one is.
+export const SMS_ALERTS_ENABLED = false;

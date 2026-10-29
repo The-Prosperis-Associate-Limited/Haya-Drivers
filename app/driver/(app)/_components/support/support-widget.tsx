@@ -1,8 +1,9 @@
 "use client";
 
-import { AppSheet } from "@/components/shared/app-sheet";
 import { AppText } from "@/components/shared/app-text";
+import { FloatingLauncher } from "@/components/support/floating-launcher";
 import { useGetProfile } from "@/hooks/use-get-profile";
+import { useSupportSheet } from "@/store/use-support-sheet";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { ContactPanel } from "./contact-panel";
@@ -11,8 +12,8 @@ import { LiveChatPanel } from "./live-chat-panel";
 import { ReportIssuePanel } from "./report-issue-panel";
 
 interface Props {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  // Each surface remembers where its user dragged the button.
+  storageKey: string;
 }
 
 type Panel = "menu" | "chat" | "faq" | "report" | "contact";
@@ -41,7 +42,10 @@ const OPTIONS: { panel: Panel; title: string; description: string }[] = [
 ];
 
 const HEADINGS: Record<Panel, { title: string; description?: string }> = {
-  menu: { title: "Get support for your Haya Drivers experience" },
+  menu: {
+    title: "How can we help?",
+    description: "Chat with us, report a problem or get in touch",
+  },
   chat: {
     title: "Haya · Support",
     description: "Our AI assistant replies right away",
@@ -60,24 +64,27 @@ const HEADINGS: Record<Panel, { title: string; description?: string }> = {
   },
 };
 
-export const SupportSheet = function ({ open, onOpenChange }: Props) {
+export const SupportWidget = function ({ storageKey }: Props) {
+  const open = useSupportSheet((state) => state.open);
+  const onOpenChange = useSupportSheet((state) => state.setOpen);
   const [panel, setPanel] = useState<Panel>("menu");
 
   const { profile } = useGetProfile();
 
-  // Reopening the sheet lands on the menu rather than wherever it was left.
+  // Reopening lands on the menu rather than wherever it was left.
   const handleOpenChange = (next: boolean) => {
     if (!next) setPanel("menu");
     onOpenChange(next);
   };
 
   return (
-    <AppSheet
+    <FloatingLauncher
       isOpen={open}
       onOpenChange={handleOpenChange}
+      storageKey={storageKey}
+      fit={panel !== "chat"}
       title={HEADINGS[panel].title}
       description={HEADINGS[panel].description}
-      width="480px"
       bodyClassName={panel === "menu" ? undefined : "flex flex-col p-0"}
       headerLeading={
         panel === "menu" ? undefined : (
@@ -126,6 +133,6 @@ export const SupportSheet = function ({ open, onOpenChange }: Props) {
       {panel === "contact" && (
         <ContactPanel onDone={() => handleOpenChange(false)} />
       )}
-    </AppSheet>
+    </FloatingLauncher>
   );
 };

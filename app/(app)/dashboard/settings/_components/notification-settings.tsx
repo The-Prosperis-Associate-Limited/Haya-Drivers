@@ -6,6 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
+import { SMS_ALERTS_ENABLED } from "@/lib/utils";
 import type { APIResponse } from "@/types/response";
 import type { NotificationPreferences } from "@/types/notification";
 
@@ -20,12 +21,14 @@ const GROUPS: {
 }[] = [
   {
     title: "Hiring alerts",
-    description: "Choose how you hear about your requests and hires.",
+    description:
+      "Each switch covers in-app, push and email for that kind of update.",
     items: [
       {
         key: "job_requests",
-        label: "Booking & request activity",
-        description: "When a driver responds to a request or a hire changes.",
+        label: "Hire & booking activity",
+        description:
+          "Shortlist progress, booking changes and late check-ins. Cancellations always reach you.",
       },
       {
         key: "sms_alerts",
@@ -34,8 +37,8 @@ const GROUPS: {
       },
       {
         key: "client_messages",
-        label: "Messages",
-        description: "Notify me when I get a new message.",
+        label: "Support replies",
+        description: "Replies from our support team on your chats and tickets.",
       },
     ],
   },
@@ -45,7 +48,8 @@ const GROUPS: {
       {
         key: "product_news",
         label: "Product news & tips",
-        description: "Occasional updates about new Haya Drivers features.",
+        description:
+          "Occasional updates about new features - only sent while this is on.",
       },
     ],
   },
@@ -94,36 +98,42 @@ export const NotificationSettings = function () {
           </div>
 
           <div className="divide-border mt-4 divide-y">
-            {group.items.map((item) => (
-              <div
-                key={item.key}
-                className="flex items-center justify-between gap-4 py-4"
-              >
-                <div className="min-w-0 space-y-0.5">
-                  <AppText type="label" className="block">
-                    {item.label}
-                  </AppText>
-                  <AppText
-                    type="caption"
-                    className="text-muted-foreground block"
-                  >
-                    {item.description}
-                  </AppText>
-                </div>
+            {group.items
+              .filter((item) => item.key !== "sms_alerts" || SMS_ALERTS_ENABLED)
+              .map((item) => (
+                <div
+                  key={item.key}
+                  className="flex items-center justify-between gap-4 py-4"
+                >
+                  <div className="min-w-0 space-y-0.5">
+                    <AppText type="label" className="block">
+                      {item.label}
+                    </AppText>
+                    <AppText
+                      type="caption"
+                      className="text-muted-foreground block"
+                    >
+                      {item.description}
+                    </AppText>
+                  </div>
 
-                <Switch
-                  checked={preferences?.[item.key] ?? false}
-                  onCheckedChange={(checked) =>
-                    savePreference({ [item.key]: checked })
-                  }
-                  aria-label={item.label}
-                  className="shrink-0"
-                />
-              </div>
-            ))}
+                  <Switch
+                    checked={preferences?.[item.key] ?? false}
+                    onCheckedChange={(checked) =>
+                      savePreference({ [item.key]: checked })
+                    }
+                    aria-label={item.label}
+                    className="shrink-0"
+                  />
+                </div>
+              ))}
           </div>
         </div>
       ))}
+      <AppText type="caption" className="text-muted-foreground block px-1">
+        Payments, invoices, payouts and security alerts are always sent - they
+        aren't optional.
+      </AppText>
     </div>
   );
 };

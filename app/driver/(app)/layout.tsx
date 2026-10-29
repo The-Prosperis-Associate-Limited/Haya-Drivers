@@ -2,6 +2,7 @@
 
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { ReactivateAccountDialog } from "@/components/shared/reactivate-account-dialog";
+import { SupportWidget } from "./_components/support/support-widget";
 import { MobileNav } from "./_components/navbar/mobile-nav";
 import { Sidebar } from "./_components/navbar/sidebar";
 import { TopNav } from "./_components/navbar/top-nav";
@@ -39,6 +40,7 @@ export default function DashboardLayout({
       </div>
 
       <ReactivateAccountDialog />
+      <SupportWidget storageKey="haya-support-position-driver" />
     </div>
   );
 }

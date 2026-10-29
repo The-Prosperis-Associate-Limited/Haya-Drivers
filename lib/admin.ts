@@ -8,6 +8,12 @@ export const ADMIN_ROLE_LABELS: Record<AdminRole, string> = {
   READ_ONLY: "Read only",
 };
 
+export const ADMIN_CARD =
+  "border-border rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
+
+export const ADMIN_TABLE_HEAD =
+  "bg-slate-50 text-left text-[11.5px] font-semibold tracking-wide text-slate-500 uppercase";
+
 export const ADMIN_ROLE_OPTIONS = (
   Object.entries(ADMIN_ROLE_LABELS) as [AdminRole, string][]
 ).map(([value, label]) => ({ value, label }));

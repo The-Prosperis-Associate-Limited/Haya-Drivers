@@ -50,10 +50,10 @@ export default function AdminAttendance() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
-        <AppText type="h2" className="text-xl font-bold md:text-2xl">
+        <AppText type="h2" className="text-[22px] font-semibold tracking-tight">
           Attendance
         </AppText>
-        <AppText type="subtitle" className="text-muted-foreground text-sm">
+        <AppText type="subtitle" className="text-muted-foreground text-[13px]">
           Days clients have flagged. Check the month, then uphold or dismiss -
           the client and driver both see your note.
         </AppText>

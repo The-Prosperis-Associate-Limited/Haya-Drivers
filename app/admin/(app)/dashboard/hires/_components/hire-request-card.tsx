@@ -208,7 +208,7 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   };
 
   return (
-    <div className="border-border rounded-2xl border bg-white p-5">
+    <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <Avatar className="h-11 w-11 shrink-0">

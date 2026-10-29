@@ -11,6 +11,7 @@ interface Props {
   staleTime?: number;
   gcTime?: number;
   refetchOnMount?: boolean | "always";
+  refetchInterval?: number;
 }
 
 interface UseGetDataResult<T> {
@@ -27,6 +28,7 @@ export const useGetData = <T>({
   staleTime = 5 * 60 * 1000,
   gcTime = 10 * 60 * 1000,
   refetchOnMount = true,
+  refetchInterval,
 }: Props): UseGetDataResult<T> => {
   const handleErrors = useHandleErrors();
 
@@ -57,6 +59,7 @@ export const useGetData = <T>({
     gcTime,
     refetchOnMount,
     refetchOnWindowFocus: true,
+    refetchInterval,
     enabled: shouldFetch, // Conditionally enable the API call
   });
 

@@ -106,7 +106,7 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   const requester = conversation?.initiatedBy;
 
   return (
-    <div className="border-border flex max-h-[70vh] min-h-[420px] flex-col rounded-2xl border bg-white">
+    <div className="border-border flex max-h-[70vh] min-h-[420px] flex-col rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <div className="border-border flex items-center justify-between gap-3 border-b px-5 py-4">
         <div className="min-w-0">
           <AppText type="label" className="block truncate text-sm font-bold">

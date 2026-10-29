@@ -16,7 +16,7 @@ export const useSubmitOnboarding = function ({ redirect = true } = {}) {
       [API_ENDPOINTS.driverOnboarding.profile],
       [API_ENDPOINTS.driverOnboarding.verificationStatus],
     ],
-    redirectTo: redirect ? "/onboarding/status" : undefined,
+    redirectTo: redirect ? "/driver/onboarding/status" : undefined,
   });
 
   return { submitOnboarding: mutate, isPending };

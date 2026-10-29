@@ -8,17 +8,32 @@ import {
 } from "@/components/verification/verification-review";
 import { useOnboardingProfile } from "@/hooks/use-onboarding-profile";
 import { ONBOARDING_TIPS, getOnboardingProgress } from "@/lib/utils";
+import { showToast } from "@/lib/show-toast";
+import { useRouter } from "next/navigation";
 import { StepHeader } from "../_components/step-header";
 import { useGetDocuments } from "@/hooks/use-documents";
 import { useSubmitOnboarding } from "@/hooks/use-submit-onboarding";
 
 export default function ReviewStep() {
+  const router = useRouter();
   const { profile } = useOnboardingProfile();
   const { documents } = useGetDocuments();
 
   const { submitOnboarding, isPending } = useSubmitOnboarding();
 
   const { canSubmit } = getVerificationReadiness(profile, documents);
+
+  // Every step saves as it goes, so a driver already under review or verified is only editing - there is nothing to submit again.
+  const alreadySubmitted =
+    profile?.verification_status === "PENDING" ||
+    profile?.verification_status === "APPROVED";
+
+  const finish = () => {
+    if (!alreadySubmitted) return submitOnboarding({});
+
+    showToast("success", "Your changes are saved");
+    router.push("/driver/dashboard");
+  };
 
   return (
     <OnboardingShell
@@ -27,8 +42,16 @@ export default function ReviewStep() {
       tips={ONBOARDING_TIPS.REVIEW}
     >
       <StepHeader
-        title="Review before you submit"
-        description="Check everything below. Submission is blocked until all required items are complete."
+        title={
+          alreadySubmitted ? "Review your details" : "Review before you submit"
+        }
+        description={
+          alreadySubmitted
+            ? profile?.verification_status === "APPROVED"
+              ? "You're verified - your changes are already saved. Documents can only be changed through support."
+              : "Your application is with our team - your changes are already saved and they'll see them."
+            : "Check everything below. Submission is blocked until all required items are complete."
+        }
         progress={getOnboardingProgress("REVIEW")}
       />
 
@@ -36,11 +59,11 @@ export default function ReviewStep() {
 
       <Button
         isLoading={isPending}
-        disabled={!canSubmit}
-        onClick={() => submitOnboarding({})}
+        disabled={!alreadySubmitted && !canSubmit}
+        onClick={finish}
         className="mt-4 h-12 w-full rounded-lg text-sm"
       >
-        Continue
+        {alreadySubmitted ? "Save and finish" : "Submit for review"}
       </Button>
     </OnboardingShell>
   );
