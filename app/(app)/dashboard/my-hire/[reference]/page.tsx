@@ -35,7 +35,7 @@ export default function HireDetail({
 
   if (!hire) {
     return (
-      <div className="mx-auto max-w-6xl space-y-4">
+      <div className="mx-auto max-w-[1360px] space-y-4">
         {isFetching && (
           <>
             <Skeleton className="h-20 rounded-xl" />
@@ -101,8 +101,8 @@ export default function HireDetail({
   ];
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <BackLink href="/dashboard/my-hire" label="Take a step back" />
+    <div className="mx-auto max-w-[1360px]">
+      <BackLink href="/dashboard/my-hire" label="My hire" />
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -114,7 +114,7 @@ export default function HireDetail({
           </Avatar>
           <div>
             <span className="flex flex-wrap items-center gap-2">
-              <AppText type="h2" className="text-lg font-bold">
+              <AppText type="h2" className="text-lg font-semibold">
                 {name}
               </AppText>
               {hire.today_attendance && (
@@ -156,9 +156,9 @@ export default function HireDetail({
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-6">
-          <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             <span className="flex items-center justify-between gap-3">
-              <AppText type="h3" className="text-base font-semibold">
+              <AppText type="h4" className="text-[15px] font-semibold">
                 {hire.engagement_type === "MONTHLY"
                   ? "Full-time engagement"
                   : `${prettifyEnum(hire.engagement_type)} engagement`}
@@ -183,7 +183,7 @@ export default function HireDetail({
                   </AppText>
                   <AppText
                     type="label"
-                    className="mt-1 block text-lg font-bold"
+                    className="mt-1 block text-lg font-semibold"
                   >
                     {entry.value}
                   </AppText>
@@ -215,8 +215,8 @@ export default function HireDetail({
         </div>
 
         <div className="space-y-6">
-          <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-            <AppText type="h3" className="text-base font-semibold">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+            <AppText type="h4" className="text-[15px] font-semibold">
               Haya Drivers profile
             </AppText>
             <div className="mt-4 space-y-3">
@@ -246,8 +246,8 @@ export default function HireDetail({
             </Button>
           </div>
 
-          <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-            <AppText type="h3" className="text-base font-semibold">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+            <AppText type="h4" className="text-[15px] font-semibold">
               Engagement type
             </AppText>
             <AppText

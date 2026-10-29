@@ -35,8 +35,11 @@ export default function FindTalent() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <AppText type="h2" className="mt-3 text-xl font-bold md:text-2xl">
+    <div className="mx-auto max-w-[1360px]">
+      <AppText
+        type="h2"
+        className="mt-3 text-[22px] font-semibold tracking-tight"
+      >
         Find verified talent
       </AppText>
       <AppText type="subtitle" className="text-muted-foreground mt-1 text-sm">

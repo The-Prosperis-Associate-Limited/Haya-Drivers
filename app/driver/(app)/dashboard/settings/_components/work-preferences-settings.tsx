@@ -76,9 +76,9 @@ export const WorkPreferencesSettings = function () {
   return (
     <form
       onSubmit={handleSubmit(save)}
-      className="border-border mt-4 rounded-xl border bg-white p-6 md:p-8"
+      className="border-border mt-4 rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6"
     >
-      <AppText type="h4" className="text-base font-semibold">
+      <AppText type="h4" className="text-[15px] font-semibold">
         Work preferences
       </AppText>
       <AppText type="caption" className="text-muted-foreground mt-1 block">

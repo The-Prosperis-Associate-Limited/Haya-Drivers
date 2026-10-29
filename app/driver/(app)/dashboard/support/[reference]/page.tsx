@@ -65,7 +65,7 @@ export default function TicketThread() {
         }
       />
 
-      <div className="border-border space-y-4 rounded-xl border bg-white p-4 md:p-5">
+      <div className="border-border space-y-4 rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
         <div className="max-w-[85%] rounded-xl bg-gray-100 px-4 py-3">
           <AppText type="caption" className="text-foreground block">
             {ticket.description}

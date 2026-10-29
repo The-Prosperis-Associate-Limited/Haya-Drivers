@@ -100,7 +100,7 @@ export default function MyHire() {
           )}
         </div>
       ) : (
-        <div className="border-border rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6">
+        <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
           <AppText type="h3" className="text-[15px] font-semibold">
             Your hire requests
           </AppText>

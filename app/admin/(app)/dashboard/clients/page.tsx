@@ -26,7 +26,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { AdminClientStats, AdminUserRow } from "@/types/admin";
-import { PageHeader } from "../../_components/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "All Statuses" },
@@ -80,8 +80,9 @@ export default function AdminClients() {
   return (
     <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <PageHeader
+        className="mb-0"
         title="Clients"
-        description="Individual and organization clients hiring drivers on Haya Drivers."
+        subtitle="Individual and organization clients hiring drivers on Haya Drivers."
       />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:gap-4">

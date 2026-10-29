@@ -212,7 +212,10 @@ export default function RequestDriver() {
     <div className="mx-auto max-w-2xl">
       <BackLink href="/dashboard/my-hire" label="Back to My Hire" />
 
-      <AppText type="h2" className="mt-4 text-xl font-bold md:text-2xl">
+      <AppText
+        type="h2"
+        className="mt-4 text-[22px] font-semibold tracking-tight"
+      >
         Request a driver
       </AppText>
       <AppText type="subtitle" className="text-muted-foreground mt-1 text-sm">
@@ -222,7 +225,7 @@ export default function RequestDriver() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="border-border mt-6 space-y-4 rounded-2xl border bg-white p-5 md:p-6"
+        className="border-border mt-6 space-y-4 rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5"
       >
         <Controller
           control={control}

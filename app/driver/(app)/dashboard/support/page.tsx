@@ -22,13 +22,13 @@ export default function Support() {
   const { tickets, isFetching } = useTickets();
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-[1360px] space-y-6">
       <PageHeader
         title="Support"
-        subtitle="Everything you've raised with our team. Start something new from the headset icon above."
+        subtitle="Everything you've raised with our team. Start something new from the support button at the bottom of your screen."
       />
 
-      <div className="border-border overflow-hidden rounded-xl border bg-white">
+      <div className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
         {isFetching && !tickets.length ? (
           <div className="space-y-3 p-4">
             <Skeleton className="h-16 w-full rounded-lg" />

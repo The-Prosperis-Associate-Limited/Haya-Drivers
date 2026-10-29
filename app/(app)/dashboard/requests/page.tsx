@@ -40,7 +40,7 @@ export default function Requests() {
   });
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-[1360px]">
       <PageHeader
         title="My requests"
         subtitle="Every staffing request you have posted, with its matched drivers."

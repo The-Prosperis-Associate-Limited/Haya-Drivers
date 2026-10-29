@@ -27,7 +27,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { AdminDriverStats, AdminUserRow } from "@/types/admin";
-import { PageHeader } from "../../_components/page-header";
+import { PageHeader } from "@/components/shared/page-header";
 import { VerificationQueue } from "./_components/verification-queue";
 
 const STATUS_OPTIONS = [
@@ -83,8 +83,9 @@ export default function AdminDrivers() {
   return (
     <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <PageHeader
+        className="mb-0"
         title="Drivers"
-        description="Applicants and active drivers. Open a profile to review documents and verification."
+        subtitle="Applicants and active drivers. Open a profile to review documents and verification."
       />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:gap-4">

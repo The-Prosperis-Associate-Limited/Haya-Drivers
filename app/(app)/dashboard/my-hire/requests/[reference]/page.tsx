@@ -113,7 +113,7 @@ export default function HireRequestDetail({
 
   if (!request) {
     return (
-      <div className="mx-auto max-w-4xl space-y-4">
+      <div className="mx-auto max-w-[1360px] space-y-4">
         <BackLink href="/dashboard/my-hire" label="Back to My Hire" />
         {isFetching ? (
           <>
@@ -141,13 +141,16 @@ export default function HireRequestDetail({
   const rejectedReason = invoice?.proof_rejected_reason;
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <div className="mx-auto max-w-[1360px]">
       <BackLink href="/dashboard/my-hire" label="Back to My Hire" />
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
         <div>
           <span className="flex items-center gap-2">
-            <AppText type="h2" className="text-xl font-bold md:text-2xl">
+            <AppText
+              type="h2"
+              className="text-[22px] font-semibold tracking-tight"
+            >
               Hire request
             </AppText>
             <span
@@ -188,7 +191,7 @@ export default function HireRequestDetail({
       <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_360px]">
         <div className="space-y-5">
           {/* The engagement summary */}
-          <div className="border-border rounded-2xl border bg-white p-5">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             {assignedDrivers.length ? (
               <div className="space-y-4">
                 {assignedDrivers.map((driver) => (
@@ -203,7 +206,7 @@ export default function HireRequestDetail({
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <AppText type="h3" className="text-base font-bold">
+                      <AppText type="h3" className="text-[15px] font-semibold">
                         {[driver.first_name, driver.last_name]
                           .filter(Boolean)
                           .join(" ") || "Driver"}
@@ -246,7 +249,7 @@ export default function HireRequestDetail({
                   <Search className="text-brand h-6 w-6" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <AppText type="h3" className="text-base font-bold">
+                  <AppText type="h3" className="text-[15px] font-semibold">
                     We're matching{" "}
                     {request.drivers_needed > 1
                       ? `${request.drivers_needed} drivers`
@@ -358,14 +361,14 @@ export default function HireRequestDetail({
           </div>
 
           {/* The combo pack - locked until paid */}
-          <div className="border-border rounded-2xl border bg-white p-5">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             <span className="flex items-center gap-2">
               {packs?.length ? (
                 <LockOpen className="h-4 w-4 text-emerald-600" />
               ) : (
                 <Lock className="text-muted-foreground h-4 w-4" />
               )}
-              <AppText type="h3" className="text-base font-semibold">
+              <AppText type="h4" className="text-[15px] font-semibold">
                 Driver contact details
               </AppText>
             </span>
@@ -464,8 +467,8 @@ export default function HireRequestDetail({
         </div>
 
         {/* The invoice */}
-        <div className="border-border h-fit rounded-2xl border bg-white p-5">
-          <AppText type="h3" className="text-base font-semibold">
+        <div className="border-border h-fit rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+          <AppText type="h4" className="text-[15px] font-semibold">
             Invoice
           </AppText>
 
@@ -509,7 +512,7 @@ export default function HireRequestDetail({
                   <AppText type="label" className="text-sm font-bold">
                     Total
                   </AppText>
-                  <AppText type="label" className="text-base font-bold">
+                  <AppText type="label" className="text-[15px] font-semibold">
                     {formatMoney(invoice.total_minor, invoice.currency)}
                   </AppText>
                 </span>

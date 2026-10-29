@@ -88,10 +88,10 @@ export const NotificationSettings = function () {
       {GROUPS.map((group) => (
         <div
           key={group.title}
-          className="border-border rounded-xl border bg-white p-5 md:p-6"
+          className="border-border rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6"
         >
           <div className="space-y-1">
-            <AppText type="h4" className="text-base font-semibold">
+            <AppText type="h4" className="text-[15px] font-semibold">
               {group.title}
             </AppText>
             {group.description && (
