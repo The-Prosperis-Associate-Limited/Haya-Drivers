@@ -84,6 +84,11 @@ export const API_ENDPOINTS = {
     get: (reference: string) => `/driver/job-requests/${reference}`,
     attendance: (reference: string, month: string) =>
       `/driver/job-requests/${reference}/attendance?month=${month}`,
+    salary: (reference: string) => `/driver/job-requests/${reference}/salary`,
+    confirmSalary: (reference: string, id: string) =>
+      `/driver/job-requests/${reference}/salary/${id}/confirm`,
+    disputeSalary: (reference: string, id: string) =>
+      `/driver/job-requests/${reference}/salary/${id}/dispute`,
     checkIn: (reference: string) =>
       `/driver/job-requests/${reference}/check-in`,
     checkOut: (reference: string) =>
@@ -140,6 +145,9 @@ export const API_ENDPOINTS = {
       `/client/hires/${reference}/attendance?month=${month}`,
     flagDay: (reference: string, id: string) =>
       `/client/hires/${reference}/attendance/${id}/flag`,
+    salary: (reference: string) => `/client/hires/${reference}/salary`,
+    markSalaryPaid: (reference: string, id: string) =>
+      `/client/hires/${reference}/salary/${id}/paid`,
   },
 
   requests: {
@@ -357,6 +365,20 @@ export const API_ENDPOINTS = {
     client: (q: string) => `/client/search?q=${encodeURIComponent(q)}`,
     driver: (q: string) => `/driver/search?q=${encodeURIComponent(q)}`,
     admin: (q: string) => `/admin/search?q=${encodeURIComponent(q)}`,
+  },
+
+  adminSalaries: {
+    list: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status: string;
+    }) => `/admin/salaries?status=${status}&page=${page}&limit=${limit}`,
+    resolve: (id: string) => `/admin/salaries/${id}/resolve`,
+    booking: (reference: string) => `/admin/salaries/bookings/${reference}`,
   },
 
   adminAttendance: {

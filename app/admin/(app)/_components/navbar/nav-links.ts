@@ -1,6 +1,7 @@
 import {
   ArrowLeftRight,
   BriefcaseBusiness,
+  Banknote,
   CalendarCheck,
   Car,
   LayoutGrid,
@@ -42,6 +43,13 @@ export const ADMIN_NAV_LINKS: AdminNavLink[] = [
     icon: ArrowLeftRight,
     countKey: "transactions",
     countLabel: "payouts needing attention",
+  },
+  {
+    href: "/admin/dashboard/salaries",
+    label: "Salaries",
+    icon: Banknote,
+    countKey: "salaries",
+    countLabel: "disputed or overdue",
   },
   {
     href: "/admin/dashboard/attendance",

@@ -86,9 +86,10 @@ export const HireRequestCard = function ({ request }: Props) {
     : null;
   const currency = assigned[0]?.driver.driver_profile?.rate_currency ?? "NGN";
 
-  // Naira input for the admin, kobo on the wire.
+  // A contract's pay covers the whole term, so it starts blank and the server's quote supplies the prorated default.
+  const isContract = request.engagement_type === "CONTRACT";
   const [amountMajor, setAmountMajor] = useState(
-    rate ? String(Math.round(rate / 100)) : "",
+    rate && !isContract ? String(Math.round(rate / 100)) : "",
   );
   const [vatPercent, setVatPercent] = useState(String(DEFAULT_VAT));
   const [note, setNote] = useState("");
@@ -196,7 +197,8 @@ export const HireRequestCard = function ({ request }: Props) {
   });
 
   const openInvoiceDialog = () => {
-    if (!amountMajor && rate) setAmountMajor(String(Math.round(rate / 100)));
+    if (!amountMajor && rate && !isContract)
+      setAmountMajor(String(Math.round(rate / 100)));
     setInvoiceOpen(true);
   };
 
@@ -502,12 +504,20 @@ export const HireRequestCard = function ({ request }: Props) {
       >
         <div className="space-y-4">
           <AppInput
-            label={`Salary per driver (${currency}, per month)`}
+            label={
+              isContract
+                ? `Pay per driver for the whole contract (${currency})`
+                : `Salary per driver (${currency}, per month)`
+            }
             type="number"
             min={1}
             value={amountMajor}
             onChange={(event) => setAmountMajor(event.target.value)}
-            placeholder="E.g 250000"
+            placeholder={
+              isContract && quote
+                ? String(Math.round(quote.per_driver_minor / 100))
+                : "E.g 250000"
+            }
           />
 
           <AppInput
@@ -570,8 +580,9 @@ export const HireRequestCard = function ({ request }: Props) {
                   className="text-muted-foreground block pt-1 text-xs"
                 >
                   Driver salary (
-                  {formatMoney(quote.per_driver_minor, quote.currency)}/month
-                  per driver) is paid directly to the driver
+                  {formatMoney(quote.per_driver_minor, quote.currency)}
+                  {isContract ? " for the contract" : "/month"} per driver) is
+                  paid directly to the driver
                   {quote.drivers > 1 ? "s" : ""} by the client.
                 </AppText>
               </>
@@ -591,11 +602,14 @@ export const HireRequestCard = function ({ request }: Props) {
 
           <Button
             className="h-11 w-full rounded-lg text-sm"
-            disabled={amountMinor <= 0 || !quote}
+            disabled={!quote}
             isLoading={isGenerating}
             onClick={() =>
               generate({
-                amount_minor: amountMinor,
+                amount_minor:
+                  amountMinor > 0
+                    ? amountMinor
+                    : (quote?.per_driver_minor ?? 0),
                 vat_percent: Number(vatPercent || 0),
                 ...(note.trim() && { note: note.trim() }),
               })

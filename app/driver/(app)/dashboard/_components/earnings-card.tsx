@@ -3,8 +3,8 @@
 import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatMoney, toMajorUnits } from "@/lib/utils";
-import { ArrowDownToLine, ChevronRight } from "lucide-react";
+import { cn, formatMoney, toMajorUnits } from "@/lib/utils";
+import { ChevronRight, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import {
   Bar,
@@ -41,7 +41,7 @@ export const EarningsCard = function ({ summary, trend, isFetching }: Props) {
             Earnings
           </AppText>
           <AppText type="caption" className="text-muted-foreground block">
-            Paid out by Haya Drivers each month
+            Salary you've confirmed receiving
           </AppText>
         </div>
         <Link
@@ -71,7 +71,7 @@ export const EarningsCard = function ({ summary, trend, isFetching }: Props) {
               </AppText>
             </div>
             <AppText type="caption" className="text-muted-foreground">
-              Lifetime {formatMoney(summary?.total_earnings_minor, currency)}
+              Lifetime {formatMoney(summary?.received_minor, currency)}
             </AppText>
           </div>
 
@@ -129,26 +129,37 @@ export const EarningsCard = function ({ summary, trend, isFetching }: Props) {
           <div className="mt-4 grid grid-cols-2 gap-2.5">
             <div className="rounded-xl bg-slate-50 p-3">
               <AppText type="caption" className="text-muted-foreground block">
-                Available to withdraw
+                Waiting for you
               </AppText>
               <AppText type="label" className="text-base font-semibold">
-                {formatMoney(summary?.available_minor, currency)}
+                {formatMoney(summary?.awaiting_confirmation_minor, currency)}
               </AppText>
             </div>
             <div className="rounded-xl bg-slate-50 p-3">
               <AppText type="caption" className="text-muted-foreground block">
-                On hold
+                {summary?.overdue_count ? "Overdue" : "Coming up"}
               </AppText>
-              <AppText type="label" className="text-base font-semibold">
-                {formatMoney(summary?.pending_minor, currency)}
+              <AppText
+                type="label"
+                className={cn(
+                  "text-base font-semibold",
+                  !!summary?.overdue_count && "text-red-600",
+                )}
+              >
+                {formatMoney(
+                  summary?.overdue_count
+                    ? summary.overdue_minor
+                    : summary?.due_minor,
+                  currency,
+                )}
               </AppText>
             </div>
           </div>
 
           <Button asChild className="mt-4 h-10 rounded-xl px-4">
             <Link href={EARNINGS_HREF}>
-              <ArrowDownToLine className="size-4" />
-              Withdraw
+              <ReceiptText className="size-4" />
+              Review payments
             </Link>
           </Button>
         </>

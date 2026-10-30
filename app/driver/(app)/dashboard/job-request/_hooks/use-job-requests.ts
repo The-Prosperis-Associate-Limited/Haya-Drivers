@@ -3,6 +3,7 @@ import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { AttendanceLog } from "@/types/attendance";
+import type { SalarySchedule } from "@/types/salary";
 import type {
   Booking,
   JobRequestBucket,
@@ -114,4 +115,13 @@ export const useAttendanceLog = function (reference: string, month: string) {
   });
 
   return { log: data?.data, isFetching };
+};
+
+export const useJobSalary = function (reference: string) {
+  const { data, isFetching } = useGetData<APIResponse<SalarySchedule>>({
+    url: API_ENDPOINTS.jobRequests.salary(reference),
+    shouldFetch: !!reference,
+  });
+
+  return { schedule: data?.data, isFetching };
 };

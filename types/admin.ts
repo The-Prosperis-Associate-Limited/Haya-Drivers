@@ -292,7 +292,12 @@ export interface AdminUserWalletData {
 
 export interface AdminNav {
   counts: Record<
-    "drivers" | "hires" | "transactions" | "attendance" | "support",
+    | "drivers"
+    | "hires"
+    | "transactions"
+    | "salaries"
+    | "attendance"
+    | "support",
     number
   >;
   team: {

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AppText } from "./app-text";
 import { AppTooltip } from "./app-tooltip";
 
-type Tone = "brand" | "green" | "amber" | "violet";
+type Tone = "brand" | "green" | "amber" | "violet" | "red";
 
 interface Props {
   label: string;
@@ -30,6 +30,7 @@ const iconTones: Record<Tone, string> = {
   green: "bg-emerald-50 text-emerald-600",
   amber: "bg-amber-50 text-amber-700",
   violet: "bg-violet-50 text-violet-600",
+  red: "bg-red-50 text-red-600",
 };
 
 export const StatCard = function ({

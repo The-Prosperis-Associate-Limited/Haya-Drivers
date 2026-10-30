@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  cn,
   driverTypeLabel,
   formatDate,
   formatMoney,
@@ -17,6 +18,7 @@ import {
 import { use, useState } from "react";
 import { TodayAttendanceBadge } from "@/components/attendance/today-attendance-badge";
 import { HireAttendance } from "../_components/hire-attendance";
+import { HireSalary } from "../_components/hire-salary";
 import { ReviewCard } from "../_components/review-card";
 import { useHire } from "../_hooks/use-hires";
 import Link from "next/link";
@@ -61,6 +63,15 @@ export default function HireDetail({
   const monthsActive = Math.floor(daysServed / 30);
 
   const started = new Date(hire.starts_at).getTime() <= now;
+  const ended = hire.status === "COMPLETED" || hire.status === "CANCELLED";
+  const termDays = hire.ends_at
+    ? Math.max(
+        (new Date(hire.ends_at).getTime() -
+          new Date(hire.starts_at).getTime()) /
+          DAY_MS,
+        1,
+      )
+    : 365;
 
   // No stored Haya Drivers ID exists - this is a stable display form of the driver's
   // record id, not a second identifier.
@@ -163,8 +174,15 @@ export default function HireDetail({
                   ? "Full-time engagement"
                   : `${prettifyEnum(hire.engagement_type)} engagement`}
               </AppText>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
-                {started ? "Ongoing" : "Starting soon"}
+              <span
+                className={cn(
+                  "rounded-full px-3 py-1 text-xs font-medium",
+                  ended
+                    ? "bg-slate-100 text-slate-600"
+                    : "bg-emerald-50 text-emerald-600",
+                )}
+              >
+                {ended ? "Ended" : started ? "Ongoing" : "Starting soon"}
               </span>
             </span>
 
@@ -191,9 +209,9 @@ export default function HireDetail({
               ))}
             </div>
 
-            {/* A year is the visual yardstick, not a contract end. */}
+            {/* Without an end date a year is the visual yardstick. */}
             <Progress
-              value={Math.min((daysServed / 365) * 100, 100)}
+              value={Math.min((daysServed / termDays) * 100, 100)}
               className="mt-8 h-1.5"
             />
             <AppText
@@ -206,6 +224,8 @@ export default function HireDetail({
                 : "no end date"}
             </AppText>
           </div>
+
+          <HireSalary reference={hire.reference} driverName={name} />
 
           {hire.status === "IN_PROGRESS" && (
             <HireAttendance reference={hire.reference} driverName={name} />

@@ -42,6 +42,7 @@ import {
 } from "../_hooks/use-job-requests";
 import { UnverifiedNotice } from "../_components/unverified-notice";
 import { JobAttendance } from "../_components/job-attendance";
+import { JobSalary } from "../_components/job-salary";
 import { ShiftControl } from "../_components/shift-control";
 
 interface FactProps {
@@ -223,8 +224,12 @@ export default function JobRequestDetail() {
               />
               <Fact
                 icon={CalendarDays}
-                label="Start date"
-                value={formatDate(booking.starts_at)}
+                label={booking.ends_at ? "Dates" : "Start date"}
+                value={
+                  booking.ends_at
+                    ? `${formatDate(booking.starts_at)} - ${formatDate(booking.ends_at)}`
+                    : formatDate(booking.starts_at)
+                }
               />
               <Fact
                 icon={Clock}
@@ -284,6 +289,10 @@ export default function JobRequestDetail() {
                 </div>
               )}
             </div>
+          )}
+
+          {["MONTHLY", "CONTRACT"].includes(booking.engagement_type) && (
+            <JobSalary reference={booking.reference} clientName={clientName} />
           )}
 
           {["IN_PROGRESS", "COMPLETED"].includes(booking.status) && (

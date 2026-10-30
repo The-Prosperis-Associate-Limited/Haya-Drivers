@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { Hire, HireDetail } from "@/types/booking";
 import type { AttendanceLog } from "@/types/attendance";
+import type { SalarySchedule } from "@/types/salary";
 
 export const useHires = function ({
   page = 1,
@@ -34,4 +35,12 @@ export const useHireAttendance = function (reference: string, month: string) {
   });
 
   return { log: data?.data, isFetching };
+};
+
+export const useHireSalary = function (reference: string) {
+  const { data, isFetching } = useGetData<APIResponse<SalarySchedule>>({
+    url: API_ENDPOINTS.hires.salary(reference),
+  });
+
+  return { schedule: data?.data, isFetching };
 };

@@ -36,7 +36,7 @@ export const PayslipsCard = function ({ trend, currency }: Props) {
           type="caption"
           className="text-muted-foreground block px-4 pt-3 pb-5 md:px-5"
         >
-          Your first payslip appears once Haya Drivers pays you.
+          Your first payslip appears once you confirm a salary payment.
         </AppText>
       ) : (
         <div className="mt-2">
@@ -57,7 +57,7 @@ export const PayslipsCard = function ({ trend, currency }: Props) {
                   {monthName(point.month)}
                 </AppText>
                 <AppText type="caption" className="text-muted-foreground block">
-                  Earned {formatMoney(point.total_minor, currency)}
+                  Received {formatMoney(point.total_minor, currency)}
                 </AppText>
               </span>
               <ChevronRight className="text-muted-foreground size-4" />

@@ -8,8 +8,8 @@ import type {
   EarningsSummary,
   EarningsTrendPoint,
   Payout,
-  WalletTransaction,
 } from "@/types/earnings";
+import type { SalaryPaymentWithParties } from "@/types/salary";
 
 export const useEarningsSummary = function (shouldFetch = true) {
   const { data, isFetching } = useGetData<APIResponse<EarningsSummary>>({
@@ -27,14 +27,14 @@ export const useEarningsHistory = function ({
   page: number;
   limit: number;
 }) {
-  const { data, isFetching } = useGetData<PaginatedResponse<WalletTransaction>>(
-    {
-      url: API_ENDPOINTS.earnings.history({ page, limit }),
-    },
-  );
+  const { data, isFetching } = useGetData<
+    PaginatedResponse<SalaryPaymentWithParties>
+  >({
+    url: API_ENDPOINTS.earnings.history({ page, limit }),
+  });
 
   return {
-    transactions: data?.data ?? [],
+    payments: data?.data ?? [],
     totalPages: data?.totalPages ?? 1,
     isFetching,
   };

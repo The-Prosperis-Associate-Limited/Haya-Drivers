@@ -13,7 +13,7 @@ export default function Earnings() {
     <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <PageHeader
         title="Earnings"
-        subtitle="What Haya Drivers has paid you, what is on hold, and where your withdrawals go."
+        subtitle="The salary your clients pay you directly - what you've received, what's waiting for your confirmation and what's still due."
       />
       {profile &&
         (status === "APPROVED" ? (

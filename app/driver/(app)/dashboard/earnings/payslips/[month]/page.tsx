@@ -4,6 +4,7 @@ import {
   DocumentLines,
   PrintDocument,
 } from "@/components/shared/print-document";
+import { salaryStatus } from "@/components/salary/salary-payments";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -11,21 +12,6 @@ import { formatDate, formatMoney } from "@/lib/utils";
 import { use } from "react";
 import type { APIResponse } from "@/types/response";
 import type { EarningsStatement } from "@/types/earnings";
-
-const TYPE_LABELS: Record<string, string> = {
-  BOOKING_PAYMENT: "Engagement pay",
-  PLATFORM_FEE: "Platform fee",
-  PAYOUT: "Withdrawal to bank",
-  PAYOUT_REVERSAL: "Withdrawal reversed",
-  ADJUSTMENT: "Adjustment",
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: "On hold",
-  AVAILABLE: "Available",
-  PAID_OUT: "Paid out",
-  REVERSED: "Reversed",
-};
 
 export default function Payslip({
   params,
@@ -57,7 +43,7 @@ export default function Payslip({
   const driverName = [statement.driver?.first_name, statement.driver?.last_name]
     .filter(Boolean)
     .join(" ");
-  const account = statement.payout_account;
+  const clients = [...new Set(statement.lines.map((line) => line.client.name))];
 
   return (
     <PrintDocument
@@ -66,75 +52,58 @@ export default function Payslip({
       backHref="/driver/dashboard/earnings"
       backLabel="Earnings"
       meta={[
-        { label: "Pay period", value: period },
+        { label: "Pay month", value: period },
         { label: "Issued", value: formatDate(statement.generated_at) },
       ]}
       parties={[
         {
           label: "Paid by",
-          lines: ["Haya Drivers", "Driver earnings ledger"],
+          lines: clients.length ? clients : ["No payments this month"],
         },
         {
           label: "Paid to",
-          lines: [
-            driverName || "Driver",
-            statement.driver?.email,
-            account
-              ? `${account.bank_name} ····${account.account_number_last4}`
-              : "No payout account on file",
-          ],
+          lines: [driverName || "Driver", statement.driver?.email],
         },
       ]}
-      footnote="Generated from the Haya Drivers earnings ledger. Amounts on hold are released after the standard earnings hold; withdrawals go to the payout account shown. Contact support if anything on this statement looks wrong."
+      footnote="Salaries are paid by each client directly to the driver; Haya Drivers records each payment and the driver's confirmation of it. Lines marked as awaiting confirmation were reported paid by the client but not yet confirmed by the driver."
     >
       {!statement.lines.length ? (
         <p className="text-muted-foreground text-sm">
-          No earnings or withdrawals were recorded in {period}.
+          No salary payments were recorded in {period}.
         </p>
       ) : (
         <DocumentLines
-          headers={["Date", "Description", "Status", "Amount"]}
-          rows={statement.lines.map((line) => {
-            const client = line.booking?.client;
-            const clientName =
-              client?.client_profile?.organisation_name ||
-              [client?.first_name, client?.last_name].filter(Boolean).join(" ");
-
-            return {
-              key: line.id,
-              cells: [
-                formatDate(line.createdAt),
-                <span key="d">
-                  <span className="text-ink block font-medium">
-                    {TYPE_LABELS[line.type] ?? line.type}
-                  </span>
-                  <span className="text-muted-foreground block text-xs">
-                    {[line.booking?.reference, clientName, line.reference]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </span>
-                </span>,
-                STATUS_LABELS[line.status] ?? line.status,
-                formatMoney(line.amount_minor, currency),
-              ],
-            };
-          })}
+          headers={["Paid", "Engagement", "Status", "Amount"]}
+          rows={statement.lines.map((line) => ({
+            key: line.id,
+            cells: [
+              line.paid_at ? formatDate(line.paid_at) : "-",
+              <span key="d">
+                <span className="text-ink block font-medium">
+                  Salary, {line.period_label}
+                </span>
+                <span className="text-muted-foreground block text-xs">
+                  {[line.client.name, line.booking.reference].join(" · ")}
+                </span>
+              </span>,
+              line.status === "PAID"
+                ? "Awaiting confirmation"
+                : salaryStatus(line, "driver").label,
+              formatMoney(line.amount_minor, line.currency),
+            ],
+          }))}
           totals={[
             {
-              label: "Earned",
-              value: formatMoney(statement.totals.earned_minor, currency),
+              label: "Confirmed received",
+              value: formatMoney(statement.totals.received_minor, currency),
             },
             {
-              label: "Withdrawals & deductions",
-              value: formatMoney(statement.totals.deducted_minor, currency),
+              label: "Awaiting confirmation",
+              value: formatMoney(statement.totals.awaiting_minor, currency),
             },
             {
-              label: "Still on hold",
-              value: formatMoney(statement.totals.on_hold_minor, currency),
-            },
-            {
-              label: "Net for the month",
-              value: formatMoney(statement.totals.net_minor, currency),
+              label: "Total for the month",
+              value: formatMoney(statement.totals.total_minor, currency),
               strong: true,
             },
           ]}

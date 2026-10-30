@@ -1,8 +1,8 @@
 "use client";
 
+import { SalaryStatusBadge } from "@/components/salary/salary-payments";
 import { AppText } from "@/components/shared/app-text";
 import { EmptyState } from "@/components/shared/empty-state";
-import { StatusBadge } from "@/components/shared/status-badge";
 import { Pagination } from "@/components/shared/pagination";
 import { StatCard } from "@/components/shared/stat-card";
 import { Button } from "@/components/ui/button";
@@ -15,10 +15,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn, formatDate, formatMoney } from "@/lib/utils";
-import { Banknote, Hourglass, Wallet } from "lucide-react";
+import { formatDate, formatMoney } from "@/lib/utils";
+import { AlertTriangle, Banknote, Hourglass, Wallet } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
-import type { WalletTransaction } from "@/types/earnings";
+import type { SalaryPaymentWithParties } from "@/types/salary";
 import { BankAccounts } from "./bank-accounts";
 import { EarningsTrend } from "./earnings-trend";
 import { PayslipsCard } from "./payslips-card";
@@ -29,20 +30,13 @@ import {
   useEarningsTrend,
 } from "../_hooks/use-earnings";
 
-const statusTones: Record<WalletTransaction["status"], string> = {
-  PENDING: "bg-amber-50 text-amber-700 border-amber-200",
-  AVAILABLE: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  PAID_OUT: "bg-gray-50 text-gray-600 border-gray-200",
-  REVERSED: "bg-red-50 text-red-700 border-red-200",
-};
+const jobHref = (payment: SalaryPaymentWithParties) =>
+  `/driver/dashboard/job-request/${payment.booking.reference}`;
 
-const typeLabels: Record<WalletTransaction["type"], string> = {
-  BOOKING_PAYMENT: "Payment",
-  PLATFORM_FEE: "Fee",
-  PAYOUT: "Withdrawal",
-  PAYOUT_REVERSAL: "Reversal",
-  ADJUSTMENT: "Adjustment",
-};
+const dateLine = (payment: SalaryPaymentWithParties) =>
+  payment.status === "DUE" || !payment.paid_at
+    ? `Due ${formatDate(payment.due_at)}`
+    : `Paid ${formatDate(payment.paid_at)}`;
 
 export const EarningsSettings = function () {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
@@ -50,13 +44,16 @@ export const EarningsSettings = function () {
 
   const { summary, isFetching } = useEarningsSummary();
   const {
-    transactions,
+    payments,
     totalPages,
     isFetching: isFetchingHistory,
   } = useEarningsHistory({ page, limit: 10 });
   const { trend } = useEarningsTrend();
 
   const currency = summary?.currency ?? "NGN";
+  const wallet = summary?.wallet;
+  const hasWallet =
+    !!wallet && wallet.available_minor + wallet.pending_minor > 0;
 
   return (
     <div className="space-y-5 lg:space-y-6">
@@ -69,38 +66,44 @@ export const EarningsSettings = function () {
           <>
             <StatCard
               icon={Wallet}
-              label="Lifetime earnings"
-              value={formatMoney(summary?.total_earnings_minor, currency)}
-              caption="Everything Haya Drivers has paid you"
-              captionTone="muted"
-            />
-            <StatCard
-              icon={Banknote}
               tone="green"
-              label="Available to withdraw"
-              value={formatMoney(summary?.available_minor, currency)}
-              caption={
-                summary?.available_minor
-                  ? "Ready to send to your bank"
-                  : "Nothing to withdraw yet"
-              }
+              label="Salary received"
+              value={formatMoney(summary?.received_minor, currency)}
+              caption="Payments you've confirmed"
               captionTone="muted"
-              aside={
-                <Button
-                  onClick={() => setWithdrawOpen(true)}
-                  disabled={!summary?.available_minor}
-                  className="h-8 rounded-lg px-3 text-xs"
-                >
-                  Withdraw
-                </Button>
-              }
             />
             <StatCard
               icon={Hourglass}
               tone="amber"
-              label="On hold"
-              value={formatMoney(summary?.pending_minor, currency)}
-              caption="Released after the standard hold"
+              label="Waiting for you"
+              value={formatMoney(
+                summary?.awaiting_confirmation_minor,
+                currency,
+              )}
+              caption={
+                summary?.awaiting_confirmation_count
+                  ? `${summary.awaiting_confirmation_count} payment${summary.awaiting_confirmation_count === 1 ? "" : "s"} the client marked as paid - confirm or report`
+                  : "Nothing to confirm"
+              }
+              captionTone="muted"
+            />
+            <StatCard
+              icon={AlertTriangle}
+              tone={summary?.overdue_count ? "red" : "brand"}
+              label={summary?.overdue_count ? "Overdue" : "Coming up"}
+              value={formatMoney(
+                summary?.overdue_count
+                  ? summary.overdue_minor
+                  : summary?.due_minor,
+                currency,
+              )}
+              caption={
+                summary?.overdue_count
+                  ? `${summary.overdue_count} unpaid - we've reminded the client`
+                  : summary?.disputed_count
+                    ? `${summary.disputed_count} under review by our team`
+                    : "Salary due on your current jobs"
+              }
               captionTone="muted"
             />
           </>
@@ -111,10 +114,10 @@ export const EarningsSettings = function () {
         <div className="min-w-0 space-y-5 xl:space-y-6">
           <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             <AppText type="h4" className="text-[15px] font-semibold">
-              Earning trend
+              Salary received
             </AppText>
             <AppText type="caption" className="text-muted-foreground block">
-              Last 12 months
+              Confirmed payments, last 12 months
             </AppText>
             <div className="mt-3">
               <EarningsTrend trend={trend} currency={currency} />
@@ -123,7 +126,7 @@ export const EarningsSettings = function () {
 
           <div className="space-y-3">
             <AppText type="h4" className="text-[15px] font-semibold">
-              Earning history
+              Salary payments
             </AppText>
 
             <Pagination
@@ -134,56 +137,58 @@ export const EarningsSettings = function () {
               isLoading={isFetchingHistory}
             >
               <div className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-                {isFetchingHistory && !transactions.length ? (
+                {isFetchingHistory && !payments.length ? (
                   <div className="space-y-3 p-4">
                     <Skeleton className="h-12 w-full" />
                     <Skeleton className="h-12 w-full" />
                   </div>
-                ) : !transactions.length ? (
+                ) : !payments.length ? (
                   <EmptyState
                     icon={Banknote}
-                    title="Nothing here yet."
-                    description="Completed jobs and withdrawals will show up here."
+                    title="No salary payments yet."
+                    description="Each pay period of your jobs shows up here, with whether the client has paid it."
                   />
                 ) : (
                   <>
-                    {/* Below sm the table becomes stacked cards - a six-column table
-                  on a phone is unreadable however it is scrolled. */}
                     <div className="divide-border divide-y sm:hidden">
-                      {transactions.map((transaction) => (
-                        <div key={transaction.id} className="space-y-2 p-4">
+                      {payments.map((payment) => (
+                        <Link
+                          key={payment.id}
+                          href={jobHref(payment)}
+                          className="block space-y-2 p-4"
+                        >
                           <div className="flex items-start justify-between gap-3">
+                            <span className="min-w-0">
+                              <AppText type="label" className="block">
+                                {payment.client.name}
+                              </AppText>
+                              <AppText
+                                type="caption"
+                                className="text-muted-foreground block"
+                              >
+                                {payment.period_label}
+                              </AppText>
+                            </span>
                             <AppText type="label">
-                              {transaction.description ??
-                                typeLabels[transaction.type]}
-                            </AppText>
-                            <AppText
-                              type="label"
-                              className={cn(
-                                transaction.amount_minor < 0
-                                  ? "text-destructive"
-                                  : "text-emerald-600",
+                              {formatMoney(
+                                payment.amount_minor,
+                                payment.currency,
                               )}
-                            >
-                              {formatMoney(transaction.amount_minor, currency)}
                             </AppText>
                           </div>
-
                           <div className="flex items-center justify-between gap-3">
                             <AppText
                               type="caption"
                               className="text-muted-foreground"
                             >
-                              {formatDate(transaction.createdAt)}
+                              {dateLine(payment)}
                             </AppText>
-                            <StatusBadge
-                              label={transaction.status
-                                .toLowerCase()
-                                .replace("_", " ")}
-                              className={statusTones[transaction.status]}
+                            <SalaryStatusBadge
+                              payment={payment}
+                              viewer="driver"
                             />
                           </div>
-                        </div>
+                        </Link>
                       ))}
                     </div>
 
@@ -191,61 +196,43 @@ export const EarningsSettings = function () {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Description</TableHead>
+                            <TableHead>Period</TableHead>
                             <TableHead>Client</TableHead>
+                            <TableHead>Date</TableHead>
                             <TableHead>Status</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead>Ref ID</TableHead>
+                            <TableHead className="text-right">Amount</TableHead>
                           </TableRow>
                         </TableHeader>
 
                         <TableBody>
-                          {transactions.map((transaction) => (
-                            <TableRow key={transaction.id}>
+                          {payments.map((payment) => (
+                            <TableRow key={payment.id}>
                               <TableCell>
-                                {formatDate(transaction.createdAt)}
+                                <Link
+                                  href={jobHref(payment)}
+                                  className="hover:text-brand font-medium"
+                                >
+                                  {payment.period_label}
+                                </Link>
+                                <span className="text-muted-foreground block text-xs">
+                                  {payment.booking.reference}
+                                </span>
+                              </TableCell>
+                              <TableCell>{payment.client.name}</TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {dateLine(payment)}
                               </TableCell>
                               <TableCell>
-                                {typeLabels[transaction.type]}
-                              </TableCell>
-                              <TableCell className="max-w-[220px] truncate">
-                                {transaction.description ?? "-"}
-                              </TableCell>
-                              <TableCell>
-                                {transaction.booking
-                                  ? [
-                                      transaction.booking.client.first_name,
-                                      transaction.booking.client.last_name,
-                                    ]
-                                      .filter(Boolean)
-                                      .join(" ") || "-"
-                                  : "-"}
-                              </TableCell>
-                              <TableCell>
-                                <StatusBadge
-                                  label={transaction.status
-                                    .toLowerCase()
-                                    .replace("_", " ")}
-                                  className={statusTones[transaction.status]}
+                                <SalaryStatusBadge
+                                  payment={payment}
+                                  viewer="driver"
                                 />
                               </TableCell>
-                              <TableCell
-                                className={cn(
-                                  "font-medium",
-                                  transaction.amount_minor < 0
-                                    ? "text-destructive"
-                                    : "text-emerald-600",
-                                )}
-                              >
+                              <TableCell className="text-right font-medium">
                                 {formatMoney(
-                                  transaction.amount_minor,
-                                  currency,
+                                  payment.amount_minor,
+                                  payment.currency,
                                 )}
-                              </TableCell>
-                              <TableCell className="text-muted-foreground">
-                                {transaction.reference}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -262,19 +249,59 @@ export const EarningsSettings = function () {
         <div className="min-w-0 space-y-5 xl:space-y-6">
           <PayslipsCard trend={trend} currency={currency} />
 
-          <div className="space-y-3">
-            <AppText type="h4" className="text-[15px] font-semibold">
-              Payout accounts
-            </AppText>
-            <BankAccounts />
-          </div>
+          {hasWallet && (
+            <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+              <AppText type="h4" className="text-[15px] font-semibold">
+                Old wallet balance
+              </AppText>
+              <AppText type="caption" className="text-muted-foreground block">
+                Earnings Haya Drivers held for you before clients started paying
+                salaries directly. You can still withdraw it.
+              </AppText>
+              <div className="mt-4 flex items-end justify-between gap-3">
+                <span>
+                  <AppText
+                    type="h2"
+                    as="p"
+                    className="text-[22px] font-semibold tracking-tight"
+                  >
+                    {formatMoney(wallet.available_minor, currency)}
+                  </AppText>
+                  {wallet.pending_minor > 0 && (
+                    <AppText
+                      type="caption"
+                      className="text-muted-foreground block"
+                    >
+                      {formatMoney(wallet.pending_minor, currency)} on hold
+                    </AppText>
+                  )}
+                </span>
+                <Button
+                  onClick={() => setWithdrawOpen(true)}
+                  disabled={!wallet.available_minor}
+                  className="h-9 rounded-lg px-4 text-xs"
+                >
+                  Withdraw
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {hasWallet && (
+            <div className="space-y-3">
+              <AppText type="h4" className="text-[15px] font-semibold">
+                Payout accounts
+              </AppText>
+              <BankAccounts />
+            </div>
+          )}
         </div>
       </div>
 
       <WithdrawDialog
         open={withdrawOpen}
         onOpenChange={setWithdrawOpen}
-        availableMinor={summary?.available_minor ?? 0}
+        availableMinor={wallet?.available_minor ?? 0}
         currency={currency}
       />
     </div>
