@@ -142,11 +142,7 @@ const AdminHiresContent = function () {
         >
           <div className="space-y-3">
             {requests.map((request) => (
-              <HireRequestCard
-                key={request.id}
-                request={request}
-                listUrl={listUrl}
-              />
+              <HireRequestCard key={request.id} request={request} />
             ))}
           </div>
         </Pagination>

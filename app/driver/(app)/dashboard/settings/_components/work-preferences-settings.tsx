@@ -55,7 +55,6 @@ export const WorkPreferencesSettings = function () {
     url: API_ENDPOINTS.driverProfile.workPreferences,
     method: "put",
     onSuccessMessage: "Work preferences saved",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
   });
 
   const save = (data: WorkPreferencesFormValues) =>

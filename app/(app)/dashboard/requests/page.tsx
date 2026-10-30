@@ -36,7 +36,6 @@ export default function Requests() {
     method: "patch",
     getBody: () => ({}),
     onSuccessMessage: "Request closed",
-    additionalQueryKeys: [[listUrl]],
   });
 
   return (
@@ -97,11 +96,7 @@ export default function Requests() {
         </Pagination>
       )}
 
-      <CreateRequestDialog
-        isOpen={createOpen}
-        onOpenChange={setCreateOpen}
-        listUrl={listUrl}
-      />
+      <CreateRequestDialog isOpen={createOpen} onOpenChange={setCreateOpen} />
 
       <ConfirmDialog
         isOpen={closing !== null}

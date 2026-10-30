@@ -1,7 +1,6 @@
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { queryClient } from "@/lib/utils";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { AttendanceLog } from "@/types/attendance";
 import type {
@@ -54,15 +53,6 @@ export const useJobRequest = function (reference: string, shouldFetch = true) {
   return { booking: data?.data, isFetching };
 };
 
-/*
-  Start and complete are the same shape - a PATCH on the reference that
-  refetches the booking and the lists it appears in. The server owns which
-  transitions are legal; a refused one comes back as a message.
-
-  The list url carries the page, limit and tab filter, so it is a different
-  query key on every tab and no fixed key invalidates it. Matching on the
-  prefix is what refreshes every tab after a transition.
-*/
 const useBookingAction = function ({
   url,
   onSuccessMessage,
@@ -76,16 +66,6 @@ const useBookingAction = function ({
     url,
     method,
     onSuccessMessage,
-    additionalQueryKeys: [
-      [API_ENDPOINTS.driverDashboard.stats],
-      [API_ENDPOINTS.driverDashboard.upcomingJobs({ limit: 5 })],
-    ],
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          String(query.queryKey[0]).startsWith("/driver/job-requests"),
-      });
-    },
   });
 };
 

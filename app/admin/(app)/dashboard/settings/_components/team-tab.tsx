@@ -40,7 +40,6 @@ export const TeamTab = function () {
   });
 
   const rows = data?.data ?? [];
-  const refetchKeys = [[teamUrl]];
 
   const { mutate: changeRole } = useSubmitData<{
     id: string;
@@ -50,7 +49,6 @@ export const TeamTab = function () {
     getBody: ({ admin_role }) => ({ admin_role }),
     method: "patch",
     onSuccessMessage: "Admin role updated",
-    additionalQueryKeys: refetchKeys,
   });
 
   const { mutate: setStatus, isPending: isSettingStatus } = useSubmitData<{
@@ -64,7 +62,6 @@ export const TeamTab = function () {
     getBody: () => ({}),
     method: "patch",
     onSuccessMessage: "Admin updated",
-    additionalQueryKeys: refetchKeys,
     onSuccess: () => setSuspending(null),
   });
 
@@ -74,7 +71,6 @@ export const TeamTab = function () {
     url: ({ id }) => API_ENDPOINTS.adminTeam.remove(id),
     method: "delete",
     onSuccessMessage: "Admin removed",
-    additionalQueryKeys: refetchKeys,
     onSuccess: () => setRemoving(null),
   });
 
@@ -273,11 +269,7 @@ export const TeamTab = function () {
         )}
       </Pagination>
 
-      <InviteAdminDialog
-        isOpen={inviteOpen}
-        onOpenChange={setInviteOpen}
-        teamUrl={teamUrl}
-      />
+      <InviteAdminDialog isOpen={inviteOpen} onOpenChange={setInviteOpen} />
 
       <ConfirmDialog
         isOpen={!!suspending}

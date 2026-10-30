@@ -100,7 +100,6 @@ export const useAddBankAccount = function ({
     // No provider name-enquiry on the manual rail - the admin's banking app
     // confirms the name at the moment money is actually sent.
     onSuccessMessage: "Bank account added",
-    additionalQueryKeys: [[API_ENDPOINTS.earnings.bankAccounts]],
     onSuccess: () => onSuccess?.(),
   });
 
@@ -119,11 +118,6 @@ export const useRequestWithdrawal = function ({
     url: API_ENDPOINTS.earnings.requestWithdrawal,
     method: "post",
     onSuccessMessage: "Withdrawal requested",
-    additionalQueryKeys: [
-      [API_ENDPOINTS.earnings.summary],
-      [API_ENDPOINTS.earnings.withdrawals({ page: 1, limit: 10 })],
-      [API_ENDPOINTS.driverDashboard.stats],
-    ],
     onSuccess: () => onSuccess?.(),
   });
 

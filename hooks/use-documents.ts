@@ -31,10 +31,6 @@ export const useUploadDocument = function ({
     url: API_ENDPOINTS.driverOnboarding.documents,
     method: "post",
     onSuccessMessage: "Document uploaded",
-    additionalQueryKeys: [
-      [API_ENDPOINTS.driverOnboarding.documents],
-      [API_ENDPOINTS.driverOnboarding.profile],
-    ],
     onSuccess: () => onSuccess?.(),
   });
 
@@ -49,7 +45,6 @@ export const useDeleteDocument = function () {
     url: (data) => API_ENDPOINTS.driverOnboarding.deleteDocument(data.id),
     method: "delete",
     onSuccessMessage: "Document removed",
-    additionalQueryKeys: [[API_ENDPOINTS.driverOnboarding.documents]],
   });
 
   return { deleteDocument: mutate, isPending };

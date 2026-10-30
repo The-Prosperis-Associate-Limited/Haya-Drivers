@@ -16,7 +16,6 @@ export const OpenToWorkToggle = function ({ value }: Props) {
     url: API_ENDPOINTS.driverProfile.openToWork,
     method: "patch",
     onSuccessMessage: "Availability updated",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
     onError: () => setChecked((current) => !current),
   });
 

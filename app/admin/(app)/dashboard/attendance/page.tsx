@@ -128,7 +128,6 @@ export default function AdminAttendance() {
         flag={resolving?.flag ?? null}
         outcome={resolving?.outcome ?? "DISMISSED"}
         onClose={() => setResolving(null)}
-        listUrl={listUrl}
       />
 
       <BookingAttendanceDialog

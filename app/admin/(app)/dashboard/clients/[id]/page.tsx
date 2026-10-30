@@ -6,7 +6,7 @@ import { BackLink } from "@/components/shared/back-link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import type { APIResponse } from "@/types/response";
 import type { AdminUserDetail } from "@/types/admin";
@@ -16,12 +16,18 @@ import { ClientOverview } from "./_components/client-overview";
 
 type Tab = "overview" | "activity";
 
+const TABS: { value: Tab; label: string }[] = [
+  { value: "overview", label: "Overview" },
+  { value: "activity", label: "Activity Log" },
+];
+
 function ClientDetail() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
-  const tab = (searchParams.get("tab") as Tab) || "overview";
+  const requested = searchParams.get("tab");
+  const tab =
+    TABS.find((option) => option.value === requested)?.value ?? "overview";
 
   const { data, isFetching } = useGetData<APIResponse<AdminUserDetail>>({
     url: API_ENDPOINTS.adminUsers.detail(params.id),
@@ -64,13 +70,10 @@ function ClientDetail() {
       <AppTabs<Tab>
         value={tab}
         onValueChange={(value) =>
-          router.replace(`/admin/dashboard/clients/${params.id}?tab=${value}`)
+          window.history.replaceState(null, "", `?tab=${value}`)
         }
         variant="outline"
-        tabs={[
-          { value: "overview", label: "Overview" },
-          { value: "activity", label: "Activity Log" },
-        ]}
+        tabs={TABS}
       />
 
       {tab === "overview" &&

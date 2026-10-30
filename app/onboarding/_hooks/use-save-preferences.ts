@@ -19,10 +19,6 @@ export const useSavePreferences = function ({
     url: API_ENDPOINTS.onboarding.preferences,
     method: "put",
     // The profile query feeds the sidebar link and the dashboard prompt card.
-    additionalQueryKeys: [
-      [API_ENDPOINTS.onboarding.preferences],
-      [API_ENDPOINTS.auth.getProfile],
-    ],
     onSuccessMessage: "Saved",
     redirectTo,
     onSuccess,
@@ -40,10 +36,6 @@ export const useCompleteOnboarding = function ({
   >({
     url: API_ENDPOINTS.onboarding.complete,
     method: "post",
-    additionalQueryKeys: [
-      [API_ENDPOINTS.onboarding.preferences],
-      [API_ENDPOINTS.auth.getProfile],
-    ],
     onSuccessMessage: "You're all set",
     redirectTo: "/dashboard",
     silent,

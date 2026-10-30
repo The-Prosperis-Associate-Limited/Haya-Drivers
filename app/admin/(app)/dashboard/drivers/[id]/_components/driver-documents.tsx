@@ -80,7 +80,6 @@ export const DriverDocuments = function ({ userId }: Props) {
       }),
       method: "patch",
       onSuccessMessage: "Document reviewed",
-      additionalQueryKeys: [[submissionUrl]],
       onSuccess: () => {
         setViewing(null);
         closeRejectForm();
@@ -95,7 +94,6 @@ export const DriverDocuments = function ({ userId }: Props) {
       url: API_ENDPOINTS.adminVerifications.reviewSubmission(userId),
       method: "patch",
       onSuccessMessage: "Verification reviewed",
-      additionalQueryKeys: [[submissionUrl]],
       onSuccess: () => {
         setApproveOpen(false);
         setRejectSubmissionOpen(false);

@@ -64,7 +64,6 @@ export const PayoutsTab = function () {
     }),
     method: "patch",
     onSuccessMessage: "Payout updated",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => {
       setPaying(null);
       setFailing(null);

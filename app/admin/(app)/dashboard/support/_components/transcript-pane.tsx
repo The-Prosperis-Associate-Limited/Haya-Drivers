@@ -77,14 +77,12 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   const { mutate: join, isPending: isJoining } = useSubmitData({
     url: API_ENDPOINTS.adminChat.join(conversationId),
     onSuccessMessage: "You joined the conversation",
-    additionalQueryKeys: [[detailUrl]],
     onSuccess: onChanged,
   });
 
   const { mutate: resolve, isPending: isResolving } = useSubmitData({
     url: API_ENDPOINTS.adminChat.resolve(conversationId),
     onSuccessMessage: "Conversation resolved",
-    additionalQueryKeys: [[detailUrl]],
     onSuccess: onChanged,
   });
 
@@ -93,7 +91,6 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   }>({
     url: API_ENDPOINTS.adminChat.message(conversationId),
     silent: true,
-    additionalQueryKeys: [[detailUrl]],
   });
 
   const send = () => {

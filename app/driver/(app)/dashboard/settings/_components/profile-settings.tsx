@@ -67,7 +67,6 @@ export const ProfileSettings = function () {
     url: API_ENDPOINTS.auth.updateProfile,
     method: "put",
     onSuccessMessage: "Profile updated",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
   });
 
   const save = (data: ProfileFormValues) => {

@@ -47,14 +47,12 @@ export const NotificationBell = function ({
     url: API_ENDPOINTS.notifications.markAllAsRead,
     method: "patch",
     onSuccessMessage: "All notifications marked as read",
-    additionalQueryKeys: [[listUrl], [API_ENDPOINTS.notifications.unreadCount]],
   });
 
   const { mutate: markAsRead } = useSubmitData<{ id: string }>({
     url: (payload) => API_ENDPOINTS.notifications.markAsRead(payload.id),
     method: "patch",
     silent: true,
-    additionalQueryKeys: [[listUrl], [API_ENDPOINTS.notifications.unreadCount]],
   });
 
   const unread = unreadData?.data.count ?? 0;

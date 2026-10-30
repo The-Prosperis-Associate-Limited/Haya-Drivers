@@ -18,7 +18,6 @@ interface Props {
   flag: AttendanceFlag | null;
   outcome: FlagResolution;
   onClose: () => void;
-  listUrl: string;
 }
 
 const COPY: Record<
@@ -39,12 +38,7 @@ const COPY: Record<
   },
 };
 
-export const ResolveFlagDialog = function ({
-  flag,
-  outcome,
-  onClose,
-  listUrl,
-}: Props) {
+export const ResolveFlagDialog = function ({ flag, outcome, onClose }: Props) {
   const {
     control,
     handleSubmit,
@@ -64,7 +58,6 @@ export const ResolveFlagDialog = function ({
     url: () => API_ENDPOINTS.adminAttendance.resolve(flag?.id ?? ""),
     getBody: ({ note }) => ({ note, outcome }),
     onSuccessMessage: outcome === "UPHELD" ? "Flag upheld" : "Flag dismissed",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: close,
   });
 

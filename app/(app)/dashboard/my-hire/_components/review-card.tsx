@@ -68,7 +68,6 @@ export const ReviewCard = function ({ hire }: Props) {
     url: API_ENDPOINTS.bookings.review(hire.reference),
     method: "post",
     onSuccessMessage: "Review submitted",
-    additionalQueryKeys: [[API_ENDPOINTS.hires.detail(hire.reference)]],
   });
 
   const rated = Object.keys(scores).length;

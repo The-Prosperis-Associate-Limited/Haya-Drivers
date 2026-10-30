@@ -46,12 +46,11 @@ import type { APIResponse, PaginatedResponse } from "@/types/response";
 
 interface Props {
   request: HireRequest;
-  listUrl: string;
 }
 
 const DEFAULT_VAT = 7.5;
 
-export const HireRequestCard = function ({ request, listUrl }: Props) {
+export const HireRequestCard = function ({ request }: Props) {
   const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [declineOpen, setDeclineOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -157,7 +156,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.invoice(request.reference),
     onSuccessMessage: "Invoice generated and sent to the client",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setInvoiceOpen(false),
   });
 
@@ -166,7 +164,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.decline(request.reference),
     onSuccessMessage: "Request declined",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setDeclineOpen(false),
   });
 
@@ -175,7 +172,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.assign(request.reference),
     onSuccessMessage: "Candidate added - availability ping sent",
-    additionalQueryKeys: [[listUrl]],
   });
 
   const { mutate: unassign, isPending: isUnassigning } = useSubmitData<{
@@ -183,13 +179,11 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.unassign(request.reference),
     onSuccessMessage: "Driver removed from the request",
-    additionalQueryKeys: [[listUrl]],
   });
 
   const { mutate: confirmPayment, isPending: isConfirming } = useSubmitData({
     url: API_ENDPOINTS.adminHires.confirmPayment(request.reference),
     onSuccessMessage: "Payment confirmed - engagement created",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setConfirmOpen(false),
   });
 
@@ -198,7 +192,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.rejectProof(request.reference),
     onSuccessMessage: "Proof rejected - the client can re-upload",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setRejectOpen(false),
   });
 

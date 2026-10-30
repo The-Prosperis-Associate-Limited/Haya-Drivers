@@ -54,7 +54,6 @@ export const ShortlistCard = function () {
   }>({
     url: (payload) => API_ENDPOINTS.shortlists.respond(payload.id),
     onSuccessMessage: "Response sent",
-    additionalQueryKeys: [[API_ENDPOINTS.shortlists.list]],
     onSuccess: () => setDecliningId(null),
   });
 

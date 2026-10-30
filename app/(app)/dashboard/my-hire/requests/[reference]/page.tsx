@@ -85,7 +85,6 @@ export default function HireRequestDetail({
   >({
     url: API_ENDPOINTS.hireRequests.proof(reference),
     onSuccessMessage: "Proof submitted - we'll confirm your payment shortly",
-    additionalQueryKeys: [[detailUrl]],
     onSuccess: () => {
       setProofFile(null);
       setProofNote("");
@@ -95,7 +94,6 @@ export default function HireRequestDetail({
   const { mutate: cancel, isPending: isCancelling } = useSubmitData({
     url: API_ENDPOINTS.hireRequests.cancel(reference),
     onSuccessMessage: "Request cancelled",
-    additionalQueryKeys: [[detailUrl]],
   });
 
   const handleSubmitProof = () => {

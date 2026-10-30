@@ -47,7 +47,6 @@ export const HireAttendance = function ({ reference, driverName }: Props) {
   const { mutate, isPending } = useSubmitData<FlagAttendanceFormValues>({
     url: () => API_ENDPOINTS.hires.flagDay(reference, flagging?.id ?? ""),
     onSuccessMessage: "Day flagged - our team will look into it",
-    additionalQueryKeys: [[API_ENDPOINTS.hires.attendance(reference, month)]],
     onSuccess: close,
   });
 
