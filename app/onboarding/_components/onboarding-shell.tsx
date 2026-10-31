@@ -1,9 +1,9 @@
 "use client";
 
 import { Car, MapPin, ShieldCheck, UserRound, UsersRound, Wallet, type LucideIcon } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { OnboardingAside } from "@/components/shared/onboarding-aside";
 import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { useGetProfile } from "@/hooks/use-get-profile";
@@ -75,12 +75,7 @@ export const OnboardingShell = function ({ step, title, subtitle, children, onCo
 
   return (
     <div className="grid min-h-screen grid-cols-[minmax(0,1fr)] bg-[#f8fafc] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
-      <aside className="from-brand relative isolate hidden h-screen flex-col overflow-x-hidden overflow-y-auto overscroll-contain bg-linear-to-b via-[#1f56d9] to-[#1a46b3] px-6 py-7 text-white [scrollbar-width:none] lg:sticky lg:top-0 lg:flex [&::-webkit-scrollbar]:hidden">
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(120%_140%_at_100%_0%,#5b8cff_0%,transparent_55%)]" />
-          <Image src="/cloud-top-right.svg" alt="" width={260} height={100} className="absolute -top-2 -right-16 w-[240px] opacity-25" />
-        </div>
-
+      <OnboardingAside>
         <Link href="/dashboard" className="flex w-fit items-center gap-2.5 font-bold">
           <span className="grid size-9 place-items-center rounded-xl bg-white">
             <TegatLogo size={24} />
@@ -111,7 +106,7 @@ export const OnboardingShell = function ({ step, title, subtitle, children, onCo
           </p>
           NIMC identity, FRSC licence and a confirmed guarantor - before they ever appear in your search.
         </div>
-      </aside>
+      </OnboardingAside>
 
       <div className="flex min-w-0 flex-col">
         <header className="border-border sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-white/90 px-4 backdrop-blur md:px-8">

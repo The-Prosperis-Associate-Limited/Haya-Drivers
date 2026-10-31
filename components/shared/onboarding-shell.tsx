@@ -1,7 +1,6 @@
 "use client";
 
 import { Check, Headset, ShieldCheck } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useOnboardingProfile } from "@/hooks/use-onboarding-profile";
 import { ONBOARDING_STEPS, cn } from "@/lib/utils";
+import { OnboardingAside } from "./onboarding-aside";
 import type { OnboardingStep } from "@/types/driver";
 
 const TIP_INTERVAL_MS = 8000;
@@ -86,9 +86,7 @@ export const OnboardingShell = function ({ children, step, tips, footer, classNa
 
   return (
     <div className="grid min-h-screen grid-cols-[minmax(0,1fr)] bg-[#f8fafc] lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
-      <aside className="from-brand relative isolate hidden h-screen flex-col overflow-y-auto bg-linear-to-b via-[#1f56d9] to-[#1a46b3] px-6 py-7 text-white lg:sticky lg:top-0 lg:flex">
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(120%_140%_at_100%_0%,#5b8cff_0%,transparent_55%)]" />
-        <Image src="/cloud-top-right.svg" alt="" width={260} height={100} className="pointer-events-none absolute -top-2 -right-16 -z-10 w-[240px] opacity-25" />
+      <OnboardingAside>
 
         <Link href="/driver/dashboard" className="flex w-fit items-center gap-2.5 font-bold">
           <span className="grid size-9 place-items-center rounded-xl bg-white">
@@ -155,7 +153,7 @@ export const OnboardingShell = function ({ children, step, tips, footer, classNa
           {WHY[step]}
           {!!tips?.length && <RotatingTip tips={tips} />}
         </div>
-      </aside>
+      </OnboardingAside>
 
       <div className="flex min-w-0 flex-col">
         <header className="border-border sticky top-0 z-20 flex h-16 items-center gap-3 border-b bg-white/90 px-4 backdrop-blur md:px-8">
