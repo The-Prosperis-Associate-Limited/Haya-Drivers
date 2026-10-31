@@ -1,124 +1,119 @@
 "use client";
 
-import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { FileText, Trash2, Upload } from "lucide-react";
+import { Camera, CircleCheck, CircleX, FileText, House, IdCard, Loader2, Trash2, Upload, UserRound, type LucideIcon } from "lucide-react";
 import { useRef } from "react";
 import type { DocumentStatus, DocumentType } from "@/types/driver";
 
 interface Props {
   type: DocumentType;
   label: string;
+  hint?: string;
+  required?: boolean;
   status?: DocumentStatus;
   fileName?: string | null;
   rejectionReason?: string | null;
   isUploading?: boolean;
   onUpload: (file: File) => void;
   onRemove?: () => void;
+  onReplace?: () => void;
 }
 
-const statusTones: Record<DocumentStatus, string> = {
-  PENDING: "text-amber-600",
-  APPROVED: "text-emerald-600",
-  REJECTED: "text-destructive",
+const ICONS: Partial<Record<DocumentType, LucideIcon>> = {
+  NIN_SLIP: IdCard,
+  PASSPORT_PHOTO: Camera,
+  DRIVERS_LICENCE: IdCard,
+  PROOF_OF_ADDRESS: House,
+  GUARANTOR_PASSPORT: UserRound,
+  GUARANTOR_NIN_SLIP: IdCard,
 };
 
-export const DocumentRow = function ({
-  label,
-  status,
-  fileName,
-  rejectionReason,
-  isUploading,
-  onUpload,
-  onRemove,
-}: Props) {
+export const DocumentRow = function ({ type, label, hint, required, status, fileName, rejectionReason, isUploading, onUpload, onRemove, onReplace }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const isUploaded = !!status;
+  const Icon = isUploading ? Loader2 : status === "APPROVED" ? CircleCheck : status === "REJECTED" ? CircleX : (ICONS[type] ?? FileText);
+  const pick = () => (onReplace ? onReplace() : inputRef.current?.click());
+
+  const meta = isUploading
+    ? "Uploading…"
+    : status === "REJECTED"
+      ? rejectionReason || "Our team couldn't accept this file. Upload a clearer one."
+      : status === "APPROVED"
+        ? `Accepted${fileName ? ` · ${fileName}` : ""}`
+        : status === "PENDING"
+          ? `${fileName ?? "Uploaded"} · waiting for review`
+          : (hint ?? "JPG, PNG or PDF · up to 5MB");
 
   return (
     <div
+      data-document={type}
+      data-status={isUploading ? "UPLOADING" : (status ?? "MISSING")}
       className={cn(
-        "rounded-xl bg-gray-50 p-4",
-        status === "REJECTED" && "bg-red-50",
+        "flex items-center gap-3.5 rounded-2xl border-[1.5px] border-dashed bg-white p-3.5",
+        status === "PENDING" && "border-solid border-slate-200",
+        status === "APPROVED" && "border-solid border-emerald-200 bg-linear-to-b from-emerald-50/60 to-white",
+        status === "REJECTED" && "border-solid border-red-200 bg-linear-to-b from-red-50/70 to-white",
+        isUploading && "border-brand/40 border-solid",
       )}
     >
-      <div className="flex items-center gap-3">
-        <div className="bg-brand-soft flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
-          <FileText className="text-brand h-4 w-4" />
-        </div>
+      <span
+        className={cn(
+          "grid size-12 shrink-0 place-items-center rounded-xl bg-slate-100 text-slate-500",
+          status === "PENDING" && "bg-brand-soft text-brand",
+          status === "APPROVED" && "bg-emerald-100 text-emerald-600",
+          status === "REJECTED" && "bg-red-100 text-red-600",
+          isUploading && "bg-brand-soft text-brand",
+        )}
+      >
+        <Icon className={cn("size-5", isUploading && "animate-spin")} />
+      </span>
 
-        <div className="min-w-0 flex-1">
-          <AppText type="label" className="block truncate">
-            {label}
-          </AppText>
-          <AppText
-            type="caption"
-            className="text-muted-foreground block truncate"
-          >
-            {fileName ?? "JPG, PNG or PDF · up to 5 MB"}
-          </AppText>
-        </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[13.5px] font-semibold">
+          {label}
+          {required && <span className="text-muted-foreground ml-1.5 rounded-full bg-slate-100 px-1.5 py-px align-[1px] text-[10.5px] font-semibold">Required</span>}
+        </p>
+        <p className={cn("text-muted-foreground text-xs", status === "REJECTED" && !isUploading && "font-medium text-red-600", status !== "REJECTED" && "truncate")}>{meta}</p>
+      </div>
 
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/jpg,application/pdf"
-          className="hidden"
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            if (file) onUpload(file);
-            event.target.value = "";
-          }}
-        />
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/jpg,application/pdf"
+        className="hidden"
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) onUpload(file);
+          event.target.value = "";
+        }}
+      />
 
-        {isUploaded ? (
-          <div className="flex shrink-0 items-center gap-1">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              isLoading={isUploading}
-              onClick={() => inputRef.current?.click()}
-              aria-label={`Replace ${label}`}
-            >
-              <Upload className="text-brand h-4 w-4" />
-            </Button>
-            {onRemove && status !== "APPROVED" && (
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={onRemove}
-                aria-label={`Remove ${label}`}
-              >
-                <Trash2 className="text-destructive h-4 w-4" />
+      <div className="flex shrink-0 items-center gap-1">
+        {status === "REJECTED" ? (
+          <Button type="button" onClick={pick} disabled={isUploading} className="h-9 rounded-lg px-3 text-xs">
+            <Camera className="size-4" />
+            Replace
+          </Button>
+        ) : status ? (
+          <>
+            {status !== "APPROVED" && (
+              <Button type="button" variant="outline" onClick={pick} disabled={isUploading} className="h-9 rounded-lg px-3 text-xs">
+                Replace
               </Button>
             )}
-          </div>
+            {onRemove && status === "PENDING" && (
+              <Button type="button" variant="ghost" size="icon" onClick={onRemove} aria-label={`Remove ${label}`}>
+                <Trash2 className="text-destructive size-4" />
+              </Button>
+            )}
+          </>
         ) : (
-          <Button
-            type="button"
-            isLoading={isUploading}
-            onClick={() => inputRef.current?.click()}
-            className="h-9 shrink-0 rounded-lg px-4"
-          >
+          <Button type="button" onClick={pick} disabled={isUploading} className="h-9 rounded-lg px-3 text-xs" variant={required ? "default" : "outline"}>
+            <Upload className="size-4" />
             Upload
           </Button>
         )}
       </div>
-
-      {status && (
-        <AppText
-          type="caption"
-          className={cn("mt-2 block capitalize", statusTones[status])}
-        >
-          {status.toLowerCase()}
-          {status === "REJECTED" && rejectionReason
-            ? ` - ${rejectionReason}`
-            : ""}
-        </AppText>
-      )}
     </div>
   );
 };

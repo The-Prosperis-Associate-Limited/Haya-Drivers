@@ -33,6 +33,13 @@ export const API_ENDPOINTS = {
   onboarding: {
     preferences: "/client/onboarding",
     complete: "/client/onboarding/complete",
+    insights: ({ location, budget, categories }: { location?: string | null; budget?: number | null; categories?: string[] }) => {
+      const params = new URLSearchParams();
+      if (location) params.set("location", location);
+      if (budget) params.set("budget", String(budget));
+      if (categories?.length) params.set("categories", categories.join(","));
+      return `/client/onboarding/insights?${params.toString()}`;
+    },
   },
 
   // The driver surface. Section names carry the driver prefix where a client

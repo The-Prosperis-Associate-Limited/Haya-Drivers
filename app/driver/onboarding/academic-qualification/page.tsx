@@ -3,14 +3,13 @@
 import { FormInput } from "@/components/form/form-input";
 import { FormSelect } from "@/components/form/form-select";
 import { OnboardingShell } from "@/components/shared/onboarding-shell";
-import { Button } from "@/components/ui/button";
 import { useOnboardingProfile } from "@/hooks/use-onboarding-profile";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import {
   ACADEMIC_LEVEL_OPTIONS,
   ONBOARDING_TIPS,
-  getOnboardingProgress,
 } from "@/lib/utils";
+import { GraduationCap } from "lucide-react";
 import {
   academicQualificationSchema,
   type AcademicQualificationFormValues,
@@ -19,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StepHeader } from "../_components/step-header";
+import { StepPanel } from "../_components/step-panel";
 import { useSaveOnboardingStep } from "../_hooks/use-save-onboarding-step";
 
 export default function AcademicQualificationStep() {
@@ -50,21 +50,17 @@ export default function AcademicQualificationStep() {
       onSuccessMessage: "Academic qualification saved",
     });
 
-  const firstName = profile?.user.first_name ?? "there";
-
   return (
     <OnboardingShell
-      title={`Welcome ${firstName} 👋`}
-      subtitle="Let's get your account fully set up. A few quick steps stand between you and your first job."
+      step="ACADEMIC_QUALIFICATION"
       tips={ONBOARDING_TIPS.ACADEMIC_QUALIFICATION}
+      footer={{ label: "Continue", formId: "step-form", isLoading: isPending, hint: "Not required - it just rounds out your profile" }}
     >
-      <StepHeader
-        title="Academic qualification"
-        description="Add your highest level of education. This isn't a strict requirement, but it helps build a fuller profile"
-        progress={getOnboardingProgress("ACADEMIC_QUALIFICATION")}
-      />
+      <StepHeader step="ACADEMIC_QUALIFICATION" title="Your education" description="Add your highest level of education. It isn't required, but it helps build a fuller profile." />
 
-      <form onSubmit={handleSubmit((data) => save(data))} className="space-y-4">
+      <form id="step-form" onSubmit={handleSubmit((data) => save(data))}>
+        <StepPanel title="Highest qualification" icon={GraduationCap}>
+        <div className="grid gap-4 sm:grid-cols-2">
         <FormSelect<AcademicQualificationFormValues>
           control={control}
           name="academic_level"
@@ -90,12 +86,8 @@ export default function AcademicQualificationStep() {
           placeholder="E.g Medicine"
         />
 
-        <Button
-          isLoading={isPending}
-          className="h-12 w-full rounded-lg text-sm"
-        >
-          Continue
-        </Button>
+        </div>
+        </StepPanel>
       </form>
     </OnboardingShell>
   );

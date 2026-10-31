@@ -2,24 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { AppInput } from "@/components/shared/app-input";
-import { UserRound } from "lucide-react";
+import { Building2, House, UserRound } from "lucide-react";
 import type { ClientType } from "@/types/auth";
 import { OnboardingShell } from "../_components/onboarding-shell";
 import { OptionCard } from "../_components/option-card";
 import { usePreferences } from "../_hooks/use-preferences";
 import { useSavePreferences } from "../_hooks/use-save-preferences";
 
-const HIRE_TYPES: { value: ClientType; label: string; blurb: string }[] = [
-  {
-    value: "INDIVIDUAL",
-    label: "Individual",
-    blurb: "Hiring for myself or family",
-  },
-  {
-    value: "ORGANISATION",
-    label: "Organization",
-    blurb: "Hiring for my company",
-  },
+const HIRE_TYPES = [
+  { value: "INDIVIDUAL" as ClientType, label: "Myself or my family", blurb: "School runs, errands, a personal driver for you", icon: House },
+  { value: "ORGANISATION" as ClientType, label: "A company", blurb: "Staff, executives or logistics - invoiced to your organisation", icon: Building2 },
 ];
 
 export default function HireType() {
@@ -43,8 +35,8 @@ export default function HireType() {
   return (
     <OnboardingShell
       step={1}
-      title="How will you hire?"
-      subtitle="This tailors the drivers and paperwork we show you."
+      title="Who are you hiring for?"
+      subtitle="This decides how invoices are addressed and which drivers we suggest."
       isPending={isPending}
       continueDisabled={isOrganisation && organisationName.trim().length < 2}
       onContinue={() =>
@@ -60,6 +52,7 @@ export default function HireType() {
             key={type.value}
             label={type.label}
             blurb={type.blurb}
+            icon={type.icon}
             selected={clientType === type.value}
             onSelect={() => setClientType(type.value)}
           />

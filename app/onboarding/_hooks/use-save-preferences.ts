@@ -29,7 +29,8 @@ export const useSavePreferences = function ({
 
 export const useCompleteOnboarding = function ({
   silent,
-}: { silent?: boolean } = {}) {
+  redirectTo = "/dashboard",
+}: { silent?: boolean; redirectTo?: string } = {}) {
   const { mutate, isPending } = useSubmitData<
     Record<string, never> | undefined,
     APIResponse<ClientProfile>
@@ -37,7 +38,7 @@ export const useCompleteOnboarding = function ({
     url: API_ENDPOINTS.onboarding.complete,
     method: "post",
     onSuccessMessage: "You're all set",
-    redirectTo: "/dashboard",
+    redirectTo,
     silent,
   });
 

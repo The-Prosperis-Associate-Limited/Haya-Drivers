@@ -31,8 +31,8 @@ export default function Capacity() {
   return (
     <OnboardingShell
       step={3}
-      title="How many, and for how long?"
-      subtitle="Helps us match capacity and suggest a plan."
+      title="How many drivers, and for how long?"
+      subtitle="A rough number is fine."
       isPending={isPending}
       continueDisabled={!driversNeeded || !assignmentType}
       onContinue={() =>
@@ -42,8 +42,8 @@ export default function Capacity() {
         })
       }
     >
-      <p className="text-ink mb-3 text-sm font-medium">Number of drivers</p>
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <p className="mb-2.5 text-[13px] font-semibold text-slate-700">Drivers needed</p>
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
         {DRIVERS_NEEDED_OPTIONS.map((option) => (
           <OptionCard
             key={option.value}
@@ -54,8 +54,8 @@ export default function Capacity() {
         ))}
       </div>
 
-      <p className="text-ink mt-8 mb-3 text-sm font-medium">Assignment type</p>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <p className="mt-7 mb-2.5 text-[13px] font-semibold text-slate-700">For how long?</p>
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         {ASSIGNMENT_TYPE_OPTIONS.map((option) => (
           <OptionCard
             key={option.value}

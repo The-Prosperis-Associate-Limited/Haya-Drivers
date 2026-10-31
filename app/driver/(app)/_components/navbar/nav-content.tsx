@@ -10,6 +10,8 @@ import { cn, getInitials } from "@/lib/utils";
 import {
   BadgeCheck,
   ChevronDown,
+  GraduationCap,
+  Lock,
   LogOut,
   ShieldCheck,
   Sparkles,
@@ -164,22 +166,29 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
           <span className="pointer-events-none absolute -top-8 -right-8 size-28 rounded-full border border-white/15" />
           {isVerified ? (
             <>
-              <span className="flex items-center gap-2 text-sm font-semibold">
-                <ShieldCheck className="size-4" />
-                Grow your trust score
+              <span className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <ShieldCheck className="size-4" />
+                  Boost your trust score
+                </span>
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10.5px] font-semibold">
+                  <Lock className="size-3" />
+                  Soon
+                </span>
               </span>
               <p className="mt-1 text-xs text-white/70">
-                Every completed job and good review lifts you up the search
-                results.
+                Training courses will add up to 30 points to your trust score
+                and move you up the search results.
               </p>
               <Button
-                asChild
+                type="button"
                 variant="ghost"
-                className="text-brand mt-3 h-9 w-full rounded-xl bg-white text-xs hover:bg-white/90"
+                disabled
+                aria-disabled="true"
+                className="mt-3 h-9 w-full cursor-not-allowed rounded-xl bg-white/15 text-xs text-white/80 hover:bg-white/15 disabled:opacity-100"
               >
-                <Link href="/driver/dashboard/trust-score" onClick={onNavigate}>
-                  See what counts
-                </Link>
+                <GraduationCap className="size-3.5" />
+                Training is coming soon
               </Button>
             </>
           ) : (

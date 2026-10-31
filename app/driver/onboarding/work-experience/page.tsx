@@ -10,17 +10,17 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import {
   DEFAULT_WORK_EXPERIENCE,
   ONBOARDING_TIPS,
-  getOnboardingProgress,
 } from "@/lib/utils";
 import {
   workExperienceSchema,
   type WorkExperienceFormValues,
 } from "@/schemas/onboarding/steps";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2 } from "lucide-react";
+import { Briefcase, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { StepHeader } from "../_components/step-header";
+import { StepPanel } from "../_components/step-panel";
 import { useSaveOnboardingStep } from "../_hooks/use-save-onboarding-step";
 
 export default function WorkExperienceStep() {
@@ -77,23 +77,18 @@ export default function WorkExperienceStep() {
     remove(index);
   };
 
-  const firstName = profile?.user.first_name ?? "there";
-
   return (
     <OnboardingShell
-      title={`Welcome ${firstName} 👋`}
-      subtitle="Let's get your account fully set up. A few quick steps stand between you and your first job."
+      step="WORK_EXPERIENCE"
       tips={ONBOARDING_TIPS.WORK_EXPERIENCE}
+      footer={{ label: "Continue", formId: "step-form", isLoading: isPending, hint: "Saved when you continue" }}
     >
-      <StepHeader
-        title="Your work experience"
-        description="Add your previous driving jobs so clients can see your track record"
-        progress={getOnboardingProgress("WORK_EXPERIENCE")}
-      />
+      <StepHeader step="WORK_EXPERIENCE" title="Where have you driven before?" description="Add your previous driving jobs so clients can see your track record. Even a short role counts." />
 
       {/* An empty or current-role end date must be omitted - the server
           coerces "" into Invalid Date and rejects the whole step. */}
       <form
+        id="step-form"
         onSubmit={handleSubmit((data) =>
           save({
             experiences: data.experiences.map((entry) => ({
@@ -105,13 +100,16 @@ export default function WorkExperienceStep() {
             })),
           }),
         )}
-        className="space-y-4"
+        className="space-y-3.5"
       >
         {fields.map((field, index) => (
-          <div
+          <StepPanel
             key={field.id}
-            className="border-border space-y-4 rounded-xl border p-4"
+            title={watchedExperiences?.[index]?.employer || `Role ${index + 1}`}
+            description={watchedExperiences?.[index]?.job_title || "Employer and job title"}
+            icon={Briefcase}
           >
+          <div className="space-y-4">
             <FormInput<WorkExperienceFormValues>
               control={control}
               name={`experiences.${index}.employer`}
@@ -180,19 +178,13 @@ export default function WorkExperienceStep() {
                   className="text-brand h-10 rounded-lg px-4"
                 >
                   <Plus className="h-4 w-4" />
-                  Add New Role
+                  Add another role
                 </Button>
               )}
             </div>
           </div>
+          </StepPanel>
         ))}
-
-        <Button
-          isLoading={isPending}
-          className="h-12 w-full rounded-lg text-sm"
-        >
-          Continue
-        </Button>
       </form>
 
       <ConfirmDialog

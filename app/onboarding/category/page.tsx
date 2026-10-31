@@ -1,5 +1,7 @@
 "use client";
 
+import { Building2, CalendarDays, Globe, House, ShieldCheck, Star, type LucideIcon } from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { CLIENT_DRIVER_CATEGORY_OPTIONS } from "@/lib/utils";
 import type { ClientDriverCategory } from "@/types/auth";
@@ -7,6 +9,15 @@ import { OnboardingShell } from "../_components/onboarding-shell";
 import { OptionCard } from "../_components/option-card";
 import { usePreferences } from "../_hooks/use-preferences";
 import { useSavePreferences } from "../_hooks/use-save-preferences";
+
+const CATEGORY_ICONS: Record<ClientDriverCategory, LucideIcon> = {
+  CONTRACT: CalendarDays,
+  PRIVATE: House,
+  CORPORATE: Building2,
+  EXECUTIVE: Star,
+  SPY: ShieldCheck,
+  EXPATRIATE: Globe,
+};
 
 export default function Category() {
   const { preferences } = usePreferences();
@@ -31,8 +42,8 @@ export default function Category() {
   return (
     <OnboardingShell
       step={2}
-      title="What Category of driver(s) do you need?"
-      subtitle="Pick all that apply, we'll surface matching drivers first."
+      title="What kind of driver do you need?"
+      subtitle="Pick all that apply - matching drivers show up first."
       isPending={isPending}
       continueDisabled={selected.length === 0}
       onContinue={() => save({ hiring_categories: selected })}
@@ -43,6 +54,7 @@ export default function Category() {
             key={category.value}
             label={category.label}
             blurb={category.blurb}
+            icon={CATEGORY_ICONS[category.value]}
             selected={selected.includes(category.value)}
             onSelect={() => toggle(category.value)}
           />
