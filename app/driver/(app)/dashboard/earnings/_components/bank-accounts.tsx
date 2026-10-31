@@ -7,19 +7,20 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/lib/show-toast";
-import { Banknote, Check } from "lucide-react";
-import { useState } from "react";
+import { Banknote, BadgeCheck, Check, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   useAddBankAccount,
   useBankAccounts,
   useBanks,
+  useResolveBankAccount,
 } from "../_hooks/use-earnings";
 
 export const BankAccounts = function () {
   const [adding, setAdding] = useState(false);
   const [bankCode, setBankCode] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
-  const [accountName, setAccountName] = useState("");
+  const [resolved, setResolved] = useState<{ key: string; name: string } | null>(null);
 
   const { bankAccounts, isFetching } = useBankAccounts();
   const { banks } = useBanks({
@@ -33,9 +34,28 @@ export const BankAccounts = function () {
       setAdding(false);
       setBankCode(null);
       setAccountNumber("");
-      setAccountName("");
+      setResolved(null);
     },
   });
+
+  const selectedBank = banks.find((option) => option.code === bankCode);
+  const lookupKey = `${selectedBank?.code ?? ""}:${accountNumber}`;
+  const accountName = resolved?.key === lookupKey ? resolved.name : null;
+
+  const { resolveAccount, isResolving } = useResolveBankAccount({
+    onResolved: (name) => setResolved({ key: lookupKey, name }),
+  });
+
+  // The name always comes from the bank, never the driver - so a typo can't send money to a stranger.
+  useEffect(() => {
+    if (!selectedBank || !/^d{10}$/.test(accountNumber)) return;
+
+    resolveAccount({
+      bank_code: selectedBank.code,
+      account_number: accountNumber,
+      currency: selectedBank.currency || "NGN",
+    });
+  }, [selectedBank?.code, accountNumber]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = () => {
     const bank = banks.find((option) => option.code === bankCode);
@@ -44,15 +64,14 @@ export const BankAccounts = function () {
     if (!/^\d{8,20}$/.test(accountNumber)) {
       return showToast("error", "Enter a valid account number");
     }
-    if (accountName.trim().length < 3) {
-      return showToast("error", "Enter the name on the account");
+    if (!accountName) {
+      return showToast("error", "Wait for your bank to confirm the account name");
     }
 
     addBankAccount({
       bank_code: bank.code,
       bank_name: bank.name,
       account_number: accountNumber,
-      account_name: accountName.trim(),
       currency: bank.currency || "NGN",
     });
   };
@@ -122,21 +141,33 @@ export const BankAccounts = function () {
             onChange={(event) => setAccountNumber(event.target.value)}
           />
 
-          <AppInput
-            label="Account name"
-            placeholder="The name on the account"
-            value={accountName}
-            onChange={(event) => setAccountName(event.target.value)}
-          />
+          {isResolving && (
+            <p className="text-muted-foreground flex items-center gap-2 text-sm">
+              <Loader2 className="size-4 animate-spin" />
+              Confirming the account name with your bank…
+            </p>
+          )}
+          {accountName && (
+            <div className="flex items-center gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3">
+              <BadgeCheck className="size-4 shrink-0 text-emerald-600" />
+              <span className="text-sm">
+                <span className="block font-semibold">{accountName}</span>
+                <span className="text-muted-foreground text-xs">
+                  Name confirmed by your bank
+                </span>
+              </span>
+            </div>
+          )}
 
           <AppText type="caption" className="text-muted-foreground block">
-            Make sure the name matches your bank records exactly - payments are
-            sent to this account.
+            We confirm the name on the account with your bank, so a typo can
+            never send your money to someone else.
           </AppText>
 
           <div className="flex gap-3">
             <Button
               isLoading={isPending}
+              disabled={!accountName}
               onClick={onSubmit}
               className="h-11 rounded-lg px-6"
             >

@@ -6,6 +6,7 @@ import {
   Car,
   LayoutGrid,
   MessagesSquare,
+  Network,
   Settings,
   UsersRound,
   type LucideIcon,
@@ -36,6 +37,13 @@ export const ADMIN_NAV_LINKS: AdminNavLink[] = [
     icon: BriefcaseBusiness,
     countKey: "hires",
     countLabel: "needing action",
+  },
+  {
+    href: "/admin/dashboard/referrals",
+    label: "Referrals",
+    icon: Network,
+    countKey: "referrals",
+    countLabel: "rewards held for review",
   },
   {
     href: "/admin/dashboard/transactions",

@@ -1,5 +1,7 @@
 import {
   Briefcase,
+  Gift,
+  TrendingUp,
   LayoutGrid,
   Settings,
   ShieldCheck,
@@ -31,7 +33,17 @@ export const NAV_LINKS: NavLink[] = [
   {
     label: "Earnings",
     href: "/driver/dashboard/earnings",
+    icon: TrendingUp,
+  },
+  {
+    label: "Wallet",
+    href: "/driver/dashboard/wallet",
     icon: Wallet,
+  },
+  {
+    label: "Refer & earn",
+    href: "/driver/dashboard/referrals",
+    icon: Gift,
   },
   {
     label: "Trust score",

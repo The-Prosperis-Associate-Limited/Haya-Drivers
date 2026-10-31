@@ -10,7 +10,7 @@ export default function AdminResetSuccessful() {
   const router = useRouter();
 
   return (
-    <AuthShell>
+    <AuthShell surface="admin">
       <div className="bg-brand-soft mb-6 flex h-16 w-16 items-center justify-center rounded-full">
         <CircleCheck className="text-brand h-8 w-8" />
       </div>

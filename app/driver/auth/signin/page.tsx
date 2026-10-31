@@ -5,7 +5,6 @@ import { AuthHeading, AuthShell } from "@/components/driver/auth-shell";
 import { AppText } from "@/components/shared/app-text";
 import { GoogleAuthButton } from "@/components/shared/google-auth-button";
 import { OrDemacator } from "@/components/shared/or-demacator";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { setAuthCookies } from "@/lib/authService";
 import { showToast } from "@/lib/show-toast";
@@ -66,10 +65,6 @@ function SignInForm() {
 
   return (
     <AuthShell backHref="/">
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
       <AuthHeading
         title="Sign in to Haya Drivers"
         subtitle="Enter your details to access your account."

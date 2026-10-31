@@ -6,6 +6,7 @@ import axios, {
 } from "axios";
 import Cookies from "js-cookie";
 import { clearAuthCookies, cookieOpts } from "./authService";
+import { getDeviceId } from "./device-id";
 
 // Constants
 const CONFIG = {
@@ -109,6 +110,9 @@ const api = axios.create({
 //* Request interceptor
 api.interceptors.request.use(
   (config: CustomAxiosRequestConfig) => {
+    const deviceId = getDeviceId();
+    if (deviceId) config.headers["X-Device-Id"] = deviceId;
+
     if (config.skipAuth) return config;
 
     const token = Cookies.get(CONFIG.COOKIE_NAMES.ACCESS_TOKEN);

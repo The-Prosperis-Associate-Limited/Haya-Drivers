@@ -297,7 +297,8 @@ export interface AdminNav {
     | "transactions"
     | "salaries"
     | "attendance"
-    | "support",
+    | "support"
+    | "referrals",
     number
   >;
   team: {

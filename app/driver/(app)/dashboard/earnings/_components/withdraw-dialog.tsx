@@ -92,7 +92,7 @@ export const WithdrawDialog = function ({
           </AppText>
 
           <Button asChild className="h-11 w-full rounded-lg">
-            <Link href="/driver/dashboard/earnings">Add a bank account</Link>
+            <Link href="/driver/dashboard/wallet">Add a bank account</Link>
           </Button>
         </div>
       ) : (

@@ -1,5 +1,6 @@
 "use client";
 
+import { ReferralAttachCard } from "@/components/driver/referral-attach-card";
 import { OnboardingShell } from "@/components/shared/onboarding-shell";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +57,12 @@ export default function ReviewStep() {
       />
 
       <VerificationReview profile={profile} documents={documents} />
+
+      {profile?.verification_status === "UNSUBMITTED" && (
+        <div className="mt-4">
+          <ReferralAttachCard />
+        </div>
+      )}
 
       <Button
         isLoading={isPending}

@@ -90,20 +90,36 @@ export const useAddBankAccount = function ({
       bank_code: string;
       bank_name: string;
       account_number: string;
-      account_name: string;
       currency: string;
     },
     APIResponse<BankAccount>
   >({
     url: API_ENDPOINTS.earnings.bankAccounts,
     method: "post",
-    // No provider name-enquiry on the manual rail - the admin's banking app
-    // confirms the name at the moment money is actually sent.
     onSuccessMessage: "Bank account added",
     onSuccess: () => onSuccess?.(),
   });
 
   return { addBankAccount: mutate, isPending };
+};
+
+export const useResolveBankAccount = function ({
+  onResolved,
+}: {
+  onResolved: (accountName: string) => void;
+}) {
+  const { mutate, isPending } = useSubmitData<
+    { bank_code: string; account_number: string; currency: string },
+    APIResponse<{ account_name: string }>
+  >({
+    url: API_ENDPOINTS.earnings.resolveAccount,
+    method: "post",
+    silent: true,
+    skipRefetch: true,
+    onSuccess: (response) => onResolved(response.data.account_name),
+  });
+
+  return { resolveAccount: mutate, isResolving: isPending };
 };
 
 export const useRequestWithdrawal = function ({

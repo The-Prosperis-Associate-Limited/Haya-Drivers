@@ -12,6 +12,8 @@ interface Props {
   gcTime?: number;
   refetchOnMount?: boolean | "always";
   refetchInterval?: number;
+  silentErrors?: boolean;
+  retry?: boolean | number;
 }
 
 interface UseGetDataResult<T> {
@@ -29,6 +31,8 @@ export const useGetData = <T>({
   gcTime = 10 * 60 * 1000,
   refetchOnMount = true,
   refetchInterval,
+  silentErrors = false,
+  retry,
 }: Props): UseGetDataResult<T> => {
   const handleErrors = useHandleErrors();
 
@@ -61,14 +65,15 @@ export const useGetData = <T>({
     refetchOnWindowFocus: true,
     refetchInterval,
     enabled: shouldFetch, // Conditionally enable the API call
+    ...(retry !== undefined && { retry }),
   });
 
   // Handle errors outside of the render cycle
   useEffect(() => {
-    if (error) {
+    if (error && !silentErrors) {
       handleErrors(error as AxiosError<{ message?: string }>);
     }
-  }, [error, handleErrors]);
+  }, [error, handleErrors, silentErrors]);
 
   return { isFetching, data, refetch, error };
 };

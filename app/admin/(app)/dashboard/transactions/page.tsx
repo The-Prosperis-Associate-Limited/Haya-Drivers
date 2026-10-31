@@ -12,7 +12,7 @@ import { PayoutsTab } from "./_components/payouts-tab";
 
 // Client wallets and wallet service fees were retired with the direct-salary
 // pivot - the money that still moves through us is driver payouts of
-// historical wallet balances, so that is all this page tracks.
+// referral rewards and historical wallet balances, so that is all this page tracks.
 export default function AdminTransactions() {
   const { data } = useGetData<APIResponse<AdminTransactionStats>>({
     url: API_ENDPOINTS.adminTransactions.stats,
@@ -28,8 +28,8 @@ export default function AdminTransactions() {
           Payouts
         </AppText>
         <AppText type="subtitle" className="text-muted-foreground text-[13px]">
-          Driver withdrawals of historical wallet balances. Hire revenue lives
-          on each invoice under Hires.
+          Driver withdrawals of referral rewards and older wallet balances. Hire
+          revenue lives on each invoice under Hires.
         </AppText>
       </div>
 

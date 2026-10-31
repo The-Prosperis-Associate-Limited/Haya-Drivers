@@ -2,11 +2,10 @@
 
 import { FormInput } from "@/components/form/form-input";
 import { AuthHeading, AuthShell } from "@/components/shared/auth-shell";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { signinSchema, type SigninFormValues } from "@/schemas/auth/signin";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -30,11 +29,7 @@ function SignInForm() {
   });
 
   return (
-    <AuthShell>
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
+    <AuthShell surface="admin" backHref="/">
       <AuthHeading
         title="Admin sign in"
         subtitle="Enter your details to access the console."
@@ -78,13 +73,6 @@ function SignInForm() {
         </Button>
       </form>
 
-      <Link
-        href="/"
-        className="text-foreground mt-6 flex items-center justify-center gap-2 text-sm font-semibold"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Take a step back
-      </Link>
     </AuthShell>
   );
 }

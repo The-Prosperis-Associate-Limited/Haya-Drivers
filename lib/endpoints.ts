@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
     updateProfile: "/auth/update-profile",
     reactivate: "/auth/reactivate",
     deactivate: "/auth/deactivate",
+    previewReferralCode: (code: string) =>
+      `/auth/referral-codes/${encodeURIComponent(code)}`,
   },
 
   drivers: {
@@ -111,7 +113,7 @@ export const API_ENDPOINTS = {
     statement: (month: string) => `/driver/earnings/statements/${month}`,
     banks: ({ country, currency }: { country: string; currency: string }) =>
       `/driver/earnings/banks?country=${country}&currency=${currency}`,
-    resolveAccount: "/driver/earnings/banks/resolve",
+    resolveAccount: "/driver/earnings/bank-accounts/resolve",
     bankAccounts: "/driver/earnings/bank-accounts",
     setDefaultBankAccount: (id: string) =>
       `/driver/earnings/bank-accounts/${id}/default`,
@@ -119,6 +121,35 @@ export const API_ENDPOINTS = {
     withdrawals: ({ page, limit }: { page: number; limit: number }) =>
       `/driver/earnings/withdrawals?page=${page}&limit=${limit}`,
     requestWithdrawal: "/driver/earnings/withdrawals",
+  },
+
+  driverWallet: {
+    summary: "/driver/wallet",
+    transactions: ({
+      page,
+      limit,
+      type,
+    }: {
+      page: number;
+      limit: number;
+      type?: "referrals" | "withdrawals";
+    }) =>
+      `/driver/wallet/transactions?page=${page}&limit=${limit}${type ? `&type=${type}` : ""}`,
+  },
+
+  driverReferrals: {
+    overview: "/driver/referrals",
+    list: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status?: "onboarding" | "qualified";
+    }) =>
+      `/driver/referrals/list?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
+    attach: "/driver/referrals/attach",
   },
 
   driverReviews: {
@@ -262,6 +293,31 @@ export const API_ENDPOINTS = {
       `/admin/payouts?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
     payout: (reference: string) => `/admin/payouts/${reference}`,
     settlePayout: (reference: string) => `/admin/payouts/${reference}`,
+  },
+
+  adminReferrals: {
+    overview: (range: string) => `/admin/referrals/overview?range=${range}`,
+    network: (limit: number) => `/admin/referrals/network?limit=${limit}`,
+    leaderboard: (limit: number) => `/admin/referrals/leaderboard?limit=${limit}`,
+    referrer: (userId: string) => `/admin/referrals/referrers/${userId}`,
+    list: ({
+      page,
+      limit,
+      status,
+      search,
+      flagged,
+    }: {
+      page: number;
+      limit: number;
+      status?: string;
+      search?: string;
+      flagged?: boolean;
+    }) =>
+      `/admin/referrals?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}${flagged ? "&flagged=true" : ""}`,
+    detail: (id: string) => `/admin/referrals/${id}`,
+    approve: (id: string) => `/admin/referrals/${id}/approve`,
+    reject: (id: string) => `/admin/referrals/${id}/reject`,
+    reverse: (id: string) => `/admin/referrals/${id}/reverse`,
   },
 
   adminTeam: {

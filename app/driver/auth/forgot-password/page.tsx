@@ -3,7 +3,6 @@
 import { FormInput } from "@/components/form/form-input";
 import { AuthHeading, AuthShell } from "@/components/driver/auth-shell";
 import { AppText } from "@/components/shared/app-text";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import {
   forgotPasswordSchema,
@@ -31,10 +30,6 @@ export default function ForgotPassword() {
 
   return (
     <AuthShell backHref="/driver/auth/signin">
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
       <AuthHeading
         title="Reset your password"
         subtitle="Enter the email tied to your account and we'll send you a reset link."

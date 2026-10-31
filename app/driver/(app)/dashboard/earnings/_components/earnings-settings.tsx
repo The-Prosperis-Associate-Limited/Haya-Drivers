@@ -20,10 +20,8 @@ import { AlertTriangle, Banknote, Hourglass, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { SalaryPaymentWithParties } from "@/types/salary";
-import { BankAccounts } from "./bank-accounts";
 import { EarningsTrend } from "./earnings-trend";
 import { PayslipsCard } from "./payslips-card";
-import { WithdrawDialog } from "./withdraw-dialog";
 import {
   useEarningsHistory,
   useEarningsSummary,
@@ -39,7 +37,6 @@ const dateLine = (payment: SalaryPaymentWithParties) =>
     : `Paid ${formatDate(payment.paid_at)}`;
 
 export const EarningsSettings = function () {
-  const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [page, setPage] = useState(1);
 
   const { summary, isFetching } = useEarningsSummary();
@@ -250,60 +247,26 @@ export const EarningsSettings = function () {
           <PayslipsCard trend={trend} currency={currency} />
 
           {hasWallet && (
-            <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
-              <AppText type="h4" className="text-[15px] font-semibold">
-                Old wallet balance
-              </AppText>
-              <AppText type="caption" className="text-muted-foreground block">
-                Earnings Haya Drivers held for you before clients started paying
-                salaries directly. You can still withdraw it.
-              </AppText>
-              <div className="mt-4 flex items-end justify-between gap-3">
-                <span>
-                  <AppText
-                    type="h2"
-                    as="p"
-                    className="text-[22px] font-semibold tracking-tight"
-                  >
-                    {formatMoney(wallet.available_minor, currency)}
-                  </AppText>
-                  {wallet.pending_minor > 0 && (
-                    <AppText
-                      type="caption"
-                      className="text-muted-foreground block"
-                    >
-                      {formatMoney(wallet.pending_minor, currency)} on hold
-                    </AppText>
-                  )}
-                </span>
-                <Button
-                  onClick={() => setWithdrawOpen(true)}
-                  disabled={!wallet.available_minor}
-                  className="h-9 rounded-lg px-4 text-xs"
-                >
-                  Withdraw
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {hasWallet && (
-            <div className="space-y-3">
-              <AppText type="h4" className="text-[15px] font-semibold">
-                Payout accounts
-              </AppText>
-              <BankAccounts />
-            </div>
+            <Link
+              href="/driver/dashboard/wallet"
+              className="border-border hover:border-brand/40 flex items-center justify-between gap-3 rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-colors md:p-5"
+            >
+              <span>
+                <AppText type="h4" className="text-[15px] font-semibold">
+                  Wallet
+                </AppText>
+                <AppText type="caption" className="text-muted-foreground block">
+                  {formatMoney(wallet.available_minor, currency)} available
+                  {wallet.pending_minor > 0 &&
+                    ` · ${formatMoney(wallet.pending_minor, currency)} on hold`}
+                </AppText>
+              </span>
+              <span className="text-brand text-sm font-semibold">Open wallet</span>
+            </Link>
           )}
         </div>
       </div>
 
-      <WithdrawDialog
-        open={withdrawOpen}
-        onOpenChange={setWithdrawOpen}
-        availableMinor={wallet?.available_minor ?? 0}
-        currency={currency}
-      />
     </div>
   );
 };
