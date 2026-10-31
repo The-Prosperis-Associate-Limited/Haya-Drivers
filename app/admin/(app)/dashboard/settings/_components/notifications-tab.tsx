@@ -9,22 +9,17 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse } from "@/types/response";
 import type { NotificationPreferences } from "@/types/notification";
 
-// The preference row is shared with the other surfaces; only the two switches
-// the admin console shows are surfaced, reworded for this side.
+// The only category admins receive that can be switched off; new requests, payment proofs and flags always notify.
 const ITEMS: {
   key: keyof NotificationPreferences;
   label: string;
   description: string;
 }[] = [
   {
-    key: "product_news",
-    label: "Email Notifications",
-    description: "Receive alerts, reports, and system updates via email.",
-  },
-  {
-    key: "sms_alerts",
-    label: "SMS Notifications",
-    description: "Receive critical alerts via SMS to your registered phone.",
+    key: "job_requests",
+    label: "Hire activity",
+    description:
+      "Drivers replying to shortlists and invitations that expire without a reply.",
   },
 ];
 
@@ -48,12 +43,13 @@ export const NotificationsTab = function () {
   }
 
   return (
-    <div className="border-border max-w-xl rounded-2xl border bg-white p-5 md:p-6">
+    <div className="border-border max-w-xl rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
       <AppText type="h3" className="text-base font-semibold">
         Notification preferences
       </AppText>
       <AppText type="caption" className="text-muted-foreground block">
-        Choose how you receive system alerts and updates.
+        New hire requests, payment proofs and flagged attendance always notify
+        you - they need action.
       </AppText>
 
       <div className="divide-border mt-4 divide-y">

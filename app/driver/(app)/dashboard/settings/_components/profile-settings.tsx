@@ -6,6 +6,7 @@ import { AppText } from "@/components/shared/app-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useGetProfile } from "@/hooks/use-get-profile";
+import { useIsClient } from "@/hooks/use-is-client";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { showToast } from "@/lib/show-toast";
@@ -33,6 +34,8 @@ export const ProfileSettings = function () {
   const [preview, setPreview] = useState<string | null>(null);
 
   const status = profile?.driver_profile?.verification_status;
+  // Settings hydrates inside a Suspense boundary after the layout has already cached the profile.
+  const isClient = useIsClient();
 
   const {
     control,
@@ -64,7 +67,6 @@ export const ProfileSettings = function () {
     url: API_ENDPOINTS.auth.updateProfile,
     method: "put",
     onSuccessMessage: "Profile updated",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
   });
 
   const save = (data: ProfileFormValues) => {
@@ -104,7 +106,7 @@ export const ProfileSettings = function () {
   return (
     <form
       onSubmit={handleSubmit(save)}
-      className="border-border rounded-xl border bg-white p-3 md:p-4"
+      className="border-border rounded-2xl border bg-white p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-4"
     >
       <div className="border-border grid grid-cols-1 divide-y rounded-lg border md:grid-cols-2 md:divide-x md:divide-y-0">
         <div className="flex flex-col items-center justify-center gap-5 p-6 md:p-10">
@@ -119,7 +121,7 @@ export const ProfileSettings = function () {
               </AvatarFallback>
             </Avatar>
 
-            {status === "APPROVED" && (
+            {isClient && status === "APPROVED" && (
               <BadgeCheck className="fill-brand absolute right-2 bottom-2 h-8 w-8 text-white" />
             )}
           </div>
@@ -153,7 +155,7 @@ export const ProfileSettings = function () {
         </div>
 
         <div className="space-y-4 p-6 md:p-10">
-          <AppText type="h4" className="text-base font-semibold">
+          <AppText type="h4" className="text-[15px] font-semibold">
             Personal details
           </AppText>
 

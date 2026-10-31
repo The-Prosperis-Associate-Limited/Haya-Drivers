@@ -36,11 +36,10 @@ export default function Requests() {
     method: "patch",
     getBody: () => ({}),
     onSuccessMessage: "Request closed",
-    additionalQueryKeys: [[listUrl]],
   });
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-[1360px]">
       <PageHeader
         title="My requests"
         subtitle="Every staffing request you have posted, with its matched drivers."
@@ -97,11 +96,7 @@ export default function Requests() {
         </Pagination>
       )}
 
-      <CreateRequestDialog
-        isOpen={createOpen}
-        onOpenChange={setCreateOpen}
-        listUrl={listUrl}
-      />
+      <CreateRequestDialog isOpen={createOpen} onOpenChange={setCreateOpen} />
 
       <ConfirmDialog
         isOpen={closing !== null}

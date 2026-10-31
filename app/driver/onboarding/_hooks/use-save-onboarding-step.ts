@@ -1,5 +1,4 @@
 import { useSubmitData } from "@/hooks/use-submit-data";
-import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse } from "@/types/response";
 import type { DriverProfile } from "@/types/driver";
 
@@ -32,7 +31,6 @@ export const useSaveOnboardingStep = function <TData>({
     url,
     method: "put",
     onSuccessMessage,
-    additionalQueryKeys: [[API_ENDPOINTS.driverOnboarding.profile]],
     redirectTo: fromReview ? "/driver/onboarding/review" : redirectTo,
   });
 

@@ -37,15 +37,9 @@ const ENGAGEMENT_OPTIONS = [
 interface Props {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  // The list url currently on screen - creating a request refetches it.
-  listUrl: string;
 }
 
-export const CreateRequestDialog = function ({
-  isOpen,
-  onOpenChange,
-  listUrl,
-}: Props) {
+export const CreateRequestDialog = function ({ isOpen, onOpenChange }: Props) {
   const {
     control,
     handleSubmit,
@@ -90,7 +84,6 @@ export const CreateRequestDialog = function ({
   const { mutate, isPending } = useSubmitData({
     url: API_ENDPOINTS.requests.create,
     onSuccessMessage: "Request posted",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => {
       reset();
       setPreview(null);

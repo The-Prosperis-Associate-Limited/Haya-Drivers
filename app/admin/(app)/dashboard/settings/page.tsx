@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { clearAuthCookies } from "@/lib/authService";
 import { LogOut } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { ActivityTimeline } from "../../_components/activity-timeline";
 import { NotificationsTab } from "./_components/notifications-tab";
@@ -18,12 +18,9 @@ import { TeamTab } from "./_components/team-tab";
 type Tab = "profile" | "security" | "notifications" | "activity" | "team";
 
 function AdminSettings() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { profile } = useGetProfile();
   const [signOutOpen, setSignOutOpen] = useState(false);
-
-  const tab = (searchParams.get("tab") as Tab) || "profile";
 
   const signOut = () => {
     clearAuthCookies();
@@ -45,14 +42,24 @@ function AdminSettings() {
       : []),
   ];
 
+  const requested = searchParams.get("tab");
+  const tab =
+    tabs.find((option) => option.value === requested)?.value ?? "profile";
+
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <AppText type="h2" className="text-xl font-bold md:text-2xl">
+          <AppText
+            type="h2"
+            className="text-[22px] font-semibold tracking-tight"
+          >
             Settings
           </AppText>
-          <AppText type="subtitle" className="text-muted-foreground text-sm">
+          <AppText
+            type="subtitle"
+            className="text-muted-foreground text-[13px]"
+          >
             Your account, security and console access.
           </AppText>
         </div>
@@ -70,7 +77,7 @@ function AdminSettings() {
       <AppTabs<Tab>
         value={tab}
         onValueChange={(value) =>
-          router.replace(`/admin/dashboard/settings?tab=${value}`)
+          window.history.replaceState(null, "", `?tab=${value}`)
         }
         variant="pill"
         tabs={tabs}

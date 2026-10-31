@@ -2,6 +2,7 @@ import {
   BookOpen,
   BriefcaseBusiness,
   LayoutGrid,
+  Receipt,
   Search,
   Settings,
   type LucideIcon,
@@ -22,8 +23,9 @@ export const NAV_LINKS: NavLink[] = [
     href: "/dashboard/requests/find-talent",
     icon: Search,
   },
-  { label: "My Hire", href: "/dashboard/my-hire", icon: BriefcaseBusiness },
-  { label: "Request", href: "/dashboard/requests", icon: BookOpen },
+  { label: "My hire", href: "/dashboard/my-hire", icon: BriefcaseBusiness },
+  { label: "Requests", href: "/dashboard/requests", icon: BookOpen },
+  { label: "Billing", href: "/dashboard/billing", icon: Receipt },
 ];
 
 export const FOOTER_LINKS: NavLink[] = [

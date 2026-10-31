@@ -3,7 +3,6 @@
 import { AuthHeading, AuthShell } from "@/components/driver/auth-shell";
 import { AppText } from "@/components/shared/app-text";
 import { OtpInput } from "@/components/shared/otp-input";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/lib/show-toast";
 import { ArrowLeft } from "lucide-react";
@@ -34,10 +33,6 @@ function VerifyEmailForm() {
 
   return (
     <AuthShell backHref="/driver/auth/signup">
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
       <AuthHeading
         title="Verify your email"
         subtitle={

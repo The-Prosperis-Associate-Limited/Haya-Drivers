@@ -15,7 +15,6 @@ export const ReactivateAccountDialog = function () {
   const { mutate, isPending } = useSubmitData({
     url: API_ENDPOINTS.auth.reactivate,
     onSuccessMessage: "Welcome back! Your account is active again.",
-    additionalQueryKeys: [[API_ENDPOINTS.auth.getProfile]],
   });
 
   const dormant =

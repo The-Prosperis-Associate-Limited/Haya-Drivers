@@ -64,7 +64,6 @@ export const PayoutsTab = function () {
     }),
     method: "patch",
     onSuccessMessage: "Payout updated",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => {
       setPaying(null);
       setFailing(null);
@@ -140,9 +139,9 @@ export const PayoutsTab = function () {
         ) : (
           <>
             <div className="mt-4 hidden overflow-x-auto md:block">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm [&_td:first-child]:pl-3 [&_th]:py-2.5 [&_th:first-child]:pl-3">
                 <thead>
-                  <tr className="text-muted-foreground border-border border-b text-left text-xs tracking-wide uppercase">
+                  <tr className="bg-slate-50 text-left text-[11.5px] font-semibold tracking-wide text-slate-500 uppercase">
                     <th className="py-3 pr-4 font-medium">Payout</th>
                     <th className="py-3 pr-4 font-medium">Driver</th>
                     <th className="py-3 pr-4 font-medium">Bank</th>

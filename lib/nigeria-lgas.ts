@@ -2,7 +2,7 @@
 // vendored because that package's "cities" are sparse (Lagos had 8 entries, no
 // Alimosho). LGAs have been fixed since 1996 - this list does not need a live API.
 export const NIGERIA_LGAS: Record<string, string[]> = {
-  "Abia": [
+  Abia: [
     "Aba North",
     "Aba South",
     "Arochukwu",
@@ -29,7 +29,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Kwali",
     "Municipal Area Council",
   ],
-  "Adamawa": [
+  Adamawa: [
     "Demsa",
     "Fufore",
     "Ganye",
@@ -85,7 +85,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Urue-Offong/Oruko",
     "Uyo",
   ],
-  "Anambra": [
+  Anambra: [
     "Aguata",
     "Anambra East",
     "Anambra West",
@@ -108,7 +108,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Orumba South",
     "Oyi",
   ],
-  "Bauchi": [
+  Bauchi: [
     "Alkaleri",
     "Bauchi",
     "Bogoro",
@@ -130,7 +130,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Warji",
     "Zaki",
   ],
-  "Bayelsa": [
+  Bayelsa: [
     "Brass",
     "Ekeremor",
     "Kolokuma/Opokuma",
@@ -140,7 +140,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Southern Ijaw",
     "Yenagoa",
   ],
-  "Benue": [
+  Benue: [
     "Ado",
     "Agatu",
     "Apa",
@@ -165,7 +165,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Ushongo",
     "Vandeikya",
   ],
-  "Borno": [
+  Borno: [
     "Abadam",
     "Askira/Uba",
     "Bama",
@@ -214,7 +214,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Yakuur",
     "Yala",
   ],
-  "Delta": [
+  Delta: [
     "Aniocha North",
     "Aniocha South",
     "Bomadi",
@@ -241,7 +241,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Warri South",
     "Warri South West",
   ],
-  "Ebonyi": [
+  Ebonyi: [
     "Abakaliki",
     "Afikpo North",
     "Afikpo South",
@@ -256,7 +256,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Ohaukwu",
     "Onicha",
   ],
-  "Edo": [
+  Edo: [
     "Akoko-Edo",
     "Egor",
     "Esan Central",
@@ -276,7 +276,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Owan West",
     "Uhunmwonde",
   ],
-  "Ekiti": [
+  Ekiti: [
     "Ado-Ekiti",
     "Efon",
     "Ekiti East",
@@ -294,7 +294,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Moba",
     "Oye",
   ],
-  "Enugu": [
+  Enugu: [
     "Aninri",
     "Awgu",
     "Enugu East",
@@ -313,7 +313,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Udi",
     "Uzo-Uwani",
   ],
-  "Gombe": [
+  Gombe: [
     "Akko",
     "Balanga",
     "Billiri",
@@ -326,7 +326,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Shongom",
     "Yamaltu/Deba",
   ],
-  "Imo": [
+  Imo: [
     "Aboh Mbaise",
     "Ahiazu Mbaise",
     "Ehime Mbano",
@@ -355,7 +355,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Owerri West",
     "Unuimo",
   ],
-  "Jigawa": [
+  Jigawa: [
     "Auyo",
     "Babura",
     "Biriniwa",
@@ -384,7 +384,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Taura",
     "Yankwashi",
   ],
-  "Kaduna": [
+  Kaduna: [
     "Birnin Gwari",
     "Chikun",
     "Giwa",
@@ -409,7 +409,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Zangon Kataf",
     "Zaria",
   ],
-  "Kano": [
+  Kano: [
     "Ajingi",
     "Albasu",
     "Bagwai",
@@ -455,7 +455,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Warawa",
     "Wudil",
   ],
-  "Katsina": [
+  Katsina: [
     "Bakori",
     "Batagarawa",
     "Batsari",
@@ -491,7 +491,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Sandamu",
     "Zango",
   ],
-  "Kebbi": [
+  Kebbi: [
     "Aleiro",
     "Arewa Dandi",
     "Argungu",
@@ -514,7 +514,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Yauri",
     "Zuru",
   ],
-  "Kogi": [
+  Kogi: [
     "Adavi",
     "Ajaokuta",
     "Ankpa",
@@ -537,7 +537,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Yagba East",
     "Yagba West",
   ],
-  "Kwara": [
+  Kwara: [
     "Asa",
     "Baruten",
     "Edu",
@@ -555,7 +555,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Oyun",
     "Pategi",
   ],
-  "Lagos": [
+  Lagos: [
     "Agege",
     "Ajeromi-Ifelodun",
     "Alimosho",
@@ -577,7 +577,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Shomolu",
     "Surulere",
   ],
-  "Nasarawa": [
+  Nasarawa: [
     "Akwanga",
     "Awe",
     "Doma",
@@ -592,7 +592,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Toto",
     "Wamba",
   ],
-  "Niger": [
+  Niger: [
     "Agaie",
     "Agwara",
     "Bida",
@@ -619,7 +619,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Tafa",
     "Wushishi",
   ],
-  "Ogun": [
+  Ogun: [
     "Abeokuta North",
     "Abeokuta South",
     "Ado-Odo/Ota",
@@ -641,7 +641,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Remo North",
     "Shagamu",
   ],
-  "Ondo": [
+  Ondo: [
     "Akoko North East",
     "Akoko North West",
     "Akoko South Akure East",
@@ -661,7 +661,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Ose",
     "Owo",
   ],
-  "Osun": [
+  Osun: [
     "Aiyedade",
     "Aiyedire",
     "Atakunmosa East",
@@ -693,7 +693,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Orolu",
     "Osogbo",
   ],
-  "Oyo": [
+  Oyo: [
     "Afijio",
     "Akinyele",
     "Atiba",
@@ -728,7 +728,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Saki West",
     "Surulere",
   ],
-  "Plateau": [
+  Plateau: [
     "Barkin Ladi",
     "Bassa",
     "Bokkos",
@@ -747,7 +747,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Shendam",
     "Wase",
   ],
-  "Rivers": [
+  Rivers: [
     "Abua/Odual",
     "Ahoada East",
     "Ahoada West",
@@ -772,7 +772,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Port Harcourt",
     "Tai",
   ],
-  "Sokoto": [
+  Sokoto: [
     "Binji",
     "Bodinga",
     "Dange Shuni",
@@ -797,7 +797,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Wurno",
     "Yabo",
   ],
-  "Taraba": [
+  Taraba: [
     "Ardo Kola",
     "Bali",
     "Donga",
@@ -815,7 +815,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Yorro",
     "Zing",
   ],
-  "Yobe": [
+  Yobe: [
     "Bade",
     "Bursari",
     "Damaturu",
@@ -834,7 +834,7 @@ export const NIGERIA_LGAS: Record<string, string[]> = {
     "Yunusari",
     "Yusufari",
   ],
-  "Zamfara": [
+  Zamfara: [
     "Anka",
     "Bakura",
     "Birnin Magaji",

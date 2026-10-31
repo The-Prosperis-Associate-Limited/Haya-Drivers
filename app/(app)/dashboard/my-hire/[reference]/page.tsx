@@ -8,13 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  cn,
   driverTypeLabel,
   formatDate,
   formatMoney,
   getInitials,
   prettifyEnum,
 } from "@/lib/utils";
-import { use } from "react";
+import { use, useState } from "react";
+import { TodayAttendanceBadge } from "@/components/attendance/today-attendance-badge";
+import { HireAttendance } from "../_components/hire-attendance";
+import { HireSalary } from "../_components/hire-salary";
 import { ReviewCard } from "../_components/review-card";
 import { useHire } from "../_hooks/use-hires";
 import Link from "next/link";
@@ -27,12 +31,13 @@ export default function HireDetail({
   params: Promise<{ reference: string }>;
 }) {
   const { reference } = use(params);
+  const [now] = useState(() => Date.now());
 
   const { hire, isFetching } = useHire(reference);
 
   if (!hire) {
     return (
-      <div className="mx-auto max-w-6xl space-y-4">
+      <div className="mx-auto max-w-[1360px] space-y-4">
         {isFetching && (
           <>
             <Skeleton className="h-20 rounded-xl" />
@@ -51,13 +56,22 @@ export default function HireDetail({
   const profile = hire.driver_details?.driver_profile;
 
   const daysServed = Math.max(
-    Math.floor((Date.now() - new Date(hire.starts_at).getTime()) / DAY_MS),
+    Math.floor((now - new Date(hire.starts_at).getTime()) / DAY_MS),
     0,
   );
   const weeksActive = Math.floor(daysServed / 7);
   const monthsActive = Math.floor(daysServed / 30);
 
-  const started = new Date(hire.starts_at).getTime() <= Date.now();
+  const started = new Date(hire.starts_at).getTime() <= now;
+  const ended = hire.status === "COMPLETED" || hire.status === "CANCELLED";
+  const termDays = hire.ends_at
+    ? Math.max(
+        (new Date(hire.ends_at).getTime() -
+          new Date(hire.starts_at).getTime()) /
+          DAY_MS,
+        1,
+      )
+    : 365;
 
   // No stored Haya Drivers ID exists - this is a stable display form of the driver's
   // record id, not a second identifier.
@@ -98,8 +112,8 @@ export default function HireDetail({
   ];
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <BackLink href="/dashboard/my-hire" label="Take a step back" />
+    <div className="mx-auto max-w-[1360px]">
+      <BackLink href="/dashboard/my-hire" label="My hire" />
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -110,9 +124,14 @@ export default function HireDetail({
             </AvatarFallback>
           </Avatar>
           <div>
-            <AppText type="h2" className="text-lg font-bold">
-              {name}
-            </AppText>
+            <span className="flex flex-wrap items-center gap-2">
+              <AppText type="h2" className="text-lg font-semibold">
+                {name}
+              </AppText>
+              {hire.today_attendance && (
+                <TodayAttendanceBadge today={hire.today_attendance} />
+              )}
+            </span>
             <AppText type="caption" className="text-muted-foreground block">
               {driverTypeLabel(hire.driver_type)} · {hire.title}
             </AppText>
@@ -148,15 +167,22 @@ export default function HireDetail({
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-6">
-          <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             <span className="flex items-center justify-between gap-3">
-              <AppText type="h3" className="text-base font-semibold">
+              <AppText type="h4" className="text-[15px] font-semibold">
                 {hire.engagement_type === "MONTHLY"
                   ? "Full-time engagement"
                   : `${prettifyEnum(hire.engagement_type)} engagement`}
               </AppText>
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-600">
-                {started ? "Ongoing" : "Starting soon"}
+              <span
+                className={cn(
+                  "rounded-full px-3 py-1 text-xs font-medium",
+                  ended
+                    ? "bg-slate-100 text-slate-600"
+                    : "bg-emerald-50 text-emerald-600",
+                )}
+              >
+                {ended ? "Ended" : started ? "Ongoing" : "Starting soon"}
               </span>
             </span>
 
@@ -175,7 +201,7 @@ export default function HireDetail({
                   </AppText>
                   <AppText
                     type="label"
-                    className="mt-1 block text-lg font-bold"
+                    className="mt-1 block text-lg font-semibold"
                   >
                     {entry.value}
                   </AppText>
@@ -183,9 +209,9 @@ export default function HireDetail({
               ))}
             </div>
 
-            {/* A year is the visual yardstick, not a contract end. */}
+            {/* Without an end date a year is the visual yardstick. */}
             <Progress
-              value={Math.min((daysServed / 365) * 100, 100)}
+              value={Math.min((daysServed / termDays) * 100, 100)}
               className="mt-8 h-1.5"
             />
             <AppText
@@ -199,12 +225,18 @@ export default function HireDetail({
             </AppText>
           </div>
 
+          <HireSalary reference={hire.reference} driverName={name} />
+
+          {hire.status === "IN_PROGRESS" && (
+            <HireAttendance reference={hire.reference} driverName={name} />
+          )}
+
           <ReviewCard hire={hire} />
         </div>
 
         <div className="space-y-6">
-          <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-            <AppText type="h3" className="text-base font-semibold">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+            <AppText type="h4" className="text-[15px] font-semibold">
               Haya Drivers profile
             </AppText>
             <div className="mt-4 space-y-3">
@@ -234,8 +266,8 @@ export default function HireDetail({
             </Button>
           </div>
 
-          <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-            <AppText type="h3" className="text-base font-semibold">
+          <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+            <AppText type="h4" className="text-[15px] font-semibold">
               Engagement type
             </AppText>
             <AppText

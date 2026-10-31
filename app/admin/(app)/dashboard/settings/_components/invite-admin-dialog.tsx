@@ -35,14 +35,9 @@ type InviteFormValues = z.infer<typeof inviteSchema>;
 interface Props {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  teamUrl: string;
 }
 
-export const InviteAdminDialog = function ({
-  isOpen,
-  onOpenChange,
-  teamUrl,
-}: Props) {
+export const InviteAdminDialog = function ({ isOpen, onOpenChange }: Props) {
   const [result, setResult] = useState<InviteResult | null>(null);
 
   const {
@@ -59,7 +54,6 @@ export const InviteAdminDialog = function ({
     url: API_ENDPOINTS.adminTeam.invite,
     method: "post",
     onSuccessMessage: "Invite sent successfully",
-    additionalQueryKeys: [[teamUrl]],
     onSuccess: (data) => {
       setResult(data.data);
       reset();

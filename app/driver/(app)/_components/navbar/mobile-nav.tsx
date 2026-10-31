@@ -34,7 +34,7 @@ export const MobileNav = function ({ status, user }: Props) {
         onOpenChange={setOpen}
         side="left"
         title="Navigation"
-        width="260px"
+        width="284px"
         bodyClassName="p-0"
       >
         <NavContent

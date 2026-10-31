@@ -30,7 +30,7 @@ export const DriverOverview = function ({ user }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className="border-border grid grid-cols-1 gap-6 rounded-2xl border bg-white p-5 md:p-6 lg:grid-cols-[280px_1fr]">
+      <div className="border-border grid grid-cols-1 gap-6 rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5 lg:grid-cols-[280px_1fr]">
         <div className="flex flex-col items-center text-center">
           <div className="relative">
             <AppAvatar

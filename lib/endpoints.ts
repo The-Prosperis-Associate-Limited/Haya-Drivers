@@ -20,6 +20,8 @@ export const API_ENDPOINTS = {
     updateProfile: "/auth/update-profile",
     reactivate: "/auth/reactivate",
     deactivate: "/auth/deactivate",
+    previewReferralCode: (code: string) =>
+      `/auth/referral-codes/${encodeURIComponent(code)}`,
   },
 
   drivers: {
@@ -31,6 +33,13 @@ export const API_ENDPOINTS = {
   onboarding: {
     preferences: "/client/onboarding",
     complete: "/client/onboarding/complete",
+    insights: ({ location, budget, categories }: { location?: string | null; budget?: number | null; categories?: string[] }) => {
+      const params = new URLSearchParams();
+      if (location) params.set("location", location);
+      if (budget) params.set("budget", String(budget));
+      if (categories?.length) params.set("categories", categories.join(","));
+      return `/client/onboarding/insights?${params.toString()}`;
+    },
   },
 
   // The driver surface. Section names carry the driver prefix where a client
@@ -65,6 +74,8 @@ export const API_ENDPOINTS = {
 
   driverProfile: {
     workPreferences: "/driver/profile/work-preferences",
+    openToWork: "/driver/profile/open-to-work",
+    preview: "/driver/profile/preview",
   },
 
   jobRequests: {
@@ -80,6 +91,17 @@ export const API_ENDPOINTS = {
       `/driver/job-requests?page=${page}&limit=${limit}${bucket ? `&bucket=${bucket}` : ""}`,
     summary: "/driver/job-requests/summary",
     get: (reference: string) => `/driver/job-requests/${reference}`,
+    attendance: (reference: string, month: string) =>
+      `/driver/job-requests/${reference}/attendance?month=${month}`,
+    salary: (reference: string) => `/driver/job-requests/${reference}/salary`,
+    confirmSalary: (reference: string, id: string) =>
+      `/driver/job-requests/${reference}/salary/${id}/confirm`,
+    disputeSalary: (reference: string, id: string) =>
+      `/driver/job-requests/${reference}/salary/${id}/dispute`,
+    checkIn: (reference: string) =>
+      `/driver/job-requests/${reference}/check-in`,
+    checkOut: (reference: string) =>
+      `/driver/job-requests/${reference}/check-out`,
     start: (reference: string) => `/driver/job-requests/${reference}/start`,
     complete: (reference: string) =>
       `/driver/job-requests/${reference}/complete`,
@@ -95,9 +117,10 @@ export const API_ENDPOINTS = {
     history: ({ page, limit }: { page: number; limit: number }) =>
       `/driver/earnings/history?page=${page}&limit=${limit}`,
     trend: "/driver/earnings/trend",
+    statement: (month: string) => `/driver/earnings/statements/${month}`,
     banks: ({ country, currency }: { country: string; currency: string }) =>
       `/driver/earnings/banks?country=${country}&currency=${currency}`,
-    resolveAccount: "/driver/earnings/banks/resolve",
+    resolveAccount: "/driver/earnings/bank-accounts/resolve",
     bankAccounts: "/driver/earnings/bank-accounts",
     setDefaultBankAccount: (id: string) =>
       `/driver/earnings/bank-accounts/${id}/default`,
@@ -105,6 +128,35 @@ export const API_ENDPOINTS = {
     withdrawals: ({ page, limit }: { page: number; limit: number }) =>
       `/driver/earnings/withdrawals?page=${page}&limit=${limit}`,
     requestWithdrawal: "/driver/earnings/withdrawals",
+  },
+
+  driverWallet: {
+    summary: "/driver/wallet",
+    transactions: ({
+      page,
+      limit,
+      type,
+    }: {
+      page: number;
+      limit: number;
+      type?: "referrals" | "withdrawals";
+    }) =>
+      `/driver/wallet/transactions?page=${page}&limit=${limit}${type ? `&type=${type}` : ""}`,
+  },
+
+  driverReferrals: {
+    overview: "/driver/referrals",
+    list: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status?: "onboarding" | "qualified";
+    }) =>
+      `/driver/referrals/list?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
+    attach: "/driver/referrals/attach",
   },
 
   driverReviews: {
@@ -127,6 +179,13 @@ export const API_ENDPOINTS = {
     list: ({ page, limit }: { page: number; limit: number }) =>
       `/client/hires?page=${page}&limit=${limit}`,
     detail: (reference: string) => `/client/hires/${reference}`,
+    attendance: (reference: string, month: string) =>
+      `/client/hires/${reference}/attendance?month=${month}`,
+    flagDay: (reference: string, id: string) =>
+      `/client/hires/${reference}/attendance/${id}/flag`,
+    salary: (reference: string) => `/client/hires/${reference}/salary`,
+    markSalaryPaid: (reference: string, id: string) =>
+      `/client/hires/${reference}/salary/${id}/paid`,
   },
 
   requests: {
@@ -169,6 +228,9 @@ export const API_ENDPOINTS = {
   // The admin surface - /api/admin/*, documented in ../tegat-server/docs/admin-api.md.
   adminDashboard: {
     stats: "/admin/dashboard/stats",
+    nav: "/admin/dashboard/nav",
+    overview: (period: "7d" | "30d" | "90d") =>
+      `/admin/dashboard/overview?period=${period}`,
     growth: (period: "7d" | "14d" | "30d") =>
       `/admin/dashboard/growth?period=${period}`,
     visitors: (period: "7d" | "14d" | "30d") =>
@@ -240,6 +302,31 @@ export const API_ENDPOINTS = {
     settlePayout: (reference: string) => `/admin/payouts/${reference}`,
   },
 
+  adminReferrals: {
+    overview: (range: string) => `/admin/referrals/overview?range=${range}`,
+    network: (limit: number) => `/admin/referrals/network?limit=${limit}`,
+    leaderboard: (limit: number) => `/admin/referrals/leaderboard?limit=${limit}`,
+    referrer: (userId: string) => `/admin/referrals/referrers/${userId}`,
+    list: ({
+      page,
+      limit,
+      status,
+      search,
+      flagged,
+    }: {
+      page: number;
+      limit: number;
+      status?: string;
+      search?: string;
+      flagged?: boolean;
+    }) =>
+      `/admin/referrals?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}${flagged ? "&flagged=true" : ""}`,
+    detail: (id: string) => `/admin/referrals/${id}`,
+    approve: (id: string) => `/admin/referrals/${id}/approve`,
+    reject: (id: string) => `/admin/referrals/${id}/reject`,
+    reverse: (id: string) => `/admin/referrals/${id}/reverse`,
+  },
+
   adminTeam: {
     list: ({
       page,
@@ -297,7 +384,7 @@ export const API_ENDPOINTS = {
     cancel: (reference: string) => `/client/hire-requests/${reference}/cancel`,
   },
 
-  adminHires: {
+  invoices: {
     list: ({
       page,
       limit,
@@ -307,7 +394,22 @@ export const API_ENDPOINTS = {
       limit: number;
       status?: string;
     }) =>
-      `/admin/hires?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
+      `/client/invoices?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}`,
+  },
+
+  adminHires: {
+    list: ({
+      page,
+      limit,
+      status,
+      q,
+    }: {
+      page: number;
+      limit: number;
+      status?: string;
+      q?: string;
+    }) =>
+      `/admin/hires?page=${page}&limit=${limit}${status ? `&status=${status}` : ""}${q ? `&q=${encodeURIComponent(q)}` : ""}`,
     detail: (reference: string) => `/admin/hires/${reference}`,
     assign: (reference: string) => `/admin/hires/${reference}/assign`,
     unassign: (reference: string) => `/admin/hires/${reference}/unassign`,
@@ -320,6 +422,42 @@ export const API_ENDPOINTS = {
     rejectProof: (reference: string) =>
       `/admin/hires/${reference}/reject-proof`,
     decline: (reference: string) => `/admin/hires/${reference}/decline`,
+  },
+
+  search: {
+    client: (q: string) => `/client/search?q=${encodeURIComponent(q)}`,
+    driver: (q: string) => `/driver/search?q=${encodeURIComponent(q)}`,
+    admin: (q: string) => `/admin/search?q=${encodeURIComponent(q)}`,
+  },
+
+  adminSalaries: {
+    list: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status: string;
+    }) => `/admin/salaries?status=${status}&page=${page}&limit=${limit}`,
+    resolve: (id: string) => `/admin/salaries/${id}/resolve`,
+    booking: (reference: string) => `/admin/salaries/bookings/${reference}`,
+  },
+
+  adminAttendance: {
+    flags: ({
+      page,
+      limit,
+      status,
+    }: {
+      page: number;
+      limit: number;
+      status: "open" | "resolved";
+    }) =>
+      `/admin/attendance/flags?status=${status}&page=${page}&limit=${limit}`,
+    resolve: (id: string) => `/admin/attendance/flags/${id}/resolve`,
+    booking: (reference: string, month: string) =>
+      `/admin/attendance/bookings/${reference}?month=${month}`,
   },
 
   adminChat: {

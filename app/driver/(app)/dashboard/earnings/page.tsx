@@ -1,7 +1,26 @@
-import { redirect } from "next/navigation";
+"use client";
 
-// Earnings moved into Settings. The route stays because the server still sends
-// /dashboard/earnings as the action url on payout notifications.
+import { PageHeader } from "@/components/shared/page-header";
+import { useGetProfile } from "@/hooks/use-get-profile";
+import { UnverifiedNotice } from "../job-request/_components/unverified-notice";
+import { EarningsSettings } from "./_components/earnings-settings";
+
 export default function Earnings() {
-  redirect("/driver/dashboard/settings?tab=earnings");
+  const { profile } = useGetProfile();
+  const status = profile?.driver_profile?.verification_status;
+
+  return (
+    <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
+      <PageHeader
+        title="Earnings"
+        subtitle="The salary your clients pay you directly - what you've received, what's waiting for your confirmation and what's still due."
+      />
+      {profile &&
+        (status === "APPROVED" ? (
+          <EarningsSettings />
+        ) : (
+          <UnverifiedNotice status={status ?? "UNSUBMITTED"} />
+        ))}
+    </div>
+  );
 }

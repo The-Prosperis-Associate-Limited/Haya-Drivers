@@ -3,7 +3,6 @@
 import { FormInput } from "@/components/form/form-input";
 import { AuthHeading, AuthShell } from "@/components/shared/auth-shell";
 import { PasswordChecklist } from "@/components/shared/password-checklist";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -40,11 +39,7 @@ export default function AdminChangePassword() {
   });
 
   return (
-    <AuthShell>
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
+    <AuthShell surface="admin">
       <AuthHeading
         title="Set your own password"
         subtitle="You signed in with a temporary password. Choose your own before continuing - it expires after this first use."

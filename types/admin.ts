@@ -289,3 +289,80 @@ export interface AdminUserWalletData {
     totalPages: number;
   };
 }
+
+export interface AdminNav {
+  counts: Record<
+    | "drivers"
+    | "hires"
+    | "transactions"
+    | "salaries"
+    | "attendance"
+    | "support"
+    | "referrals",
+    number
+  >;
+  team: {
+    id: string;
+    name: string;
+    profile_pic: string | null;
+    admin_role: AdminRole | null;
+  }[];
+  chats_waiting: number;
+}
+
+export type OverviewPeriod = "7d" | "30d" | "90d";
+
+export type HireStage = "NEW" | "SHORTLISTING" | "TRIM" | "READY" | "PAYMENT";
+
+export interface NeedsActionHire {
+  reference: string;
+  stage: HireStage;
+  drivers_needed: number;
+  driver_type: DriverType | null;
+  engagement_type: string;
+  area: string | null;
+  shortlist: {
+    confirmed: number;
+    pending: number;
+    declined: number;
+    total: number;
+  };
+  invoice_total_minor: number | null;
+  currency: string;
+  waiting_since: string;
+  client: { id: string; name: string; profile_pic: string | null };
+}
+
+export interface AdminOverview {
+  period: OverviewPeriod;
+  tiles: {
+    pending_verifications: number;
+    payment_reviews: number;
+    ready_to_invoice: number;
+    chats_waiting: number;
+  };
+  stats: {
+    total_users: number;
+    new_users: number;
+    new_users_delta_percent: number | null;
+    active_drivers: number;
+    approved_in_period: number;
+    open_hire_requests: number;
+    avg_hours_to_shortlist: number | null;
+    invoices_paid_minor: number;
+    invoices_paid_delta_percent: number | null;
+    fees_minor: number;
+    currency: string;
+  };
+  pipeline: {
+    new: number;
+    shortlisting: number;
+    ready_to_invoice: number;
+    invoiced: number;
+    payment_review: number;
+    active_hires: number;
+  };
+  needs_action: NeedsActionHire[];
+  needs_action_total: number;
+  invoices_paid_series: { month: string; total_minor: number }[];
+}

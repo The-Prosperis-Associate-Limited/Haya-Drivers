@@ -68,15 +68,14 @@ export const ReviewCard = function ({ hire }: Props) {
     url: API_ENDPOINTS.bookings.review(hire.reference),
     method: "post",
     onSuccessMessage: "Review submitted",
-    additionalQueryKeys: [[API_ENDPOINTS.hires.detail(hire.reference)]],
   });
 
   const rated = Object.keys(scores).length;
 
   if (hire.my_review) {
     return (
-      <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-        <AppText type="h3" className="text-base font-semibold">
+      <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+        <AppText type="h4" className="text-[15px] font-semibold">
           Your review
         </AppText>
         <span className="mt-3 flex items-center gap-2">
@@ -113,8 +112,8 @@ export const ReviewCard = function ({ hire }: Props) {
   }
 
   return (
-    <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-      <AppText type="h3" className="text-base font-semibold">
+    <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
+      <AppText type="h4" className="text-[15px] font-semibold">
         Leave a review
       </AppText>
 

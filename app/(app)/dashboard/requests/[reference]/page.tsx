@@ -49,7 +49,7 @@ export default function RequestMatches({
   const matched = payload?.matched;
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-[1360px]">
       <BackLink href="/dashboard/requests" label="Back to requests" />
 
       {!request ? (
@@ -65,7 +65,10 @@ export default function RequestMatches({
         <>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0">
-              <AppText type="h2" className="text-xl font-bold md:text-2xl">
+              <AppText
+                type="h2"
+                className="text-[22px] font-semibold tracking-tight"
+              >
                 {request.title}
               </AppText>
               <AppText
@@ -98,7 +101,7 @@ export default function RequestMatches({
           </div>
 
           <section className="mt-8">
-            <AppText type="h3" className="text-base font-bold">
+            <AppText type="h3" className="text-[15px] font-semibold">
               Matched drivers
             </AppText>
             <AppText

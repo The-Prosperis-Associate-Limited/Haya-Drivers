@@ -11,6 +11,7 @@ export const signupSchema = z.object({
       passwordValidationRegex,
       "Password must include a letter, a number and a special character",
     ),
+  referral_code: z.string().trim().max(16).optional(),
   accepted_terms: z.boolean().refine((value) => value === true, {
     message: "You must accept the Terms of Service and Privacy Policy",
   }),

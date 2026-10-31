@@ -21,6 +21,7 @@ import {
   cn,
   driverTypeLabel,
   formatDate,
+  formatDateTime,
   formatMoney,
   getInitials,
   HIRE_ENGAGEMENT_LABELS,
@@ -45,12 +46,11 @@ import type { APIResponse, PaginatedResponse } from "@/types/response";
 
 interface Props {
   request: HireRequest;
-  listUrl: string;
 }
 
 const DEFAULT_VAT = 7.5;
 
-export const HireRequestCard = function ({ request, listUrl }: Props) {
+export const HireRequestCard = function ({ request }: Props) {
   const [invoiceOpen, setInvoiceOpen] = useState(false);
   const [declineOpen, setDeclineOpen] = useState(false);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -67,6 +67,8 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
             driverId: request.driver.id,
             status: "PENDING" as const,
             responded_at: null,
+            respond_by: null,
+            expired_at: null,
             driver: request.driver,
           },
         ]
@@ -84,9 +86,10 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
     : null;
   const currency = assigned[0]?.driver.driver_profile?.rate_currency ?? "NGN";
 
-  // Naira input for the admin, kobo on the wire.
+  // A contract's pay covers the whole term, so it starts blank and the server's quote supplies the prorated default.
+  const isContract = request.engagement_type === "CONTRACT";
   const [amountMajor, setAmountMajor] = useState(
-    rate ? String(Math.round(rate / 100)) : "",
+    rate && !isContract ? String(Math.round(rate / 100)) : "",
   );
   const [vatPercent, setVatPercent] = useState(String(DEFAULT_VAT));
   const [note, setNote] = useState("");
@@ -154,7 +157,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.invoice(request.reference),
     onSuccessMessage: "Invoice generated and sent to the client",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setInvoiceOpen(false),
   });
 
@@ -163,7 +165,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.decline(request.reference),
     onSuccessMessage: "Request declined",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setDeclineOpen(false),
   });
 
@@ -172,7 +173,6 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.assign(request.reference),
     onSuccessMessage: "Candidate added - availability ping sent",
-    additionalQueryKeys: [[listUrl]],
   });
 
   const { mutate: unassign, isPending: isUnassigning } = useSubmitData<{
@@ -180,13 +180,11 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.unassign(request.reference),
     onSuccessMessage: "Driver removed from the request",
-    additionalQueryKeys: [[listUrl]],
   });
 
   const { mutate: confirmPayment, isPending: isConfirming } = useSubmitData({
     url: API_ENDPOINTS.adminHires.confirmPayment(request.reference),
     onSuccessMessage: "Payment confirmed - engagement created",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setConfirmOpen(false),
   });
 
@@ -195,17 +193,17 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
   }>({
     url: API_ENDPOINTS.adminHires.rejectProof(request.reference),
     onSuccessMessage: "Proof rejected - the client can re-upload",
-    additionalQueryKeys: [[listUrl]],
     onSuccess: () => setRejectOpen(false),
   });
 
   const openInvoiceDialog = () => {
-    if (!amountMajor && rate) setAmountMajor(String(Math.round(rate / 100)));
+    if (!amountMajor && rate && !isContract)
+      setAmountMajor(String(Math.round(rate / 100)));
     setInvoiceOpen(true);
   };
 
   return (
-    <div className="border-border rounded-2xl border bg-white p-5">
+    <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <Avatar className="h-11 w-11 shrink-0">
@@ -331,6 +329,13 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
                 <span title="Confirmed available">
                   <BadgeCheck className="h-3.5 w-3.5 text-emerald-600" />
                 </span>
+              ) : entry.expired_at ? (
+                <span
+                  className="text-muted-foreground text-[10px] font-semibold"
+                  title={`Didn't reply by ${formatDateTime(entry.respond_by ?? entry.expired_at)}`}
+                >
+                  No reply
+                </span>
               ) : entry.status === "DECLINED" ? (
                 <span
                   className="text-[10px] font-semibold text-red-500"
@@ -339,7 +344,13 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
                   Declined
                 </span>
               ) : (
-                <span title="Awaiting availability">
+                <span
+                  title={
+                    entry.respond_by
+                      ? `Awaiting availability - reply due ${formatDateTime(entry.respond_by)}`
+                      : "Awaiting availability"
+                  }
+                >
                   <Clock3 className="h-3.5 w-3.5 text-amber-500" />
                 </span>
               )}
@@ -493,12 +504,20 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
       >
         <div className="space-y-4">
           <AppInput
-            label={`Salary per driver (${currency}, per month)`}
+            label={
+              isContract
+                ? `Pay per driver for the whole contract (${currency})`
+                : `Salary per driver (${currency}, per month)`
+            }
             type="number"
             min={1}
             value={amountMajor}
             onChange={(event) => setAmountMajor(event.target.value)}
-            placeholder="E.g 250000"
+            placeholder={
+              isContract && quote
+                ? String(Math.round(quote.per_driver_minor / 100))
+                : "E.g 250000"
+            }
           />
 
           <AppInput
@@ -561,8 +580,9 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
                   className="text-muted-foreground block pt-1 text-xs"
                 >
                   Driver salary (
-                  {formatMoney(quote.per_driver_minor, quote.currency)}/month
-                  per driver) is paid directly to the driver
+                  {formatMoney(quote.per_driver_minor, quote.currency)}
+                  {isContract ? " for the contract" : "/month"} per driver) is
+                  paid directly to the driver
                   {quote.drivers > 1 ? "s" : ""} by the client.
                 </AppText>
               </>
@@ -582,11 +602,14 @@ export const HireRequestCard = function ({ request, listUrl }: Props) {
 
           <Button
             className="h-11 w-full rounded-lg text-sm"
-            disabled={amountMinor <= 0 || !quote}
+            disabled={!quote}
             isLoading={isGenerating}
             onClick={() =>
               generate({
-                amount_minor: amountMinor,
+                amount_minor:
+                  amountMinor > 0
+                    ? amountMinor
+                    : (quote?.per_driver_minor ?? 0),
                 vat_percent: Number(vatPercent || 0),
                 ...(note.trim() && { note: note.trim() }),
               })

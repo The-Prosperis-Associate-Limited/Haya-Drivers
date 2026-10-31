@@ -1,8 +1,9 @@
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { queryClient } from "@/lib/utils";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
+import type { AttendanceLog } from "@/types/attendance";
+import type { SalarySchedule } from "@/types/salary";
 import type {
   Booking,
   JobRequestBucket,
@@ -53,36 +54,19 @@ export const useJobRequest = function (reference: string, shouldFetch = true) {
   return { booking: data?.data, isFetching };
 };
 
-/*
-  Start and complete are the same shape - a PATCH on the reference that
-  refetches the booking and the lists it appears in. The server owns which
-  transitions are legal; a refused one comes back as a message.
-
-  The list url carries the page, limit and tab filter, so it is a different
-  query key on every tab and no fixed key invalidates it. Matching on the
-  prefix is what refreshes every tab after a transition.
-*/
 const useBookingAction = function ({
   url,
   onSuccessMessage,
+  method = "patch",
 }: {
   url: string;
   onSuccessMessage: string;
+  method?: "patch" | "post";
 }) {
   return useSubmitData<Record<string, unknown>, APIResponse<Booking>>({
     url,
-    method: "patch",
+    method,
     onSuccessMessage,
-    additionalQueryKeys: [
-      [API_ENDPOINTS.driverDashboard.stats],
-      [API_ENDPOINTS.driverDashboard.upcomingJobs({ limit: 5 })],
-    ],
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          String(query.queryKey[0]).startsWith("/driver/job-requests"),
-      });
-    },
   });
 };
 
@@ -102,4 +86,42 @@ export const useCompleteJob = function (reference: string) {
   });
 
   return { completeJob: mutate, isPending };
+};
+
+export const useCheckIn = function (reference: string) {
+  const { mutate, isPending } = useBookingAction({
+    url: API_ENDPOINTS.jobRequests.checkIn(reference),
+    onSuccessMessage: "Checked in - have a good day",
+    method: "post",
+  });
+
+  return { checkIn: mutate, isPending };
+};
+
+export const useCheckOut = function (reference: string) {
+  const { mutate, isPending } = useBookingAction({
+    url: API_ENDPOINTS.jobRequests.checkOut(reference),
+    onSuccessMessage: "Checked out",
+    method: "post",
+  });
+
+  return { checkOut: mutate, isPending };
+};
+
+export const useAttendanceLog = function (reference: string, month: string) {
+  const { data, isFetching } = useGetData<APIResponse<AttendanceLog>>({
+    url: API_ENDPOINTS.jobRequests.attendance(reference, month),
+    shouldFetch: !!reference,
+  });
+
+  return { log: data?.data, isFetching };
+};
+
+export const useJobSalary = function (reference: string) {
+  const { data, isFetching } = useGetData<APIResponse<SalarySchedule>>({
+    url: API_ENDPOINTS.jobRequests.salary(reference),
+    shouldFetch: !!reference,
+  });
+
+  return { schedule: data?.data, isFetching };
 };

@@ -42,3 +42,6 @@ next-env.d.ts
 
 # agent guide - never committed
 CLAUDE.md
+
+# design mockups - local reference only
+/design/

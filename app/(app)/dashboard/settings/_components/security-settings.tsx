@@ -42,7 +42,7 @@ export const SecuritySettings = function () {
   return (
     <form
       onSubmit={handleSubmit((data) => updatePassword(data))}
-      className="border-border rounded-xl border bg-white p-3 md:p-4"
+      className="border-border rounded-2xl border bg-white p-3 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-4"
     >
       <div className="border-border grid grid-cols-1 divide-y rounded-lg border md:grid-cols-2 md:divide-x md:divide-y-0">
         <div className="hidden flex-col items-center justify-center p-10 md:flex">
@@ -55,7 +55,7 @@ export const SecuritySettings = function () {
         </div>
 
         <div className="space-y-4 p-6 md:p-10">
-          <AppText type="h4" className="text-base font-semibold">
+          <AppText type="h4" className="text-[15px] font-semibold">
             Password
           </AppText>
 

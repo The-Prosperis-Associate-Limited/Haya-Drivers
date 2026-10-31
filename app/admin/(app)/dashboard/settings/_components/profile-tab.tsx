@@ -63,7 +63,7 @@ export const ProfileTab = function () {
 
   return (
     <div className="space-y-6">
-      <div className="border-border flex flex-col items-center gap-4 rounded-2xl border bg-white p-6 text-center sm:flex-row sm:text-left">
+      <div className="border-border flex flex-col items-center gap-4 rounded-2xl border bg-white p-5 text-center shadow-[0_1px_2px_rgba(15,23,42,0.04)] sm:flex-row sm:text-left">
         <div className="relative">
           <AppAvatar
             src={profile?.profile_pic ?? undefined}
@@ -91,7 +91,7 @@ export const ProfileTab = function () {
         </div>
       </div>
 
-      <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
+      <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
         <AppText type="h3" className="text-base font-semibold">
           Admin details
         </AppText>

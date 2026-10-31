@@ -77,14 +77,12 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   const { mutate: join, isPending: isJoining } = useSubmitData({
     url: API_ENDPOINTS.adminChat.join(conversationId),
     onSuccessMessage: "You joined the conversation",
-    additionalQueryKeys: [[detailUrl]],
     onSuccess: onChanged,
   });
 
   const { mutate: resolve, isPending: isResolving } = useSubmitData({
     url: API_ENDPOINTS.adminChat.resolve(conversationId),
     onSuccessMessage: "Conversation resolved",
-    additionalQueryKeys: [[detailUrl]],
     onSuccess: onChanged,
   });
 
@@ -93,7 +91,6 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   }>({
     url: API_ENDPOINTS.adminChat.message(conversationId),
     silent: true,
-    additionalQueryKeys: [[detailUrl]],
   });
 
   const send = () => {
@@ -106,7 +103,7 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   const requester = conversation?.initiatedBy;
 
   return (
-    <div className="border-border flex max-h-[70vh] min-h-[420px] flex-col rounded-2xl border bg-white">
+    <div className="border-border flex max-h-[70vh] min-h-[420px] flex-col rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <div className="border-border flex items-center justify-between gap-3 border-b px-5 py-4">
         <div className="min-w-0">
           <AppText type="label" className="block truncate text-sm font-bold">

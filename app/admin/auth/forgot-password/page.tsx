@@ -3,7 +3,6 @@
 import { FormInput } from "@/components/form/form-input";
 import { AuthHeading, AuthShell } from "@/components/shared/auth-shell";
 import { AppText } from "@/components/shared/app-text";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -39,11 +38,7 @@ export default function AdminForgotPassword() {
   });
 
   return (
-    <AuthShell>
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
+    <AuthShell surface="admin">
       <AuthHeading
         title="Reset your password"
         subtitle="Enter the email tied to your admin account and we'll send you a reset link."

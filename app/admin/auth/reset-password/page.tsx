@@ -3,7 +3,6 @@
 import { FormInput } from "@/components/form/form-input";
 import { AuthHeading, AuthShell } from "@/components/shared/auth-shell";
 import { PasswordChecklist } from "@/components/shared/password-checklist";
-import { TegatLogo } from "@/components/svg/logo";
 import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -44,11 +43,7 @@ function ResetPasswordForm() {
   });
 
   return (
-    <AuthShell>
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
+    <AuthShell surface="admin">
       <AuthHeading
         title="Create a new password"
         subtitle="Choose a new password for your admin account."

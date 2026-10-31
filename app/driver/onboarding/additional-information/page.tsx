@@ -4,7 +4,6 @@ import { FormInput } from "@/components/form/form-input";
 import { FormMultiSelect } from "@/components/form/form-multi-select";
 import { FormSelect } from "@/components/form/form-select";
 import { OnboardingShell } from "@/components/shared/onboarding-shell";
-import { Button } from "@/components/ui/button";
 import { useOnboardingProfile } from "@/hooks/use-onboarding-profile";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import {
@@ -12,8 +11,9 @@ import {
   LANGUAGE_OPTIONS,
   ONBOARDING_TIPS,
   RELIGION_OPTIONS,
-  getOnboardingProgress,
 } from "@/lib/utils";
+import { Languages } from "lucide-react";
+import Link from "next/link";
 import {
   additionalInformationSchema,
   type AdditionalInformationFormValues,
@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { StepHeader } from "../_components/step-header";
+import { StepPanel } from "../_components/step-panel";
 import { useSaveOnboardingStep } from "../_hooks/use-save-onboarding-step";
 
 export default function AdditionalInformationStep() {
@@ -55,21 +56,27 @@ export default function AdditionalInformationStep() {
       onSuccessMessage: "Saved",
     });
 
-  const firstName = profile?.user.first_name ?? "there";
-
   return (
     <OnboardingShell
-      title={`Welcome ${firstName} 👋`}
-      subtitle="Let's get your account fully set up. A few quick steps stand between you and your first job."
+      step="ADDITIONAL_INFORMATION"
       tips={ONBOARDING_TIPS.ADDITIONAL_INFORMATION}
+      footer={{
+        label: "Continue",
+        formId: "step-form",
+        isLoading: isPending,
+        hint: "Everything here is optional",
+        secondary: (
+          <Link href="/driver/onboarding/documents" className="text-muted-foreground hover:text-foreground px-2 text-sm font-semibold">
+            Skip
+          </Link>
+        ),
+      }}
     >
-      <StepHeader
-        title="Additional information (optional)"
-        description="Share any additional details - totally optional"
-        progress={getOnboardingProgress("ADDITIONAL_INFORMATION")}
-      />
+      <StepHeader step="ADDITIONAL_INFORMATION" title="A little more about you" description="Optional - some clients look for a driver who speaks their language." />
 
-      <form onSubmit={handleSubmit((data) => save(data))} className="space-y-4">
+      <form id="step-form" onSubmit={handleSubmit((data) => save(data))}>
+        <StepPanel title="Languages and background" icon={Languages}>
+        <div className="grid gap-4 sm:grid-cols-2">
         <FormInput<AdditionalInformationFormValues>
           control={control}
           name="language_count"
@@ -107,12 +114,8 @@ export default function AdditionalInformationStep() {
           options={ETHNICITY_OPTIONS}
         />
 
-        <Button
-          isLoading={isPending}
-          className="h-12 w-full rounded-lg text-sm"
-        >
-          Continue
-        </Button>
+        </div>
+        </StepPanel>
       </form>
     </OnboardingShell>
   );

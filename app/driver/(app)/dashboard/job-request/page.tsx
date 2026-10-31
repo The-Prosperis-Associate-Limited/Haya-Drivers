@@ -1,14 +1,17 @@
 "use client";
 
 import { AppTabs } from "@/components/shared/app-tabs";
+import { AppText } from "@/components/shared/app-text";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { Pagination } from "@/components/shared/pagination";
 import { StatCard } from "@/components/shared/stat-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetProfile } from "@/hooks/use-get-profile";
+import { Briefcase, CircleCheckBig, Clock, Star } from "lucide-react";
 import { useState } from "react";
-import { JobRequestRow } from "./_components/job-request-row";
+import { JobsTable } from "../_components/jobs-table";
+import { useDashboardStats } from "../_hooks/use-dashboard";
 import { UnverifiedNotice } from "./_components/unverified-notice";
 import {
   useJobRequestSummary,
@@ -56,6 +59,7 @@ export default function JobRequests() {
   const isVerified = status === "APPROVED";
 
   const { summary } = useJobRequestSummary(isVerified);
+  const { stats } = useDashboardStats();
 
   const { bookings, totalPages, isFetching } = useJobRequests({
     page,
@@ -69,47 +73,66 @@ export default function JobRequests() {
     completed: summary?.completed,
   };
 
+  const onTime = stats?.on_time_rate ?? null;
+  const reviewCount = stats?.client_review_count ?? 0;
+
   return (
-    <div className="mx-auto max-w-6xl space-y-5">
+    <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <PageHeader
         title="My jobs"
-        subtitle="Engagements clients have hired you for. Start each job on day one and mark it complete when it ends."
+        subtitle="Engagements clients have hired you for. Start each job on day one, check in and out every working day, and mark it complete when it ends."
       />
 
       {profile && !isVerified ? (
         <UnverifiedNotice status={status ?? "UNSUBMITTED"} />
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <section className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-4">
             <StatCard
+              icon={Briefcase}
               label="Active jobs"
               value={summary?.active ?? 0}
               caption="Running or about to start"
               captionTone="muted"
             />
             <StatCard
+              icon={CircleCheckBig}
+              tone="green"
               label="Completed"
               value={summary?.completed ?? 0}
               caption="Finished engagements"
               captionTone="muted"
             />
-          </div>
-
-          <AppTabs
-            variant="chip"
-            value={tab}
-            onValueChange={(value) => {
-              setTab(value);
-              setPage(1);
-            }}
-            tabs={TABS.map((entry) => ({
-              value: entry.value,
-              label:
-                counts[entry.value] === undefined
-                  ? entry.label
-                  : `${entry.label} (${counts[entry.value]})`,
-            }))}
-          />
+            <StatCard
+              icon={Clock}
+              tone="violet"
+              label="On-time rate"
+              value={onTime === null ? "-" : `${onTime}%`}
+              caption={
+                onTime === null
+                  ? "Measured from your daily check-ins"
+                  : "Start stamps against the scheduled time"
+              }
+              captionTone="muted"
+            />
+            <StatCard
+              icon={Star}
+              tone="amber"
+              label="Client rating"
+              value={
+                reviewCount
+                  ? `${stats?.client_review_average.toFixed(1)} / 5`
+                  : "-"
+              }
+              caption={
+                reviewCount
+                  ? `From ${reviewCount} verified review${reviewCount > 1 ? "s" : ""}`
+                  : "No reviews yet"
+              }
+              captionTone="muted"
+              href="/driver/dashboard/reviews"
+            />
+          </section>
 
           <Pagination
             page={page}
@@ -118,12 +141,41 @@ export default function JobRequests() {
             limit={LIMIT}
             isLoading={isFetching}
           >
-            <div className="border-border overflow-hidden rounded-xl border bg-white">
+            <div className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <div className="flex flex-wrap items-center justify-between gap-3 px-4 pt-4 pb-3 md:px-5 md:pt-5">
+                <div>
+                  <AppText type="h4" className="text-[15px] font-semibold">
+                    {active.label} jobs
+                  </AppText>
+                  <AppText
+                    type="caption"
+                    className="text-muted-foreground block"
+                  >
+                    Open a job to start it, complete it or call the client
+                  </AppText>
+                </div>
+                <AppTabs
+                  variant="chip"
+                  value={tab}
+                  onValueChange={(value) => {
+                    setTab(value);
+                    setPage(1);
+                  }}
+                  tabs={TABS.map((entry) => ({
+                    value: entry.value,
+                    label:
+                      counts[entry.value] === undefined
+                        ? entry.label
+                        : `${entry.label} (${counts[entry.value]})`,
+                  }))}
+                />
+              </div>
+
               {isFetching && !bookings.length ? (
-                <div className="space-y-3 p-4 md:p-6">
-                  <Skeleton className="h-20 w-full rounded-lg" />
-                  <Skeleton className="h-20 w-full rounded-lg" />
-                  <Skeleton className="h-20 w-full rounded-lg" />
+                <div className="space-y-3 p-4 md:p-5">
+                  <Skeleton className="h-16 w-full rounded-xl" />
+                  <Skeleton className="h-16 w-full rounded-xl" />
+                  <Skeleton className="h-16 w-full rounded-xl" />
                 </div>
               ) : !bookings.length ? (
                 <EmptyState
@@ -132,11 +184,7 @@ export default function JobRequests() {
                   description={active.emptyHint}
                 />
               ) : (
-                <div className="divide-border divide-y">
-                  {bookings.map((booking) => (
-                    <JobRequestRow key={booking.id} booking={booking} />
-                  ))}
-                </div>
+                <JobsTable jobs={bookings} showPay />
               )}
             </div>
           </Pagination>

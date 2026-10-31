@@ -45,7 +45,6 @@ export const useCreateTicket = function ({
     url: API_ENDPOINTS.tickets.create,
     method: "post",
     onSuccessMessage,
-    additionalQueryKeys: [[listUrl]],
     onSuccess: (response) => onSuccess?.(response.data),
   });
 
@@ -57,7 +56,6 @@ export const useCommentOnTicket = function (id: string | null) {
     url: () => (id ? API_ENDPOINTS.tickets.comment(id) : ""),
     method: "post",
     onSuccessMessage: "Message sent",
-    additionalQueryKeys: id ? [[API_ENDPOINTS.tickets.get(id)]] : undefined,
   });
 
   return { sendMessage: mutate, isPending };

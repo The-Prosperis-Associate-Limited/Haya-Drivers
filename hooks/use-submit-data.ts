@@ -1,6 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
 import api, { type CustomAxiosRequestConfig } from "@/lib/api";
 import { showToast } from "@/lib/show-toast";
 import { useHandleErrors } from "@/lib/handle-errors";
@@ -11,7 +10,6 @@ interface UseSubmitDataOptions<TData, TResponse> {
   url: string | ((data: TData) => string);
   getBody?: (data: TData) => unknown;
   method?: "post" | "put" | "patch" | "delete";
-  additionalQueryKeys?: string[][];
   onSuccessMessage?: string;
   onLoadingMessage?: string;
   onError?: (error: AxiosError<{ message?: string }>) => void;
@@ -32,7 +30,6 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(
     url,
     getBody,
     method = "post",
-    additionalQueryKeys,
     onSuccessMessage = "Operation successful",
     onLoadingMessage,
     onError,
@@ -45,8 +42,6 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(
 
   const router = useRouter();
   const handleErrors = useHandleErrors();
-  const lastResolvedUrl = useRef<string>("");
-
   const mutation = useMutation<
     TResponse,
     AxiosError<{ message?: string }>,
@@ -63,8 +58,6 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(
         throw new Error("This action isn't wired up to an endpoint yet");
       }
 
-      lastResolvedUrl.current = resolvedUrl;
-
       const body = getBody ? getBody(data) : data;
 
       const config: Partial<CustomAxiosRequestConfig> = {};
@@ -78,13 +71,8 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(
     onSuccess: (data) => {
       if (!silent) showToast("success", onSuccessMessage);
 
-      if (!skipRefetch) {
-        queryClient.refetchQueries({ queryKey: [lastResolvedUrl.current] });
-
-        additionalQueryKeys?.forEach((key) => {
-          queryClient.refetchQueries({ queryKey: key });
-        });
-      }
+      // A write can change data under any key (an approval empties a queue on another route): on-screen queries refetch now, the rest on their next mount.
+      if (!skipRefetch) queryClient.invalidateQueries();
 
       onSuccess?.(data);
 

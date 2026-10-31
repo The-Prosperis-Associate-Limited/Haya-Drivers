@@ -6,8 +6,12 @@ import { AppText } from "@/components/shared/app-text";
 import { GoogleAuthButton } from "@/components/shared/google-auth-button";
 import { OrDemacator } from "@/components/shared/or-demacator";
 import { PasswordChecklist } from "@/components/shared/password-checklist";
-import { TegatLogo } from "@/components/svg/logo";
+import { ReferralCodeField } from "@/components/driver/referral-code-field";
 import { Button } from "@/components/ui/button";
+import type { ReferralCodeState } from "@/hooks/use-referral-code-preview";
+import { normaliseReferralCode } from "@/hooks/use-referral-code-preview";
+import { clearStashedReferralCode, stashReferralCode } from "@/lib/referral-stash";
+import { showToast } from "@/lib/show-toast";
 import { ENV } from "@/lib/utils";
 import {
   signupSchema,
@@ -16,22 +20,32 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, UserRound } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { useSignup } from "./_hooks/use-signup";
 
-export default function SignUp() {
+function SignUpForm() {
   const router = useRouter();
+  const invite = normaliseReferralCode(useSearchParams().get("ref") ?? "");
 
   const {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { accepted_terms: false },
+    defaultValues: { accepted_terms: false, referral_code: invite },
   });
+
+  const [codeLocked, setCodeLocked] = useState(!!invite);
+  const [codeState, setCodeState] = useState<ReferralCodeState>("empty");
+
+  useEffect(() => {
+    if (invite) stashReferralCode(invite);
+  }, [invite]);
 
   const password = watch("password") ?? "";
   const email = watch("email") ?? "";
@@ -43,17 +57,19 @@ export default function SignUp() {
       ),
   });
 
-  const onSubmit = (data: SignupFormValues) =>
+  const onSubmit = (data: SignupFormValues) => {
+    if (codeState === "invalid" || codeState === "checking") {
+      return showToast("error", codeState === "checking" ? "Checking your referral code - try again in a moment" : "Fix or remove the referral code first");
+    }
+
+    clearStashedReferralCode();
     // "mobile" asks the server for a 6-digit code rather than the emailed link,
     // which is what the next screen collects.
-    signup({ ...data, role: "DRIVER", client: "mobile" });
+    signup({ ...data, referral_code: data.referral_code ? normaliseReferralCode(data.referral_code) : undefined, role: "DRIVER", client: "mobile" });
+  };
 
   return (
     <AuthShell backHref="/">
-      <div className="mb-2">
-        <TegatLogo size={48} />
-      </div>
-
       <AuthHeading
         title="Create your driver account"
         subtitle="Takes about 2 minutes. You'll verify your documents in the next step."
@@ -97,6 +113,25 @@ export default function SignUp() {
 
           <PasswordChecklist password={password} />
         </div>
+
+        <Controller
+          control={control}
+          name="referral_code"
+          render={({ field }) => (
+            <ReferralCodeField
+              value={field.value ?? ""}
+              onChange={field.onChange}
+              locked={codeLocked}
+              onUnlock={() => {
+                setCodeLocked(false);
+                setValue("referral_code", "");
+                clearStashedReferralCode();
+              }}
+              label={codeLocked ? "Invited by a driver" : undefined}
+              onStateChange={setCodeState}
+            />
+          )}
+        />
 
         <FormInput<SignupFormValues>
           control={control}
@@ -144,5 +179,13 @@ export default function SignUp() {
         </Link>
       </AppText>
     </AuthShell>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <Suspense>
+      <SignUpForm />
+    </Suspense>
   );
 }

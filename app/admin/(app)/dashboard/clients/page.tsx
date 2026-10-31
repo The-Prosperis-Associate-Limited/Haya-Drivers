@@ -1,26 +1,32 @@
 "use client";
 
+import { AppAvatar } from "@/components/shared/app-avatar";
+import { AppInput } from "@/components/shared/app-input";
 import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { AppText } from "@/components/shared/app-text";
-import { AppAvatar } from "@/components/shared/app-avatar";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Pagination } from "@/components/shared/pagination";
 import { StatCard } from "@/components/shared/stat-card";
 import { StatusBadge } from "@/components/shared/status-badge";
+import { Button } from "@/components/ui/button";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useGetData } from "@/hooks/use-get-data";
 import {
+  ADMIN_CARD,
+  ADMIN_TABLE_HEAD,
   clientName,
   downloadCsv,
   statusBadgeClass,
   statusLabel,
 } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
+import { Ban, Building2, UserCheck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { AdminClientStats, AdminUserRow } from "@/types/admin";
+import { PageHeader } from "@/components/shared/page-header";
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "All Statuses" },
@@ -28,6 +34,9 @@ const STATUS_OPTIONS = [
   { value: "SUSPENDED", label: "Suspended" },
   { value: "DEACTIVATED", label: "Deactivated" },
 ];
+
+const isOrganisation = (row: AdminUserRow) =>
+  row.client_profile?.client_type === "ORGANISATION";
 
 export default function AdminClients() {
   const [page, setPage] = useState(1);
@@ -60,9 +69,7 @@ export default function AdminClients() {
       ["Client", "Type", "Contact", "Registered", "Status"],
       rows.map((row) => [
         clientName(row),
-        row.client_profile?.client_type === "ORGANISATION"
-          ? "Organization"
-          : "Individual",
+        isOrganisation(row) ? "Organization" : "Individual",
         row.email,
         formatDate(row.createdAt),
         row.account_status,
@@ -71,30 +78,32 @@ export default function AdminClients() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6">
-      <div>
-        <AppText type="h2" className="text-xl font-bold md:text-2xl">
-          Clients
-        </AppText>
-        <AppText type="subtitle" className="text-muted-foreground text-sm">
-          Individual and organization clients hiring drivers on Haya Drivers.
-        </AppText>
-      </div>
+    <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
+      <PageHeader
+        className="mb-0"
+        title="Clients"
+        subtitle="Individual and organization clients hiring drivers on Haya Drivers."
+      />
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:gap-4">
         <StatCard
+          icon={Building2}
           label="All clients"
           value={stats ? String(stats.total) : "-"}
           caption={stats ? `${stats.organisations} organizations` : " "}
           captionTone="muted"
         />
         <StatCard
+          icon={UserCheck}
+          tone="green"
           label="Active clients"
           value={stats ? String(stats.active) : "-"}
           caption="Accounts in good standing"
           captionTone="muted"
         />
         <StatCard
+          icon={Ban}
+          tone="amber"
           label="Suspended"
           value={stats ? String(stats.suspended) : "-"}
           caption={
@@ -104,8 +113,22 @@ export default function AdminClients() {
         />
       </div>
 
-      <div className="border-border rounded-2xl border bg-white p-5 md:p-6">
-        <div className="flex flex-wrap items-center justify-end gap-3">
+      <div className={cn(ADMIN_CARD, "overflow-hidden")}>
+        <div className="flex flex-wrap items-center gap-2 px-4 pt-4 pb-3 md:px-5 md:pt-5">
+          <AppText type="h4" className="mr-auto text-[15px] font-semibold">
+            All clients
+          </AppText>
+          <AppInput
+            type="search"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value);
+              setPage(1);
+            }}
+            placeholder="Search clients..."
+            containerClassName="w-full sm:w-64"
+            className="h-10 rounded-xl"
+          />
           <AppSimpleSelect
             options={STATUS_OPTIONS}
             value={status}
@@ -116,7 +139,7 @@ export default function AdminClients() {
             containerClassName="w-[150px]"
           />
           <AppSimpleSelect
-            placeholder="EXPORT AS"
+            placeholder="Export as"
             options={[
               { value: "pdf", label: "PDF" },
               { value: "csv", label: "CSV" },
@@ -132,12 +155,7 @@ export default function AdminClients() {
           onPageChange={setPage}
           total={data?.total}
           isLoading={isFetching}
-          search={search}
-          onSearchChange={(value) => {
-            setSearch(value);
-            setPage(1);
-          }}
-          searchPlaceholder="Search clients..."
+          controlsClassName="border-t border-slate-100 px-4 md:px-5"
         >
           {!rows.length ? (
             <EmptyState
@@ -146,66 +164,69 @@ export default function AdminClients() {
             />
           ) : (
             <>
-              <div className="mt-4 hidden overflow-x-auto md:block">
+              <div className="hidden overflow-x-auto md:block">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-muted-foreground border-border border-b text-left text-xs tracking-wide uppercase">
-                      <th className="py-3 pr-4 font-medium">Client</th>
-                      <th className="py-3 pr-4 font-medium">Type</th>
-                      <th className="py-3 pr-4 font-medium">Contact</th>
-                      <th className="py-3 pr-4 font-medium">Registered</th>
-                      <th className="py-3 pr-4 font-medium">Status</th>
-                      <th className="py-3 font-medium" />
+                    <tr className={ADMIN_TABLE_HEAD}>
+                      <th className="px-5 py-2.5 font-semibold">Client</th>
+                      <th className="px-3 py-2.5 font-semibold">Type</th>
+                      <th className="px-3 py-2.5 font-semibold">Contact</th>
+                      <th className="px-3 py-2.5 font-semibold">Registered</th>
+                      <th className="px-3 py-2.5 font-semibold">Status</th>
+                      <th className="py-2.5 pr-5 pl-2" />
                     </tr>
                   </thead>
-                  <tbody className="divide-border divide-y">
+                  <tbody className="divide-y divide-slate-100">
                     {rows.map((row) => (
-                      <tr key={row.id}>
-                        <td className="py-3 pr-4">
+                      <tr key={row.id} className="hover:bg-slate-50/60">
+                        <td className="px-5 py-3">
                           <span className="flex items-center gap-3">
                             <AppAvatar
                               src={row.profile_pic ?? undefined}
                               fallback={clientName(row)}
                               className="h-9 w-9"
                             />
-                            <span className="font-medium">
+                            <span className="text-ink font-semibold">
                               {clientName(row)}
                             </span>
                           </span>
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className="px-3 py-3">
                           <StatusBadge
                             label={
-                              row.client_profile?.client_type === "ORGANISATION"
+                              isOrganisation(row)
                                 ? "Organization"
                                 : "Individual"
                             }
                             className={
-                              row.client_profile?.client_type === "ORGANISATION"
+                              isOrganisation(row)
                                 ? "border-indigo-200 bg-indigo-50 text-indigo-700"
                                 : "border-slate-200 bg-slate-50 text-slate-600"
                             }
                           />
                         </td>
-                        <td className="text-muted-foreground py-3 pr-4">
+                        <td className="text-muted-foreground px-3 py-3">
                           {row.email}
                         </td>
-                        <td className="text-muted-foreground py-3 pr-4">
+                        <td className="text-muted-foreground px-3 py-3">
                           {formatDate(row.createdAt)}
                         </td>
-                        <td className="py-3 pr-4">
+                        <td className="px-3 py-3">
                           <StatusBadge
                             label={statusLabel(row.account_status)}
                             className={statusBadgeClass(row.account_status)}
                           />
                         </td>
-                        <td className="py-3 text-right">
-                          <Link
-                            href={`/admin/dashboard/clients/${row.id}`}
-                            className="text-brand text-sm font-semibold hover:underline"
+                        <td className="py-3 pr-5 pl-2 text-right">
+                          <Button
+                            asChild
+                            variant="outline"
+                            className="h-8 rounded-lg px-3 text-xs"
                           >
-                            View
-                          </Link>
+                            <Link href={`/admin/dashboard/clients/${row.id}`}>
+                              View
+                            </Link>
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -213,7 +234,7 @@ export default function AdminClients() {
                 </table>
               </div>
 
-              <div className="mt-4 space-y-3 md:hidden">
+              <div className="space-y-3 px-4 pb-1 md:hidden">
                 {rows.map((row) => (
                   <Link
                     key={row.id}
@@ -221,13 +242,13 @@ export default function AdminClients() {
                     className="border-border block rounded-xl border p-4"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="flex items-center gap-3">
+                      <span className="flex min-w-0 items-center gap-3">
                         <AppAvatar
                           src={row.profile_pic ?? undefined}
                           fallback={clientName(row)}
                           className="h-9 w-9"
                         />
-                        <span className="text-sm font-medium">
+                        <span className="truncate text-sm font-semibold">
                           {clientName(row)}
                         </span>
                       </span>
@@ -237,10 +258,8 @@ export default function AdminClients() {
                       />
                     </div>
                     <p className="text-muted-foreground mt-2 text-xs">
-                      {row.client_profile?.client_type === "ORGANISATION"
-                        ? "Organization"
-                        : "Individual"}{" "}
-                      · {row.email} · joined {formatDate(row.createdAt)}
+                      {isOrganisation(row) ? "Organization" : "Individual"} ·{" "}
+                      {row.email} · joined {formatDate(row.createdAt)}
                     </p>
                   </Link>
                 ))}

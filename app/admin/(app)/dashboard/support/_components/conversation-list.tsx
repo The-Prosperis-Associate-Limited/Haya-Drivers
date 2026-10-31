@@ -30,7 +30,7 @@ export const ConversationList = function ({
   onSelect,
 }: Props) {
   return (
-    <div className="border-border max-h-[70vh] overflow-y-auto rounded-2xl border bg-white">
+    <div className="border-border max-h-[70vh] overflow-y-auto rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       {isFetching && !conversations.length ? (
         <div className="space-y-3 p-4">
           {Array.from({ length: 4 }).map((_, index) => (

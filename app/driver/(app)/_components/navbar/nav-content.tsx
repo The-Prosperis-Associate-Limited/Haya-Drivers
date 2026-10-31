@@ -1,13 +1,26 @@
 "use client";
 
 import { AppText } from "@/components/shared/app-text";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { TegatLogo } from "@/components/svg/logo";
+import { clearAuthCookies } from "@/lib/authService";
 import { cn, getInitials } from "@/lib/utils";
-import { BadgeCheck, ChevronDown, ListChecks } from "lucide-react";
+import {
+  BadgeCheck,
+  ChevronDown,
+  GraduationCap,
+  Lock,
+  LogOut,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import type { DriverVerificationStatus } from "@/types/driver";
+import { useJobRequestSummary } from "../../dashboard/job-request/_hooks/use-job-requests";
 import { FOOTER_LINKS, NAV_LINKS, type NavLink } from "./nav-links";
 
 interface Props {
@@ -22,8 +35,14 @@ interface Props {
   onNavigate?: () => void;
 }
 
+const JOBS_HREF = "/driver/dashboard/job-request";
+
 export const NavContent = function ({ status, user, onNavigate }: Props) {
   const pathname = usePathname();
+  const [signOutOpen, setSignOutOpen] = useState(false);
+
+  const isVerified = status === "APPROVED";
+  const { summary } = useJobRequestSummary(isVerified);
 
   const isActive = (href: string) =>
     href === "/driver/dashboard"
@@ -34,12 +53,21 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
     .filter(Boolean)
     .join(", ");
 
-  const renderLink = (link: NavLink, footer = false) => {
+  const name =
+    [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "Driver";
+
+  const signOut = () => {
+    clearAuthCookies();
+    window.location.href = "/driver/auth/signin";
+  };
+
+  const renderLink = (link: NavLink) => {
     const Icon = link.icon;
     const active = isActive(link.href);
     // Children only unfold once the section is the one being looked at, so the
     // sidebar stays four rows tall the rest of the time.
     const expanded = active && !!link.children?.length;
+    const count = link.href === JOBS_HREF ? summary?.active : undefined;
 
     return (
       <div key={link.href}>
@@ -47,17 +75,24 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
           href={link.href}
           onClick={onNavigate}
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
             active
-              ? cn(
-                  "text-brand bg-brand-soft",
-                  !footer && "border-brand border-l-[3px]",
-                )
-              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              ? "bg-brand text-white shadow-[0_6px_16px_-8px_rgba(47,107,246,0.7)]"
+              : "text-muted-foreground hover:text-foreground hover:bg-slate-50",
           )}
         >
           <Icon className="h-5 w-5 shrink-0" />
           {link.label}
+          {!!count && (
+            <span
+              className={cn(
+                "ml-auto min-w-[22px] rounded-full px-1.5 text-center text-[11px] font-semibold",
+                active ? "bg-white/20 text-white" : "bg-brand-soft text-brand",
+              )}
+            >
+              {count}
+            </span>
+          )}
           {!!link.children?.length && (
             <ChevronDown
               className={cn(
@@ -90,37 +125,97 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
 
   return (
     <div className="flex h-full flex-col bg-white">
-      <div className="flex items-center justify-center px-6 py-4">
-        <Link href="/driver/dashboard" onClick={onNavigate}>
-          <TegatLogo size={40} />
-        </Link>
-      </div>
-
       <Link
-        href="/driver/onboarding"
+        href="/driver/dashboard"
         onClick={onNavigate}
-        className="text-muted-foreground hover:text-foreground flex items-center gap-3 px-6 pb-3 transition-colors"
+        className="flex items-center gap-2.5 px-5 pt-5 pb-3"
       >
-        <ListChecks className="h-5 w-5 shrink-0" />
-        <AppText
-          type="caption"
-          className="font-semibold tracking-wide uppercase"
-        >
-          Get started
-        </AppText>
+        <TegatLogo size={36} />
+        <span className="leading-tight">
+          <span className="text-ink block text-base font-bold tracking-tight">
+            Haya Drivers
+          </span>
+          <span className="text-muted-foreground block text-[11px] font-medium">
+            Driver workspace
+          </span>
+        </span>
       </Link>
 
-      <div className="border-border mx-6 border-t" />
+      <div className="flex-1 overflow-y-auto px-3.5 pb-4">
+        <AppText
+          type="caption"
+          className="mx-2.5 mt-4 mb-2 block text-[11px] font-semibold tracking-[0.08em] text-slate-400 uppercase"
+        >
+          Menu
+        </AppText>
+        <nav className="space-y-0.5">
+          {NAV_LINKS.map((link) => renderLink(link))}
+        </nav>
 
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        {NAV_LINKS.map((link) => renderLink(link))}
-      </nav>
+        <AppText
+          type="caption"
+          className="mx-2.5 mt-5 mb-2 block text-[11px] font-semibold tracking-[0.08em] text-slate-400 uppercase"
+        >
+          Account
+        </AppText>
+        <nav className="space-y-0.5">
+          {FOOTER_LINKS.map((link) => renderLink(link))}
+        </nav>
 
-      <div className="space-y-1 px-3 pb-4">
-        {FOOTER_LINKS.map((link) => renderLink(link, true))}
+        <div className="relative mt-5 overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 to-blue-900 p-4 text-white">
+          <span className="pointer-events-none absolute -top-8 -right-8 size-28 rounded-full border border-white/15" />
+          {isVerified ? (
+            <>
+              <span className="flex items-center justify-between gap-2">
+                <span className="flex items-center gap-2 text-sm font-semibold">
+                  <ShieldCheck className="size-4" />
+                  Boost your trust score
+                </span>
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10.5px] font-semibold">
+                  <Lock className="size-3" />
+                  Soon
+                </span>
+              </span>
+              <p className="mt-1 text-xs text-white/70">
+                Training courses will add up to 30 points to your trust score
+                and move you up the search results.
+              </p>
+              <Button
+                type="button"
+                variant="ghost"
+                disabled
+                aria-disabled="true"
+                className="mt-3 h-9 w-full cursor-not-allowed rounded-xl bg-white/15 text-xs text-white/80 hover:bg-white/15 disabled:opacity-100"
+              >
+                <GraduationCap className="size-3.5" />
+                Training is coming soon
+              </Button>
+            </>
+          ) : (
+            <>
+              <span className="flex items-center gap-2 text-sm font-semibold">
+                <Sparkles className="size-4" />
+                Get verified
+              </span>
+              <p className="mt-1 text-xs text-white/70">
+                Clients only see verified drivers. Finish your application to
+                start getting jobs.
+              </p>
+              <Button
+                asChild
+                variant="ghost"
+                className="text-brand mt-3 h-9 w-full rounded-xl bg-white text-xs hover:bg-white/90"
+              >
+                <Link href="/driver/onboarding" onClick={onNavigate}>
+                  Continue setup
+                </Link>
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="border-border flex items-center gap-3 border-t px-5 py-4">
+      <div className="border-border mx-3.5 mb-3.5 flex items-center gap-3 rounded-2xl border p-3">
         <div className="relative">
           <Avatar className="h-10 w-10">
             <AvatarImage src={user?.profile_pic ?? undefined} alt="" />
@@ -128,14 +223,14 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
               {getInitials(user?.first_name, user?.last_name)}
             </AvatarFallback>
           </Avatar>
-          {status === "APPROVED" && (
+          {isVerified && (
             <BadgeCheck className="fill-brand absolute -right-0.5 -bottom-0.5 h-4 w-4 text-white" />
           )}
         </div>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <AppText type="label" className="block truncate">
-            {user?.first_name ?? "Driver"}
+            {name}
           </AppText>
           <AppText
             type="caption"
@@ -144,7 +239,29 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
             {location || "Location not set"}
           </AppText>
         </div>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Sign out"
+          onClick={() => setSignOutOpen(true)}
+          className="text-muted-foreground size-9 shrink-0"
+        >
+          <LogOut className="size-4" />
+        </Button>
       </div>
+
+      <ConfirmDialog
+        isOpen={signOutOpen}
+        onOpenChange={setSignOutOpen}
+        icon={LogOut}
+        iconClassName="text-destructive"
+        title="Sign out of Haya Drivers?"
+        description="You'll need your email and password to sign back in."
+        confirmLabel="Sign out"
+        confirmVariant="destructive"
+        onConfirm={signOut}
+      />
     </div>
   );
 };

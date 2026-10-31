@@ -32,7 +32,7 @@ export const MobileNav = function ({ user }: Props) {
         onOpenChange={setOpen}
         side="left"
         title="Navigation"
-        width="260px"
+        width="284px"
         bodyClassName="p-0"
       >
         <NavContent user={user} onNavigate={() => setOpen(false)} />

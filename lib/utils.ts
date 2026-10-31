@@ -27,6 +27,7 @@ import type {
   DriversNeededRange,
   HiringTimeline,
 } from "@/types/auth";
+import type { HireInvoice } from "@/types/hire";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -195,7 +196,11 @@ export const formatMoney = function (
   const symbol =
     currencyMapper[currency as keyof typeof currencyMapper] ?? `${currency} `;
 
-  return `${symbol}${((minor ?? 0) / 100).toLocaleString(undefined, {
+  const value = minor ?? 0;
+
+  return `${value < 0 ? "-" : ""}${symbol}${(
+    Math.abs(value) / 100
+  ).toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   })}`;
@@ -283,6 +288,51 @@ export const formatPay = function (
   return `${formatMoney(minor, currency)} / ${PAY_PERIOD_LABELS[engagement]}`;
 };
 
+export const INVOICE_STATUS_STYLES: Record<
+  HireInvoice["status"],
+  { label: string; tone: string }
+> = {
+  UNPAID: {
+    label: "Unpaid",
+    tone: "border-amber-200 bg-amber-50 text-amber-700",
+  },
+  PAYMENT_REVIEW: {
+    label: "Under review",
+    tone: "border-brand/20 bg-brand-soft text-brand",
+  },
+  PAID: {
+    label: "Paid",
+    tone: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  },
+  VOID: { label: "Void", tone: "border-slate-200 bg-slate-50 text-slate-500" },
+};
+
+// Pre-fee-only invoices have no breakdown and carried the salaries apart from the fee.
+export const invoiceLines = function (
+  invoice: Pick<
+    HireInvoice,
+    "breakdown" | "amount_minor" | "fee_minor" | "vat_percent" | "vat_minor"
+  >,
+) {
+  const lines: { label: string; amount_minor: number }[] = invoice.breakdown
+    ?.length
+    ? invoice.breakdown.map(({ label, amount_minor }) => ({
+        label,
+        amount_minor,
+      }))
+    : invoice.amount_minor !== invoice.fee_minor
+      ? [
+          { label: "Salaries", amount_minor: invoice.amount_minor },
+          { label: "Service fee", amount_minor: invoice.fee_minor },
+        ]
+      : [{ label: "Service fee", amount_minor: invoice.fee_minor }];
+
+  return [
+    ...lines,
+    { label: `VAT (${invoice.vat_percent}%)`, amount_minor: invoice.vat_minor },
+  ];
+};
+
 export const formatPosted = function (date: string | Date) {
   const recency = groupByRecency(date);
   if (recency === "Today" || recency === "Yesterday") return recency;
@@ -352,11 +402,51 @@ export function formatRelativeTime(date: string | Date) {
   const diffDays = Math.floor(diffHours / 24);
 
   if (diffMins < 1) return "Just now";
-  if (diffMins < 60) return `${diffMins} minutes ago`;
-  if (diffHours < 24) return `${diffHours} hours ago`;
+  if (diffMins < 60)
+    return `${diffMins} minute${diffMins === 1 ? "" : "s"} ago`;
+  if (diffHours < 24)
+    return `${diffHours} hour${diffHours === 1 ? "" : "s"} ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
   return then.toLocaleDateString();
 }
+
+const compactMinutes = function (minutes: number) {
+  const mins = Math.max(0, minutes);
+
+  if (mins < 60) return `${mins}m`;
+  if (mins < 48 * 60) return `${Math.floor(mins / 60)}h`;
+  return `${Math.floor(mins / 1440)}d`;
+};
+
+export function formatTimeLeft(until: string | Date, now: number) {
+  return compactMinutes(Math.floor((new Date(until).getTime() - now) / 60000));
+}
+
+export function formatAge(since: string | Date, now: number) {
+  return compactMinutes(Math.floor((now - new Date(since).getTime()) / 60000));
+}
+
+export function formatMinutes(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+
+  if (!hours) return `${rest}m`;
+  return rest ? `${hours}h ${rest}m` : `${hours}h`;
+}
+
+// Attendance months are YYYY-MM on the Lagos calendar, which is the viewer's for every real user.
+export const monthKeyOf = (date: Date) => format(date, "yyyy-MM");
+
+export const shiftMonth = (month: string, delta: number) => {
+  const [year, index] = month.split("-").map(Number);
+  return monthKeyOf(new Date(year, index - 1 + delta, 1));
+};
+
+export const formatMonth = (month: string) =>
+  format(new Date(`${month}-01T00:00:00`), "MMMM yyyy");
+
+export const formatWorkDate = (workDate: string) =>
+  format(new Date(`${workDate}T00:00:00`), "EEE d MMM");
 
 // Notifications group under Today / Yesterday / This week / Earlier
 export function groupByRecency(date: string | Date) {
@@ -772,3 +862,6 @@ export const formatMoneyCompact = function (
 
   return formatMoney(minor, currency);
 };
+
+// No SMS or WhatsApp provider is connected yet, so the switch stays hidden until one is.
+export const SMS_ALERTS_ENABLED = false;

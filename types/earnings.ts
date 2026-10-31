@@ -1,3 +1,5 @@
+import type { SalaryPaymentWithParties } from "./salary";
+
 export type WalletTransactionType =
   | "BOOKING_PAYMENT"
   | "PLATFORM_FEE"
@@ -13,9 +15,15 @@ export type PayoutStatus =
 
 export interface EarningsSummary {
   currency: string;
-  total_earnings_minor: number;
-  available_minor: number;
-  pending_minor: number;
+  received_minor: number;
+  awaiting_confirmation_minor: number;
+  awaiting_confirmation_count: number;
+  due_minor: number;
+  overdue_minor: number;
+  overdue_count: number;
+  disputed_minor: number;
+  disputed_count: number;
+  wallet: { available_minor: number; pending_minor: number };
 }
 
 export interface WalletTransaction {
@@ -66,4 +74,25 @@ export interface Payout {
   processed_at: string | null;
   createdAt: string;
   bankAccount: BankAccount | null;
+}
+
+export interface EarningsStatement {
+  month: string;
+  reference: string;
+  period_start: string;
+  period_end: string;
+  generated_at: string;
+  currency: string;
+  driver: {
+    first_name: string | null;
+    last_name: string | null;
+    email: string | null;
+    state_of_residence: string | null;
+  } | null;
+  lines: SalaryPaymentWithParties[];
+  totals: {
+    received_minor: number;
+    awaiting_minor: number;
+    total_minor: number;
+  };
 }
