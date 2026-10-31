@@ -43,8 +43,12 @@ const SURFACE_FOR_ROLE: Record<UserRole, string> = {
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const sessionType = request.cookies.get("session_type")?.value as
-    UserRole | undefined;
+  // localhost cookies are shared across ports, so another app's session_type can arrive here.
+  const rawSessionType = request.cookies.get("session_type")?.value;
+  const sessionType =
+    rawSessionType && Object.hasOwn(SURFACE_FOR_ROLE, rawSessionType)
+      ? (rawSessionType as UserRole)
+      : undefined;
   const refreshToken = request.cookies.get("session_id_ref")?.value;
 
   /*

@@ -1,5 +1,6 @@
 "use client";
 
+import { Slider } from "@/components/ui/slider";
 import { formatMoney, formatMoneyCompact } from "@/lib/utils";
 import { TrendingUp } from "lucide-react";
 import { useState } from "react";
@@ -54,27 +55,26 @@ export default function Budget() {
           <span className="text-muted-foreground"> / month</span>
         </p>
 
-        <input
-          type="range"
-          aria-label="Monthly budget per driver"
+        <Slider
+          thumbLabel="Monthly budget per driver"
           min={MIN_MAJOR}
           max={MAX_MAJOR}
           step={STEP_MAJOR}
-          value={budget}
-          onChange={(event) => setChosen(Number(event.target.value))}
-          className="accent-brand mt-4 w-full"
-        />
-
-        <div className="relative mt-4 h-2.5 rounded-full bg-slate-100">
+          value={[budget]}
+          onValueChange={([value]) => setChosen(value)}
+          className="mt-5 py-2"
+          trackClassName="h-2.5 bg-slate-100"
+          rangeClassName="bg-brand/25"
+          thumbClassName="border-brand ring-brand/20 size-6 cursor-grab border-[3px] shadow-[0_2px_8px_rgba(37,99,235,0.35)] hover:ring-[6px] focus-visible:ring-[6px] active:cursor-grabbing"
+        >
           {market && (
             <span
-              className="absolute inset-y-0 rounded-full bg-emerald-200"
+              className="absolute inset-y-0 bg-emerald-300/80"
               style={{ left: position(market.low_minor), right: `calc(100% - ${position(market.high_minor)})` }}
               title="Typical range"
             />
           )}
-          <i className="bg-foreground absolute -top-[5px] h-5 w-1 rounded-sm" style={{ left: position(budget * 100) }} />
-        </div>
+        </Slider>
         <div className="text-muted-foreground mt-1.5 flex justify-between text-[11px]">
           <span>{formatMoneyCompact(MIN_MAJOR * 100, "NGN")}</span>
           <span className="px-2 text-center" data-testid="market-range">
