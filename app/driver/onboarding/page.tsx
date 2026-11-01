@@ -6,12 +6,6 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-/*
-  Onboarding is resumable: the server returns onboarding_step and never moves it
-  backwards, so this sends the driver to where they stopped rather than
-  restarting the wizard. Anyone who has already submitted lands on the status
-  screen instead.
-*/
 export default function OnboardingEntry() {
   const router = useRouter();
   const { profile, isFetching } = useOnboardingProfile();

@@ -6,11 +6,6 @@ interface FaqSection {
   questions: { question: string; answer: string }[];
 }
 
-/*
-  Static copy, not a CMS. These answers describe how this app and the server
-  behave, so they belong beside the code that behaves that way - if verification
-  or payouts change, this file changes in the same commit.
-*/
 export const FAQ_SECTIONS: FaqSection[] = [
   {
     title: "Verification & onboarding",
