@@ -64,12 +64,7 @@ export const AppSelect = function ({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  /*
-    The list renders in a body portal with a fixed position measured from the
-    trigger - an overflow container (a dialog body, the marketplace hero) can
-    therefore never clip it. Capture-phase scroll keeps it glued while any
-    ancestor scrolls.
-  */
+  // Portalled at a fixed position so overflow containers can't clip it; capture-phase scroll re-measures on any ancestor scroll.
   useEffect(() => {
     if (!open) return;
 
@@ -167,16 +162,10 @@ export const AppSelect = function ({
           </div>
         </div>
 
-        {/* Dropdown - body portal, above the dialog's z-50. pointer-events-auto
-            undoes the pointer lock a modal dialog puts on everything outside
-            its subtree; stopping pointerdown propagation keeps the dialog from
-            reading an option click as an outside dismissal. RemoveScroll joins
-            the dialog's scroll lock so wheel events inside the list scroll it
-            instead of being swallowed by the lock. */}
+        {/* pointer-events-auto and stopPropagation get past a modal dialog's pointer lock and outside-dismiss; RemoveScroll joins its scroll lock. */}
         {open &&
           createPortal(
-            // listRef rides on RemoveScroll - its forwardProps clone replaces
-            // the child's own ref, and a dead ref makes every click "outside".
+            // listRef rides on RemoveScroll: forwardProps replaces the child's ref, and a dead ref makes every click "outside".
             <RemoveScroll ref={listRef} forwardProps removeScrollBar={false}>
               <div
                 onPointerDown={(e) => e.stopPropagation()}
@@ -196,10 +185,7 @@ export const AppSelect = function ({
                     filtered.map((option) => (
                       <li
                         key={option.value}
-                        // preventDefault stops the focus steal; selection waits
-                        // for click so the list is still mounted when the event
-                        // completes - unmounting on mousedown let the click land
-                        // on whatever input sat underneath and open it.
+                        // Select on click, not mousedown: unmounting on mousedown let the click open the input underneath.
                         onMouseDown={(e) => e.preventDefault()}
                         onClick={() => handleSelect(option)}
                         className={cn(

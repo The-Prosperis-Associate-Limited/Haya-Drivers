@@ -1,8 +1,6 @@
 import { useMemo } from "react";
 import { Country, State } from "country-state-city";
 
-// Country and state come back as names, not ISO codes, because that is what the
-// server stores and what a client sees on a driver profile.
 export const useLocationOptions = function (countryName?: string | null) {
   const countries = useMemo(
     () =>

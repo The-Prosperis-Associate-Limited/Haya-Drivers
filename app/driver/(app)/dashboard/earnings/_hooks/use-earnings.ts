@@ -71,8 +71,7 @@ export const useBanks = function ({
     shouldFetch,
   });
 
-  // Paystack repeats a code across bank variants - duplicate codes break both
-  // React keys and account resolution, so only the first of each survives.
+  // Paystack repeats a bank code across variants; keep the first of each.
   const banks = Array.from(
     new Map((data?.data ?? []).map((bank) => [bank.code, bank])).values(),
   );

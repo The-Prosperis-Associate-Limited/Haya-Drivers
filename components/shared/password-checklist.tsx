@@ -22,8 +22,6 @@ const RULES = [
   },
 ];
 
-// The rules and the strength label read from the same list, so the checklist
-// can never disagree with the word above it.
 const strengthFor = function (passed: number) {
   if (passed <= 1) return { label: "Too weak", tone: "text-destructive" };
   if (passed === 2) return { label: "Weak", tone: "text-amber-600" };

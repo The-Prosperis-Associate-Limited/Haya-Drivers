@@ -66,8 +66,6 @@ export const OnboardingShell = function ({ step, title, subtitle, children, onCo
   const { profile } = useGetProfile();
   const { preferences } = usePreferences();
 
-  // Skipping is completing - the wizard is a prompt, not a gate, and it must
-  // not reappear on every sign-in.
   const { complete, isPending: isSkipping } = useCompleteOnboarding({ silent: true });
 
   const total = CLIENT_ONBOARDING_STEPS.length;

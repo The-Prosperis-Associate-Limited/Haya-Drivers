@@ -41,8 +41,6 @@ const ThinkingBubble = function () {
   );
 };
 
-// The real support conversation - REST writes, socket echoes, one open
-// thread per user. Shared by the client and driver support sheets.
 export const LiveChat = function ({
   firstName,
   greeting,
@@ -55,8 +53,7 @@ export const LiveChat = function ({
   const { messages, isFetching, isSending, awaitingAi, resolved, sendMessage } =
     useLiveChat(true);
 
-  // Also on mount: the sheet animates in, so the initial scroll must happen
-  // after layout settles or the thread opens stuck at the top.
+  // The sheet animates in, so scroll after layout settles or the thread opens stuck at the top.
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       const thread = bottomRef.current?.parentElement;

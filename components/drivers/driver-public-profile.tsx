@@ -32,9 +32,6 @@ interface Props {
   aside?: React.ReactNode;
 }
 
-// The checks an APPROVED driver has actually passed - identity (NIN slip),
-// licence and guarantor documents are what verification reviews. A police
-// record check does not exist yet, so it is not listed.
 const VERIFIED_CHECKS = ["NIMC identity", "FRSC licence", "Guarantor"];
 
 const CARD =

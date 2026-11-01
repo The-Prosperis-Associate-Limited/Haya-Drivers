@@ -36,8 +36,6 @@ function getPageItems(
   totalPages: number,
   siblingCount: number,
 ): PageItem[] {
-  // total numbers we'd show if there were no truncation: siblings on each
-  // side + current + first + last
   const totalNumbersShown = siblingCount * 2 + 5;
 
   if (totalPages <= totalNumbersShown) {

@@ -14,8 +14,6 @@ import { useState } from "react";
 import { useReviews, useReviewSummary } from "./_hooks/use-reviews";
 import type { ReviewAuthor } from "@/types/review";
 
-// Clients are shown to drivers by first name and last initial, the way the
-// design has them - the full name is not the driver's to keep.
 const authorName = function (author: ReviewAuthor) {
   return (
     [author.first_name, author.last_name?.[0] && `${author.last_name[0]}.`]

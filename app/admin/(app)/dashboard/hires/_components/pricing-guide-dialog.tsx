@@ -11,8 +11,6 @@ import { CircleHelp } from "lucide-react";
 import type { APIResponse } from "@/types/response";
 import type { HirePricingGuide } from "@/types/hire";
 
-// Served from the same module the invoice maths runs on, so what this shows
-// can never drift from what gets charged.
 export const PricingGuideDialog = function () {
   const [open, setOpen] = useState(false);
 

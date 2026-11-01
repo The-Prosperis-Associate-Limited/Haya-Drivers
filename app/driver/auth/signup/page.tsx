@@ -63,8 +63,7 @@ function SignUpForm() {
     }
 
     clearStashedReferralCode();
-    // "mobile" asks the server for a 6-digit code rather than the emailed link,
-    // which is what the next screen collects.
+    // "mobile" makes the server email the 6-digit code the next screen collects, not the web link.
     signup({ ...data, referral_code: data.referral_code ? normaliseReferralCode(data.referral_code) : undefined, role: "DRIVER", client: "mobile" });
   };
 

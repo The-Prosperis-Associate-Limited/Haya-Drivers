@@ -11,9 +11,6 @@ import { CircleCheck, Gauge } from "lucide-react";
 import { useTrustScore } from "../_hooks/use-dashboard";
 import type { TrustScoreBreakdown } from "@/types/driver";
 
-// The score is one number out of 100 from the server and the weights live
-// there. Nothing on this page recomputes it - the bars only divide points by
-// their own maximum so a component that is full looks full.
 const standingFor = function (total: number) {
   if (total >= 80) return "Excellent standing";
   if (total >= 60) return "Good standing";

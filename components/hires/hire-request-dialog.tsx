@@ -68,8 +68,6 @@ const TRANSMISSION_CHIPS = TRANSMISSION_OPTIONS.map((option) => ({
   label: option.value === "BOTH" ? "Either" : option.label,
 }));
 
-// Submitting costs nothing: an admin reviews the request and sends back an
-// invoice; the driver's contact details unlock after that invoice is paid.
 export const HireRequestDialog = function ({
   isOpen,
   onOpenChange,

@@ -2,8 +2,6 @@ import { passwordValidationRegex } from "@/lib/utils";
 import z from "zod";
 
 export const signupSchema = z.object({
-  // Doubles as the company name on the organisation tab - the server splits it
-  // into first/last name either way and keeps organisation_name separately.
   client_type: z.enum(["INDIVIDUAL", "ORGANISATION"]),
   full_name: z.string().trim().min(2, "Please enter a name"),
   email: z.email("Please enter a valid email address"),

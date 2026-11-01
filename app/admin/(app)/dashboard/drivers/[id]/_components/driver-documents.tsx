@@ -104,8 +104,6 @@ export const DriverDocuments = function ({ userId }: Props) {
   const rejectDocument = () => {
     if (!rejecting) return;
 
-    // The picked reasons plus the free note become the one string the driver's
-    // resubmission screen renders verbatim.
     const rejection_reason = [...reasons, note.trim()]
       .filter(Boolean)
       .join(". ");

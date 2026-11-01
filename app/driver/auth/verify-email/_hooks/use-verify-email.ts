@@ -16,8 +16,6 @@ export const useVerifyEmail = function () {
     onSuccess: (data) => {
       const { token, user } = data.data;
 
-      // Verification returns a session, so the driver lands signed in on the
-      // dashboard and starts onboarding from there when ready.
       setAuthCookies({
         tokens: {
           refresh: token.refreshToken,

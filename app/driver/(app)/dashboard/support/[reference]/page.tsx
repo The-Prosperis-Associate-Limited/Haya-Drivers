@@ -24,8 +24,6 @@ export default function TicketThread() {
   const params = useParams<{ reference: string }>();
   const [draft, setDraft] = useState("");
 
-  // The server sends the reference in notification action urls and the sheet
-  // holds the id; /tickets/:id resolves either.
   const { ticket, isFetching } = useTicket(params.reference);
   const { sendMessage, isPending } = useCommentOnTicket(params.reference);
 

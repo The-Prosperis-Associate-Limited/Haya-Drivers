@@ -4,8 +4,6 @@ import { cn } from "@/lib/utils";
 interface AppTab<T extends string> {
   value: T;
   label: string;
-  // Omit when every tab shows the same region and only the query changes - the
-  // consumer then renders the content itself, below the tab strip.
   content?: React.ReactNode;
 }
 
@@ -54,8 +52,7 @@ export function AppTabs<T extends string>({
       onValueChange={(v) => onValueChange(v as T)}
       className={className}
     >
-      {/* Segmented fills its row, so the scroll shim would only add stray padding.
-          overflow-y-hidden: the x-scroll container must never grow a vertical bar. */}
+      {/* overflow-y-hidden: an x-scroll container otherwise grows a vertical scrollbar. */}
       <div
         className={cn(
           variant !== "segmented" &&

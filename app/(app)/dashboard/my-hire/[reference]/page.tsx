@@ -74,8 +74,6 @@ export default function HireDetail({
       )
     : 365;
 
-  // No stored Haya Drivers ID exists - this is a stable display form of the driver's
-  // record id, not a second identifier.
   const tegatId = hire.driver
     ? `TG-DRV-${hire.driver.id.slice(-4).toUpperCase()}`
     : "-";

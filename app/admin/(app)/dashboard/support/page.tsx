@@ -21,8 +21,6 @@ export default function AdminSupportInbox() {
 
   const conversations = data?.data.data ?? [];
 
-  // The support pool broadcasts on every user message, claim and resolve -
-  // refetching the inbox is enough to keep the list live.
   useEffect(() => {
     const socket = getChatSocket();
     if (!socket) return;

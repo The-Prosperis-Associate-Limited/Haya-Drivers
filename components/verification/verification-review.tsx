@@ -118,8 +118,6 @@ const Section = function ({
       <AccordionContent>
         <div className="divide-border divide-y">{children}</div>
 
-        {/* Editing an earlier step never sends the driver back to the start -
-            onboarding_step only moves forward on the server. */}
         <Link
           href={editHref}
           className="text-brand mt-3 inline-flex items-center gap-1.5 text-xs font-semibold hover:underline"

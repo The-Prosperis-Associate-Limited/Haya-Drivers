@@ -36,9 +36,6 @@ export const useGetData = <T>({
 }: Props): UseGetDataResult<T> => {
   const handleErrors = useHandleErrors();
 
-  // const finalQueryKey =
-  //   queryKey && queryKey?.length > 0 ? queryKey : [url, skipAuth];
-
   const queryKey = [url];
 
   const queryFn = useCallback(async () => {

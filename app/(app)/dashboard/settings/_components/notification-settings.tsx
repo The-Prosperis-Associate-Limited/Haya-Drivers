@@ -14,8 +14,6 @@ import type { NotificationPreferences } from "@/types/notification";
 
 type PreferenceKey = keyof NotificationPreferences;
 
-// The preference row is shared with the driver surface; only the keys that
-// mean something to a client are surfaced here.
 const GROUPS: {
   title: string;
   icon: LucideIcon;

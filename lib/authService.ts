@@ -6,8 +6,7 @@ export const isProd = process.env.NODE_ENV === "production";
 // Apex domains whose subdomains share the session cookie.
 const SHARED_COOKIE_DOMAINS = [".hayadrivers.com", ".tegat.com"];
 
-// A cookie whose Domain doesn't match the page's host is silently rejected -
-// on any other host (vercel.app previews) fall back to a host-only cookie.
+// Browsers silently drop a cookie whose Domain doesn't match the host, so other hosts (vercel.app previews) get a host-only one.
 const cookieDomain = () => {
   if (!isProd || typeof window === "undefined") return undefined;
 
@@ -29,8 +28,6 @@ export const setAuthCookies = (data: {
 }) => {
   const { tokens, user } = data;
 
-  // Matches the server's 7-day refresh token. The access cookie expires with
-  // the token itself; api.ts refreshes it in the background.
   const refreshTokenExpiration = new Date(
     new Date().getTime() + 7 * 24 * 60 * 60 * 1000,
   );

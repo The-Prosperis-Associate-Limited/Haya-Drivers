@@ -3,8 +3,6 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse } from "@/types/response";
 import type { ClientProfile } from "@/types/auth";
 
-// Every step saves through this one hook - partial payload, refetches the
-// preferences query so the next step prefills without a reload.
 export const useSavePreferences = function ({
   redirectTo,
   onSuccess,

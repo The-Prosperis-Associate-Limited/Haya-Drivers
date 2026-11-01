@@ -18,8 +18,6 @@ interface Props {
   confirmLabel?: string;
 }
 
-// The last stop before a request reaches our team - requests have no edit
-// flow, so this is the user's one chance to catch a mistake.
 export const RequestPreviewDialog = function ({
   isOpen,
   onOpenChange,

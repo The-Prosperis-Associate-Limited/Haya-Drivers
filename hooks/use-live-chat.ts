@@ -9,11 +9,6 @@ import { useSubmitData } from "./use-submit-data";
 import type { APIResponse } from "@/types/response";
 import type { ChatMessage, ConversationPayload } from "@/types/chat";
 
-/*
-  One hook for both surfaces' support chat. The REST layer is the only write
-  path; the socket only echoes. Own messages render optimistically and are
-  swapped in place when the echo arrives.
-*/
 export const useLiveChat = function (isOpen: boolean) {
   const [liveMessages, setLiveMessages] = useState<ChatMessage[]>([]);
   const [resolved, setResolved] = useState(false);
@@ -70,8 +65,6 @@ export const useLiveChat = function (isOpen: boolean) {
         return [...current, payload.message];
       });
 
-      // A message on an unknown conversation means a new thread started
-      // elsewhere (or ours was created server-side) - resync.
       if (!conversationId) refetch();
     };
 
@@ -107,8 +100,7 @@ export const useLiveChat = function (isOpen: boolean) {
     silent: true,
     skipRefetch: true,
     onSuccess: (response) => {
-      // A send can open a fresh thread (first ever, or after a resolve) -
-      // resync so echoes on the new conversation id aren't dropped.
+      // A send can open a fresh thread - resync so echoes on the new conversation id aren't dropped.
       if (!conversationId || response.data.conversationId !== conversationId)
         refetch();
       const message = response.data.message;
@@ -167,8 +159,6 @@ export const useLiveChat = function (isOpen: boolean) {
 
   const hasAgent = (conversation?.participants.length ?? 0) > 1;
 
-  // The AI reply rides the send request itself, so "the assistant is
-  // thinking" is precisely: a send in flight on a conversation the AI handles.
   const awaitingAi =
     isSending && !hasAgent && (conversation?.status ?? "WAITING") === "WAITING";
 

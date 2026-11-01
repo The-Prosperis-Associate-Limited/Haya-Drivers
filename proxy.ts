@@ -17,23 +17,15 @@ const ROUTES = {
   ADMIN: "/admin",
 } as const;
 
-// The emailed verification link lands here with a token, and the Google
-// redirect lands on signin with one. Both have to reach the page while a stale
-// session cookie is still sitting in the browser, so they bypass the
-// already-signed-in bounce.
 const AUTH_BYPASS_PATHS = [
   "/auth/email-verified",
   "/auth/reset-password",
   "/driver/auth/email-verified",
   "/driver/auth/reset-password",
   "/admin/auth/reset-password",
-  // An invited admin is signed in but locked out of /api/admin until the
-  // temporary password is rotated - this screen must not bounce them.
   "/admin/auth/change-password",
 ];
 
-// One codebase, three surfaces - the session type decides which one a
-// signed-in visitor belongs to. UX only; every endpoint checks the role itself.
 const SURFACE_FOR_ROLE: Record<UserRole, string> = {
   CLIENT: ROUTES.DASHBOARD,
   DRIVER: "/driver/dashboard",
@@ -51,12 +43,6 @@ export default function proxy(request: NextRequest) {
       : undefined;
   const refreshToken = request.cookies.get("session_id_ref")?.value;
 
-  /*
-    Presence of the refresh cookie only. The access token is short-lived and
-    api.ts refreshes it in the background, so gating on session_id would sign a
-    client out every thirty minutes. This is a UX gate, never the security
-    boundary - every endpoint behind it is checked on the server.
-  */
   const hasValidSession = !!sessionType && !!refreshToken;
 
   const redirectTo = (path: string) => {
@@ -64,8 +50,6 @@ export default function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(path, request.url));
   };
 
-  // Carries the originally-requested path so the visitor lands where they were
-  // going rather than on the dashboard. Driver paths get the driver signin.
   const redirectToLogin = () => {
     const login = pathname.startsWith(ROUTES.ADMIN)
       ? ROUTES.ADMIN_LOGIN

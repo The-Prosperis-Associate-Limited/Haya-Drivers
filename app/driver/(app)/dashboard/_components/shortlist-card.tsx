@@ -29,8 +29,6 @@ import { useEffect, useState } from "react";
 import type { APIResponse } from "@/types/response";
 import type { DriverShortlist } from "@/types/hire";
 
-// The availability handshake: the admin shortlists candidates in parallel and
-// this card is where the driver answers. No client identity before payment.
 export const ShortlistCard = function () {
   const [decliningId, setDecliningId] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());

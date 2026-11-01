@@ -8,8 +8,6 @@ import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { UserRoundCheck } from "lucide-react";
 
-// Shown on any dashboard when the inactivity sweep has parked the account.
-// The dialog cannot be dismissed - reactivating is the only way forward.
 export const ReactivateAccountDialog = function () {
   const { profile } = useGetProfile();
 

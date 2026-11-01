@@ -1,8 +1,3 @@
-/*
-  The query key IS the url - useGetData keys on it and useSubmitData refetches
-  that key on success. A url built inline in a component invalidates nothing, so
-  every endpoint the app calls belongs here.
-*/
 export const API_ENDPOINTS = {
   auth: {
     signup: "/auth/create-user",
@@ -42,8 +37,6 @@ export const API_ENDPOINTS = {
     },
   },
 
-  // The driver surface. Section names carry the driver prefix where a client
-  // section of the same name already exists.
   driverOnboarding: {
     profile: "/driver/onboarding/profile",
     verificationStatus: "/driver/onboarding/verification-status",

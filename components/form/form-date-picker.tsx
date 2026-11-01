@@ -146,8 +146,7 @@ function SingleDatePicker<TFieldValues extends FieldValues>({
                     if (date) setOpen(false);
                   }}
                   disabled={disabled}
-                  // Nothing selected must still open inside the navigable
-                  // range, or the grid renders empty (e.g. min a year out).
+                  // With nothing selected it must open inside the navigable range or the grid renders empty.
                   defaultMonth={selected ?? minDate}
                   captionLayout={captionLayout}
                   startMonth={minDate}

@@ -17,8 +17,6 @@ import type { StaffingRequest } from "@/types/request";
 
 const PAGE_SIZE = 6;
 
-// The server still returns applicants; the UI ignores them until the
-// driver-apply design is resolved (clients scout, drivers don't apply).
 interface MatchesPayload {
   request: StaffingRequest;
   matched: {

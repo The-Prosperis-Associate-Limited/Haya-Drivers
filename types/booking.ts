@@ -63,8 +63,6 @@ export interface Booking {
   today_attendance?: TodayAttendance | null;
 }
 
-// The server owns which statuses each bucket covers. Jobs arrive already
-// accepted (admin-brokered), so the buckets are about lifecycle, not consent.
 export type JobRequestBucket = "active" | "completed";
 
 export interface JobRequestSummary {
@@ -88,11 +86,6 @@ export interface DashboardStats {
   certifications_earned: number;
   training_completed: number;
 }
-
-/*
-================= NOTE: the client-surface shapes - hires, the hire detail and
-the overview payload.
-*/
 
 export interface HireDriver {
   id: string;

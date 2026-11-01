@@ -14,8 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import type { APIResponse } from "@/types/response";
 
-// The screen an invited admin lands on straight after first sign-in: every
-// /api/admin route is refused until the temporary password is rotated here.
 export default function AdminChangePassword() {
   const {
     control,

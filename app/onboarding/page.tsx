@@ -6,8 +6,6 @@ import { useEffect } from "react";
 import { CLIENT_ONBOARDING_STEPS } from "@/lib/utils";
 import { usePreferences } from "./_hooks/use-preferences";
 
-// Reached from the dashboard's "Get started" prompt: anyone who has finished
-// (or skipped) the wizard goes straight back, everyone else starts at step 1.
 export default function OnboardingEntry() {
   const router = useRouter();
   const { preferences } = usePreferences();

@@ -20,8 +20,6 @@ interface Props {
   defaults?: SearchFilters;
   buttonLabel?: string;
   className?: string;
-  // When set, the panel stays put and hands the filters over instead of
-  // navigating to the marketplace results page.
   onSearch?: (filters: SearchFilters) => void;
 }
 

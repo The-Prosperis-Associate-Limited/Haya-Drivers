@@ -66,8 +66,6 @@ export const WorkPreferencesSettings = function () {
       availability: data.availability.length ? data.availability : null,
     });
 
-  // A row that came back from the server asks before it goes; one only just
-  // added is dropped silently.
   const requestRemove = (index: number) => {
     if (index < savedCount) return setRowToRemove(index);
     remove(index);
