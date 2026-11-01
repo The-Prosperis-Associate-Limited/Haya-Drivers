@@ -11,18 +11,17 @@ interface Props {
   status: DriverVerificationStatus;
 }
 
-// Every /driver/job-requests route 403s an unverified driver, so both screens
-// ask before they fetch rather than toasting a rejection at them.
+// The job-request routes 403 an unverified driver, so screens show this instead of fetching.
 export const UnverifiedNotice = function ({ status }: Props) {
   return (
-    <div className="border-border rounded-xl border bg-white">
+    <div className="border-border rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <EmptyState
         icon={ShieldCheck}
         title="Clients can't reach you yet"
         description={VERIFICATION_COPY[status].headline}
         action={
           status === "PENDING" ? undefined : (
-            <Button asChild className="h-11 rounded-lg px-6">
+            <Button asChild className="h-10 rounded-xl px-5">
               <Link
                 href={
                   status === "REJECTED"

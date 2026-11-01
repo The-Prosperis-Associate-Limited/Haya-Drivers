@@ -60,10 +60,10 @@ Closed by the owner on 1 Nov - the admin console is good as it is. Done from it 
 
 | # | Screen | Verdict | Why |
 | - | ------ | ------- | --- |
-| 4.1 | Payout accounts `earnings/_components/bank-accounts.tsx` (Earnings + Wallet) | Touch-up | Card inside a card inside a card on Wallet (`rounded-xl border` list, a third bordered box for the form), `h-11 rounded-lg px-6` buttons. |
-| 4.2 | `withdraw-dialog.tsx` | Touch-up | Uses the footer correctly, but the body is a bare "Available to withdraw" caption over two fields - give the balance a panel. |
+| 4.1 ✅ 1 Nov | Payout accounts `earnings/_components/bank-accounts.tsx` (Earnings + Wallet) | Touch-up | Card inside a card inside a card on Wallet (`rounded-xl border` list, a third bordered box for the form), `h-11 rounded-lg px-6` buttons. |
+| 4.2 ✅ 1 Nov | `withdraw-dialog.tsx` | Touch-up | Uses the footer correctly, but the body is a bare "Available to withdraw" caption over two fields - give the balance a panel. |
 | 4.3 ✅ 1 Nov (in 1.2) | Salary dispute dialog in `job-request/_components/job-salary.tsx` | Touch-up | Submit inside the body, no Cancel (part of 1.2). |
-| 4.4 | Small outliers | Touch-up | `unverified-notice.tsx` (unshadowed, `h-11 rounded-lg` - shown on three pages), Wallet info notes, `support/[reference]` separate `BackLink` above `PageHeader`, `p-5 md:p-6` drift on Trust score, Notification settings, Work preferences, `driver-public-profile` `CARD`. |
+| 4.4 ✅ 1 Nov | Small outliers | Touch-up | `unverified-notice.tsx` (unshadowed, `h-11 rounded-lg` - shown on three pages), Wallet info notes, `support/[reference]` separate `BackLink` above `PageHeader`, `p-5 md:p-6` drift on Trust score, Notification settings, Work preferences, `driver-public-profile` `CARD`. |
 
 ## Decisions needed before starting
 
