@@ -101,6 +101,11 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Edge adds its own reveal button beside AppInput's show/hide toggle. */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
 
   body {
     @apply bg-background text-foreground font-general-sans;

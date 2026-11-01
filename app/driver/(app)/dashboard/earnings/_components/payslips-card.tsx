@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { formatMoney } from "@/lib/utils";
 import { ChevronRight, FileText } from "lucide-react";
@@ -32,12 +33,12 @@ export const PayslipsCard = function ({ trend, currency }: Props) {
       </div>
 
       {!months.length ? (
-        <AppText
-          type="caption"
-          className="text-muted-foreground block px-4 pt-3 pb-5 md:px-5"
-        >
-          Your first payslip appears once you confirm a salary payment.
-        </AppText>
+        <EmptyState
+          size="compact"
+          icon={FileText}
+          title="No payslips yet"
+          description="Your first payslip appears once you confirm a salary payment."
+        />
       ) : (
         <div className="mt-2">
           {months.map((point) => (

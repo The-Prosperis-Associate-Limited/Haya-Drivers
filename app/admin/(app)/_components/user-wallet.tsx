@@ -1,5 +1,6 @@
 "use client";
 
+import { Wallet } from "lucide-react";
 import { AppText } from "@/components/shared/app-text";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Pagination } from "@/components/shared/pagination";
@@ -63,6 +64,7 @@ export const UserWallet = function ({ userId }: Props) {
         >
           {!transactions?.data.length ? (
             <EmptyState
+              icon={Wallet}
               title="No transactions yet"
               description="Money that moves through this wallet shows up here."
             />

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormInput } from "@/components/form/form-input";
+import { SettingsCard } from "@/components/settings/settings-card";
 import { AppText } from "@/components/shared/app-text";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Button } from "@/components/ui/button";
@@ -13,7 +14,7 @@ import {
   type WorkPreferencesFormValues,
 } from "@/schemas/settings/work-preferences";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, Trash2 } from "lucide-react";
+import { BriefcaseBusiness, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -73,90 +74,86 @@ export const WorkPreferencesSettings = function () {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(save)}
-      className="border-border mt-4 rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6"
-    >
-      <AppText type="h4" className="text-[15px] font-semibold">
-        Work preferences
-      </AppText>
-      <AppText type="caption" className="text-muted-foreground mt-1 block">
-        What you expect to earn and when you work - clients filter and view
-        these on your marketplace profile.
-      </AppText>
+    <form onSubmit={handleSubmit(save)} className="mt-4">
+      <SettingsCard
+        title="Work preferences"
+        description="What you expect to earn and when you work - clients filter and view these on your marketplace profile."
+        icon={BriefcaseBusiness}
+        footer={
+          <Button isLoading={isPending} className="h-10 rounded-xl px-5">
+            Save preferences
+          </Button>
+        }
+      >
+        <div className="max-w-sm">
+          <FormInput<WorkPreferencesFormValues>
+            control={control}
+            name="expected_monthly_rate"
+            errors={errors}
+            label="Expected monthly rate (₦)"
+            placeholder="E.g 250000"
+            inputMode="numeric"
+            suffix="/ month"
+          />
+        </div>
 
-      <div className="mt-5 max-w-sm">
-        <FormInput<WorkPreferencesFormValues>
-          control={control}
-          name="expected_monthly_rate"
-          errors={errors}
-          label="Expected monthly rate (₦)"
-          placeholder="E.g 250000"
-          inputMode="numeric"
-          suffix="/ month"
-        />
-      </div>
+        <div className="mt-6">
+          <AppText type="label" className="block">
+            Working hours
+          </AppText>
 
-      <div className="mt-6">
-        <AppText type="label" className="block">
-          Working hours
-        </AppText>
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="mt-3 grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
+            >
+              <FormInput<WorkPreferencesFormValues>
+                control={control}
+                name={`availability.${index}.day_range`}
+                errors={errors}
+                label="Days"
+                placeholder="E.g Mon - Fri"
+              />
+              <FormInput<WorkPreferencesFormValues>
+                control={control}
+                name={`availability.${index}.start`}
+                errors={errors}
+                label="From"
+                placeholder="E.g 8:00 AM"
+              />
+              <FormInput<WorkPreferencesFormValues>
+                control={control}
+                name={`availability.${index}.end`}
+                errors={errors}
+                label="To"
+                placeholder="E.g 6:00 PM"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                aria-label="Remove hours"
+                onClick={() => requestRemove(index)}
+                className="text-muted-foreground hover:text-destructive mb-1"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
 
-        {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="mt-3 grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
-          >
-            <FormInput<WorkPreferencesFormValues>
-              control={control}
-              name={`availability.${index}.day_range`}
-              errors={errors}
-              label="Days"
-              placeholder="E.g Mon - Fri"
-            />
-            <FormInput<WorkPreferencesFormValues>
-              control={control}
-              name={`availability.${index}.start`}
-              errors={errors}
-              label="From"
-              placeholder="E.g 8:00 AM"
-            />
-            <FormInput<WorkPreferencesFormValues>
-              control={control}
-              name={`availability.${index}.end`}
-              errors={errors}
-              label="To"
-              placeholder="E.g 6:00 PM"
-            />
+          {fields.length < 7 && (
             <Button
               type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="Remove hours"
-              onClick={() => requestRemove(index)}
-              className="text-muted-foreground hover:text-destructive mb-1"
+              variant="outline"
+              onClick={() => append({ day_range: "", start: "", end: "" })}
+              className="mt-3 h-10 rounded-xl text-sm"
             >
-              <Trash2 className="h-4 w-4" />
+              <Plus className="h-4 w-4" />
+              Add hours
             </Button>
-          </div>
-        ))}
-
-        {fields.length < 7 && (
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => append({ day_range: "", start: "", end: "" })}
-            className="mt-3 h-10 rounded-lg text-sm"
-          >
-            <Plus className="h-4 w-4" />
-            Add hours
-          </Button>
-        )}
-      </div>
-
-      <Button isLoading={isPending} className="mt-6 h-12 rounded-lg px-8">
-        Save preferences
-      </Button>
+          )}
+        </div>
+      </SettingsCard>
 
       <ConfirmDialog
         isOpen={rowToRemove !== null}

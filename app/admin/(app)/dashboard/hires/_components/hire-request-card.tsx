@@ -5,6 +5,7 @@ import { AppInput } from "@/components/shared/app-input";
 import { AppText } from "@/components/shared/app-text";
 import { AppTextArea } from "@/components/shared/app-textarea";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { EmptyState } from "@/components/shared/empty-state";
 import {
   HIRE_REQUEST_STATUS_LABELS,
   HIRE_REQUEST_STATUS_STYLES,
@@ -36,6 +37,7 @@ import {
   ReceiptText,
   Search,
   UserPlus,
+  UserSearch,
   XCircle,
 } from "lucide-react";
 import { useState } from "react";
@@ -118,6 +120,8 @@ export const HireRequestCard = function ({ request }: Props) {
       String(Math.round(Number(debouncedAmount) * 100)),
     );
   if (debouncedVat !== "") quoteParams.set("vat_percent", debouncedVat);
+  // With no advertised rate the server cannot price anything until a salary is typed, so asking only produces an error.
+  const needsSalary = !rate && !(Number(debouncedAmount) > 0);
 
   const { data: quoteData, isFetching: isQuoting } = useGetData<
     APIResponse<HireInvoiceQuote>
@@ -127,7 +131,10 @@ export const HireRequestCard = function ({ request }: Props) {
       quoteParams.toString(),
     ),
     shouldFetch:
-      invoiceOpen && request.status === "PENDING_REVIEW" && fullyAssigned,
+      invoiceOpen &&
+      request.status === "PENDING_REVIEW" &&
+      fullyAssigned &&
+      !needsSalary,
   });
   const quote = quoteData?.data;
 
@@ -137,8 +144,9 @@ export const HireRequestCard = function ({ request }: Props) {
   >({
     url: API_ENDPOINTS.adminUsers.list({
       page: 1,
-      limit: 6,
+      limit: 8,
       role: "DRIVER",
+      verified: true,
       ...(debouncedSearch.trim() && { search: debouncedSearch.trim() }),
     }),
     shouldFetch: assignOpen,
@@ -501,6 +509,21 @@ export const HireRequestCard = function ({ request }: Props) {
         onOpenChange={setInvoiceOpen}
         title="Generate invoice"
         description="The client pays only the service fee plus VAT - driver salaries are paid to the drivers directly and are not part of this invoice."
+        width="520px"
+        isSubmitting={isGenerating}
+        footerStart={<PricingGuideDialog />}
+        primaryAction={{
+          label: "Issue invoice",
+          disabled: !quote,
+          isLoading: isGenerating,
+          onClick: () =>
+            generate({
+              amount_minor:
+                amountMinor > 0 ? amountMinor : (quote?.per_driver_minor ?? 0),
+              vat_percent: Number(vatPercent || 0),
+              ...(note.trim() && { note: note.trim() }),
+            }),
+        }}
       >
         <div className="space-y-4">
           <AppInput
@@ -591,48 +614,41 @@ export const HireRequestCard = function ({ request }: Props) {
                 type="caption"
                 className="text-muted-foreground block text-xs"
               >
-                {isQuoting
-                  ? "Computing the quote…"
-                  : "The quote appears once the shortlist is complete."}
+                {needsSalary
+                  ? `None of the assigned drivers has set a monthly rate. Enter the ${isContract ? "pay agreed for the whole contract" : "salary agreed with the client"} to price the invoice.`
+                  : isQuoting
+                    ? "Computing the quote…"
+                    : "The quote appears once the shortlist is complete."}
               </AppText>
             )}
           </div>
-
-          <PricingGuideDialog />
-
-          <Button
-            className="h-11 w-full rounded-lg text-sm"
-            disabled={!quote}
-            isLoading={isGenerating}
-            onClick={() =>
-              generate({
-                amount_minor:
-                  amountMinor > 0
-                    ? amountMinor
-                    : (quote?.per_driver_minor ?? 0),
-                vat_percent: Number(vatPercent || 0),
-                ...(note.trim() && { note: note.trim() }),
-              })
-            }
-          >
-            Issue invoice
-          </Button>
         </div>
       </AppDialog>
 
       <AppDialog
         isOpen={assignOpen}
         onOpenChange={setAssignOpen}
-        title={`Add candidates (${assignedCount} on the shortlist, ${request.drivers_needed} needed)`}
-        description="Every candidate gets an availability ping - add several at once and trim to the confirmed crew before invoicing."
+        title="Add candidates"
+        description="Every candidate gets an availability ping - add several, then trim to the confirmed crew before invoicing."
+        width="560px"
       >
         <div className="space-y-4">
+          <div className="bg-brand-soft/60 flex items-center justify-between gap-3 rounded-xl px-4 py-3">
+            <AppText type="caption" className="text-brand text-xs font-medium">
+              On the shortlist
+            </AppText>
+            <AppText type="label" className="text-sm font-semibold">
+              {assignedCount} of {request.drivers_needed} seat
+              {request.drivers_needed === 1 ? "" : "s"}
+            </AppText>
+          </div>
+
           <AppInput
-            label="Search drivers"
+            label="Search verified drivers"
             icon={Search}
             value={driverSearch}
             onChange={(event) => setDriverSearch(event.target.value)}
-            placeholder="Name or email"
+            placeholder="Name, email or phone"
           />
 
           {isSearching ? (
@@ -642,18 +658,18 @@ export const HireRequestCard = function ({ request }: Props) {
               ))}
             </div>
           ) : candidates.length === 0 ? (
-            <AppText
-              type="caption"
-              className="text-muted-foreground block text-sm"
-            >
-              No approved drivers match that search.
-            </AppText>
+            <EmptyState
+              icon={UserSearch}
+              title="No verified drivers match"
+              description="Try a name, email or phone number."
+              size="compact"
+            />
           ) : (
-            <div className="max-h-72 space-y-2 overflow-y-auto">
+            <div className="border-border divide-border divide-y rounded-xl border">
               {candidates.map((candidate) => (
                 <div
                   key={candidate.id}
-                  className="border-border flex items-center gap-3 rounded-xl border p-3"
+                  className="flex items-center gap-3 px-3.5 py-3"
                 >
                   <Avatar className="h-9 w-9 shrink-0">
                     <AvatarImage
@@ -677,17 +693,44 @@ export const HireRequestCard = function ({ request }: Props) {
                       type="caption"
                       className="text-muted-foreground block truncate text-xs"
                     >
-                      {driverTypeLabel(
-                        candidate.driver_profile?.driver_type ?? undefined,
-                      )}
+                      {[
+                        driverTypeLabel(
+                          candidate.driver_profile?.driver_type ?? undefined,
+                        ),
+                        candidate.state_of_residence,
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")}
                     </AppText>
+                    <span className="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs">
+                      {candidate.driver_profile?.expected_monthly_rate ? (
+                        <span className="text-ink font-medium">
+                          {formatMoney(
+                            candidate.driver_profile.expected_monthly_rate,
+                            candidate.driver_profile.rate_currency ?? "NGN",
+                          )}
+                          /month
+                        </span>
+                      ) : (
+                        <span className="text-amber-600">No rate set</span>
+                      )}
+                      <span className="text-muted-foreground">
+                        Trust {candidate.driver_profile?.trust_score ?? 0}
+                      </span>
+                      {candidate.driver_profile?.open_to_work === false && (
+                        <span className="text-muted-foreground">
+                          · Not taking new jobs
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <Button
-                    className="h-8 shrink-0 rounded-lg px-3 text-xs"
+                    className="h-9 shrink-0 rounded-xl px-4"
                     isLoading={isAssigning}
                     onClick={() => assign({ driverId: candidate.id })}
                   >
-                    Assign
+                    <UserPlus className="h-4 w-4" />
+                    Add
                   </Button>
                 </div>
               ))}
@@ -716,6 +759,15 @@ export const HireRequestCard = function ({ request }: Props) {
         onOpenChange={setRejectOpen}
         title="Reject this proof"
         description="The client sees your reason word for word and can upload a new receipt."
+        width="480px"
+        isSubmitting={isRejecting}
+        primaryAction={{
+          label: "Reject proof",
+          variant: "destructive",
+          disabled: rejectReason.trim().length < 5,
+          isLoading: isRejecting,
+          onClick: () => rejectProof({ reason: rejectReason.trim() }),
+        }}
       >
         <div className="space-y-4">
           <AppTextArea
@@ -724,15 +776,6 @@ export const HireRequestCard = function ({ request }: Props) {
             onChange={(event) => setRejectReason(event.target.value)}
             placeholder="E.g the receipt doesn't match the invoice total"
           />
-          <Button
-            variant="destructive"
-            className="h-11 w-full rounded-lg text-sm"
-            disabled={rejectReason.trim().length < 5}
-            isLoading={isRejecting}
-            onClick={() => rejectProof({ reason: rejectReason.trim() })}
-          >
-            Reject proof
-          </Button>
         </div>
       </AppDialog>
 
@@ -741,6 +784,15 @@ export const HireRequestCard = function ({ request }: Props) {
         onOpenChange={setDeclineOpen}
         title="Decline this request"
         description="The client sees your reason word for word."
+        width="480px"
+        isSubmitting={isDeclining}
+        primaryAction={{
+          label: "Decline request",
+          variant: "destructive",
+          disabled: reason.trim().length < 5,
+          isLoading: isDeclining,
+          onClick: () => decline({ reason: reason.trim() }),
+        }}
       >
         <div className="space-y-4">
           <AppTextArea
@@ -749,15 +801,6 @@ export const HireRequestCard = function ({ request }: Props) {
             onChange={(event) => setReason(event.target.value)}
             placeholder="E.g this driver is no longer available in your area"
           />
-          <Button
-            variant="destructive"
-            className="h-11 w-full rounded-lg text-sm"
-            disabled={reason.trim().length < 5}
-            isLoading={isDeclining}
-            onClick={() => decline({ reason: reason.trim() })}
-          >
-            Decline request
-          </Button>
         </div>
       </AppDialog>
     </div>

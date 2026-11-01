@@ -145,7 +145,7 @@ export const NavContent = function ({ user, onNavigate }: Props) {
             <>
               <span className="flex items-center gap-2 text-sm font-semibold">
                 <ListChecks className="size-4" />
-                Finish setting up
+                Finish setting up your account
               </span>
               <p className="mt-1 text-xs text-white/70">
                 Five quick questions so we can match you with the right drivers.

@@ -1,5 +1,7 @@
 "use client";
 
+import { Network } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { cn, formatDate } from "@/lib/utils";
 import type { NetworkNodeStatus, ReferralNetworkNode } from "@/types/referral";
 import { useMemo, useRef, useState } from "react";
@@ -17,7 +19,10 @@ interface Placed {
   y: number;
 }
 
-export const NETWORK_STATUS: Record<NetworkNodeStatus, { label: string; ring: string; dashed?: boolean }> = {
+export const NETWORK_STATUS: Record<
+  NetworkNodeStatus,
+  { label: string; ring: string; dashed?: boolean }
+> = {
   root: { label: "Referrer (joined directly)", ring: "#2f6bf6" },
   rewarded: { label: "Submitted · reward paid", ring: "#16a34a" },
   held: { label: "Held for review", ring: "#7c3aed" },
@@ -47,14 +52,22 @@ const initials = (name: string) =>
     .slice(0, 2)
     .toUpperCase();
 
-const tint = (id: string) => FILLS[[...id].reduce((total, char) => total + char.charCodeAt(0), 0) % FILLS.length];
+const tint = (id: string) =>
+  FILLS[
+    [...id].reduce((total, char) => total + char.charCodeAt(0), 0) %
+      FILLS.length
+  ];
 
 const layout = (roots: ReferralNetworkNode[]) => {
   const placed: Placed[] = [];
   let cursor = 0;
   let maxDepth = 0;
 
-  const place = (node: ReferralNetworkNode, parent: Placed | null, depth: number): Placed => {
+  const place = (
+    node: ReferralNetworkNode,
+    parent: Placed | null,
+    depth: number,
+  ): Placed => {
     const entry: Placed = { node, parent, depth, x: 0, y: depth * ROW };
     placed.push(entry);
     maxDepth = Math.max(maxDepth, depth);
@@ -74,12 +87,18 @@ const layout = (roots: ReferralNetworkNode[]) => {
     place(root, null, 0);
   });
 
-  return { placed, width: Math.max(0, (cursor - 1) * GAP), height: maxDepth * ROW };
+  return {
+    placed,
+    width: Math.max(0, (cursor - 1) * GAP),
+    height: maxDepth * ROW,
+  };
 };
 
 export const ReferralNetwork = function ({ roots, onSelect }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [hover, setHover] = useState<{ entry: Placed; left: number } | null>(null);
+  const [hover, setHover] = useState<{ entry: Placed; left: number } | null>(
+    null,
+  );
   const [focused, setFocused] = useState<string | null>(null);
 
   const { placed, width, height } = useMemo(() => layout(roots), [roots]);
@@ -98,27 +117,40 @@ export const ReferralNetwork = function ({ roots, onSelect }: Props) {
       node.children.forEach(down);
     };
     down(target.node);
-    for (let parent = target.parent; parent; parent = parent.parent) ids.add(parent.node.id);
+    for (let parent = target.parent; parent; parent = parent.parent)
+      ids.add(parent.node.id);
     return ids;
   }, [focused, placed]);
 
   if (!roots.length) {
     return (
-      <p className="text-muted-foreground px-5 py-14 text-center text-sm">
-        No referrals yet. The network appears as soon as a driver signs up with a code.
-      </p>
+      <EmptyState
+        icon={Network}
+        title="No referrals yet"
+        description="The network appears as soon as a driver signs up with a code."
+      />
     );
   }
 
   return (
     <div
       ref={wrapRef}
-      className="border-border relative overflow-x-auto border-t bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1.2px)] bg-[length:22px_22px] bg-[#fbfcfe]"
+      className="border-border relative overflow-x-auto border-t bg-[#fbfcfe] bg-[radial-gradient(circle,#e2e8f0_1px,transparent_1.2px)] bg-[length:22px_22px]"
       onClick={(event) => {
-        if (event.target === event.currentTarget || (event.target as Element).tagName === "svg") setFocused(null);
+        if (
+          event.target === event.currentTarget ||
+          (event.target as Element).tagName === "svg"
+        )
+          setFocused(null);
       }}
     >
-      <svg width={svgWidth} height={svgHeight} role="img" aria-label="Referral network - who referred whom" className="mx-auto block">
+      <svg
+        width={svgWidth}
+        height={svgHeight}
+        role="img"
+        aria-label="Referral network - who referred whom"
+        className="mx-auto block"
+      >
         <g transform={`translate(${PAD_X},${PAD_Y})`}>
           {placed
             .filter((entry) => entry.parent)
@@ -158,7 +190,13 @@ export const ReferralNetwork = function ({ roots, onSelect }: Props) {
                 onMouseEnter={() => {
                   const wrap = wrapRef.current;
                   const left = entry.x + PAD_X + 26 - (wrap?.scrollLeft ?? 0);
-                  setHover({ entry, left: Math.max(8, Math.min(left, (wrap?.clientWidth ?? 600) - 216)) });
+                  setHover({
+                    entry,
+                    left: Math.max(
+                      8,
+                      Math.min(left, (wrap?.clientWidth ?? 600) - 216),
+                    ),
+                  });
                 }}
                 onMouseLeave={() => setHover(null)}
                 onClick={() => {
@@ -168,14 +206,39 @@ export const ReferralNetwork = function ({ roots, onSelect }: Props) {
               >
                 <circle r={radius + 8} fill="transparent" />
                 {root ? (
-                  <circle r={radius} fill={status.ring} stroke="#fff" strokeWidth={2} />
+                  <circle
+                    r={radius}
+                    fill={status.ring}
+                    stroke="#fff"
+                    strokeWidth={2}
+                  />
                 ) : (
-                  <circle r={radius} fill={fill} stroke={status.ring} strokeWidth={3} strokeDasharray={status.dashed ? "4 3" : undefined} />
+                  <circle
+                    r={radius}
+                    fill={fill}
+                    stroke={status.ring}
+                    strokeWidth={3}
+                    strokeDasharray={status.dashed ? "4 3" : undefined}
+                  />
                 )}
-                <text textAnchor="middle" dy="0.35em" fontSize={root ? 12 : 10.5} fontWeight={600} fill={root ? "#fff" : ink} className="pointer-events-none">
+                <text
+                  textAnchor="middle"
+                  dy="0.35em"
+                  fontSize={root ? 12 : 10.5}
+                  fontWeight={600}
+                  fill={root ? "#fff" : ink}
+                  className="pointer-events-none"
+                >
                   {initials(entry.node.name)}
                 </text>
-                <text textAnchor="middle" y={radius + 15} fontSize={root ? 12 : 10.5} fontWeight={root ? 600 : 500} fill={root ? "#0f172a" : "#64748b"} className="pointer-events-none">
+                <text
+                  textAnchor="middle"
+                  y={radius + 15}
+                  fontSize={root ? 12 : 10.5}
+                  fontWeight={root ? 600 : 500}
+                  fill={root ? "#0f172a" : "#64748b"}
+                  className="pointer-events-none"
+                >
                   {root ? entry.node.name : entry.node.name.split(" ")[0]}
                 </text>
               </g>
@@ -196,7 +259,10 @@ export const ReferralNetwork = function ({ roots, onSelect }: Props) {
             ["Referred by", hover.entry.parent?.node.name ?? "-"],
             ["Their referrals", String(hover.entry.node.children.length)],
           ].map(([key, value]) => (
-            <div key={key} className="text-muted-foreground flex justify-between gap-4">
+            <div
+              key={key}
+              className="text-muted-foreground flex justify-between gap-4"
+            >
               <span>{key}</span>
               <b className={cn("text-foreground font-semibold")}>{value}</b>
             </div>

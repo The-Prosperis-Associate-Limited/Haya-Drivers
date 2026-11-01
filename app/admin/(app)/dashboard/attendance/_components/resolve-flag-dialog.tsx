@@ -2,7 +2,6 @@
 
 import { FormTextarea } from "@/components/form/form-textarea";
 import { AppDialog } from "@/components/shared/app-dialog";
-import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatWorkDate } from "@/lib/utils";
@@ -75,8 +74,15 @@ export const ResolveFlagDialog = function ({ flag, outcome, onClose }: Props) {
       }
       width="480px"
       isSubmitting={isPending}
+      primaryAction={{
+        label: copy.cta,
+        form: "resolve-flag-form",
+        variant: outcome === "UPHELD" ? "destructive" : "default",
+        isLoading: isPending,
+      }}
     >
       <form
+        id="resolve-flag-form"
         onSubmit={handleSubmit((values) => mutate(values))}
         className="space-y-4"
       >
@@ -92,14 +98,6 @@ export const ResolveFlagDialog = function ({ flag, outcome, onClose }: Props) {
           }
           rows={4}
         />
-        <Button
-          type="submit"
-          variant={outcome === "UPHELD" ? "destructive" : "default"}
-          isLoading={isPending}
-          className="h-11 w-full rounded-xl text-sm"
-        >
-          {copy.cta}
-        </Button>
       </form>
     </AppDialog>
   );

@@ -127,6 +127,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
     "Your driver type is one of the filters clients search by.",
     "Add every licence class you hold - each one widens the jobs you match.",
     "Your licence needs at least a year left before it expires.",
+    "Your monthly rate and hours show on your profile - you can change them any time in Settings.",
   ],
   ACADEMIC_QUALIFICATION: [
     "Nothing on this step blocks your verification. Fill in what you have.",
@@ -138,7 +139,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
   ],
   GUARANTORS: [
     "Your reference should be a previous employer - someone you have actually driven for.",
-    "Your guarantor must be a working professional: a civil servant (grade level 8+) or a business owner. Family and friends are not accepted.",
+    "Your guarantor must be a civil servant (grade level 8+), a business owner or a working professional. Family and friends are not accepted.",
     "A guarantor needs their own passport photo and NIN slip, so pick someone who can send you both.",
   ],
   ADDITIONAL_INFORMATION: [
@@ -146,7 +147,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
     "You can come back and fill this in at any time.",
   ],
   DOCUMENTS: [
-    "Three documents are required: your NIN slip, a passport photo and your driver's licence.",
+    "All six documents are required: yours, plus proof of address and your guarantor's passport photo and NIN slip.",
     "Photograph documents flat and in good light - a reviewer has to read every detail.",
     "If one is turned down you'll get the reviewer's reason, and you only replace that one.",
   ],
@@ -599,7 +600,7 @@ export const ACADEMIC_LEVEL_OPTIONS = [
 ];
 
 // Family and friends are not acceptable guarantors - the guarantor must be a
-// working professional (civil servant grade level 8+, or a business owner).
+// civil servant (grade level 8+), a business owner or a working professional.
 export const GUARANTOR_RELATIONSHIP_OPTIONS = [
   { value: "FORMER_EMPLOYER", label: "Former Employer" },
   { value: "COLLEAGUE", label: "Colleague" },

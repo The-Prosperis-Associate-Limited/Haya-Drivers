@@ -125,8 +125,14 @@ export const JobSalary = function ({ reference, clientName }: Props) {
         }
         width="480px"
         isSubmitting={isDisputing}
+        primaryAction={{
+          label: "Send to our team",
+          form: "salary-dispute-form",
+          isLoading: isDisputing,
+        }}
       >
         <form
+          id="salary-dispute-form"
           onSubmit={handleSubmit((values) => dispute(values))}
           className="space-y-4"
         >
@@ -138,13 +144,6 @@ export const JobSalary = function ({ reference, clientName }: Props) {
             placeholder="E.g. Nothing has arrived in my account since the 28th."
             rows={4}
           />
-          <Button
-            type="submit"
-            isLoading={isDisputing}
-            className="h-11 w-full rounded-xl text-sm"
-          >
-            Send to our team
-          </Button>
         </form>
       </AppDialog>
     </>

@@ -6,6 +6,7 @@ import { AppTextArea } from "@/components/shared/app-textarea";
 import { BackLink } from "@/components/shared/back-link";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
 import {
   HIRE_REQUEST_STATUS_LABELS,
   HIRE_REQUEST_STATUS_STYLES,
@@ -41,6 +42,8 @@ import {
   Search,
   UploadCloud,
   XCircle,
+  Hourglass,
+  Info,
 } from "lucide-react";
 import Link from "next/link";
 import { use, useState } from "react";
@@ -112,7 +115,7 @@ export default function HireRequestDetail({
   if (!request) {
     return (
       <div className="mx-auto max-w-[1360px] space-y-4">
-        <BackLink href="/dashboard/my-hire" label="Back to My Hire" />
+        <BackLink href="/dashboard/my-hire" label="My hire" />
         {isFetching ? (
           <>
             <Skeleton className="h-24 rounded-2xl" />
@@ -139,55 +142,57 @@ export default function HireRequestDetail({
   const rejectedReason = invoice?.proof_rejected_reason;
 
   return (
-    <div className="mx-auto max-w-[1360px]">
-      <BackLink href="/dashboard/my-hire" label="Back to My Hire" />
-
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <span className="flex items-center gap-2">
-            <AppText
-              type="h2"
-              className="text-[22px] font-semibold tracking-tight"
-            >
-              Hire request
-            </AppText>
+    <div className="mx-auto max-w-[1360px] space-y-5">
+      <PageHeader
+        back={{ href: "/dashboard/my-hire", label: "My hire" }}
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            Hire request
             <span
               className={cn(
-                "rounded-full px-2.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase",
+                "rounded-full px-2.5 py-0.5 text-xs font-medium tracking-normal",
                 HIRE_REQUEST_STATUS_STYLES[request.status],
               )}
             >
               {HIRE_REQUEST_STATUS_LABELS[request.status]}
             </span>
           </span>
-          <AppText
-            type="caption"
-            className="text-muted-foreground mt-1 block text-xs"
-          >
-            {request.reference} · Submitted {formatDate(request.createdAt)}
-          </AppText>
+        }
+        subtitle={`${request.reference} · Submitted ${formatDate(request.createdAt)}`}
+        action={
+          ["PENDING_REVIEW", "INVOICED"].includes(request.status) && (
+            <Button
+              variant="outline"
+              className="text-destructive border-destructive/40 h-10 rounded-xl px-4"
+              onClick={() => setCancelOpen(true)}
+            >
+              <XCircle className="h-4 w-4" />
+              Cancel request
+            </Button>
+          )
+        }
+      />
+
+      {STATUS_COPY[request.status] && (
+        <div
+          className={cn(
+            "flex items-start gap-3 rounded-2xl px-4 py-3 text-[13px]",
+            request.status === "DECLINED"
+              ? "bg-red-50 text-red-800"
+              : "bg-brand-soft/60 text-blue-950",
+          )}
+        >
+          <Info className="mt-0.5 size-4 shrink-0" />
+          <p>
+            {request.status === "DECLINED" && request.declined_reason
+              ? `${STATUS_COPY.DECLINED} Reason: ${request.declined_reason}`
+              : STATUS_COPY[request.status]}
+          </p>
         </div>
+      )}
 
-        {["PENDING_REVIEW", "INVOICED"].includes(request.status) && (
-          <Button
-            variant="outline"
-            className="text-destructive border-destructive/40 h-10 rounded-lg px-4 text-sm"
-            onClick={() => setCancelOpen(true)}
-          >
-            <XCircle className="h-4 w-4" />
-            Cancel request
-          </Button>
-        )}
-      </div>
-
-      <AppText type="caption" className="text-muted-foreground mt-3 block">
-        {request.status === "DECLINED" && request.declined_reason
-          ? `${STATUS_COPY.DECLINED} Reason: ${request.declined_reason}`
-          : STATUS_COPY[request.status]}
-      </AppText>
-
-      <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-5">
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-6">
+        <div className="min-w-0 space-y-5 xl:space-y-6">
           {/* The engagement summary */}
           <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             {assignedDrivers.length ? (
@@ -471,12 +476,12 @@ export default function HireRequestDetail({
           </AppText>
 
           {!invoice ? (
-            <AppText
-              type="caption"
-              className="text-muted-foreground mt-3 block text-sm"
-            >
-              No invoice yet - our team is reviewing this request.
-            </AppText>
+            <EmptyState
+              size="compact"
+              icon={Hourglass}
+              title="No invoice yet"
+              description="Our team is reviewing this request."
+            />
           ) : (
             <>
               <AppText
@@ -638,7 +643,7 @@ export default function HireRequestDetail({
                     rows={2}
                   />
                   <Button
-                    className="h-12 w-full rounded-lg text-sm"
+                    className="h-11 w-full rounded-xl"
                     disabled={!proofFile || isSubmittingProof}
                     onClick={handleSubmitProof}
                   >

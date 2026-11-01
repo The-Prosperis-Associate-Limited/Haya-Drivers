@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,7 +12,13 @@ import {
   shiftMonth,
   WORK_SCHEDULE_LABELS,
 } from "@/lib/utils";
-import { ChevronLeft, ChevronRight, Download, Flag } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Flag,
+  CalendarCheck,
+} from "lucide-react";
 import type { AttendanceDay, AttendanceLog as Log } from "@/types/attendance";
 
 interface Props {
@@ -337,16 +344,22 @@ export const AttendanceLog = function ({
               ))}
             </ul>
           ) : (
-            <AppText
-              type="caption"
-              className="text-muted-foreground block px-4 py-8 text-center md:px-6"
-            >
-              {log.tracking_since
-                ? "No check-ins this month."
-                : viewer === "driver"
-                  ? "No check-ins yet. Check in from here or your overview at the start of each working day."
-                  : "The driver hasn't checked in yet. Check-ins appear here as they happen."}
-            </AppText>
+            <EmptyState
+              size="compact"
+              icon={CalendarCheck}
+              title={
+                log.tracking_since
+                  ? "No check-ins this month"
+                  : "No check-ins yet"
+              }
+              description={
+                log.tracking_since
+                  ? "Pick another month to see earlier days."
+                  : viewer === "driver"
+                    ? "Check in from here or your overview at the start of each working day."
+                    : "The driver hasn't checked in yet. Check-ins appear here as they happen."
+              }
+            />
           )}
           <div className="h-2" />
         </>

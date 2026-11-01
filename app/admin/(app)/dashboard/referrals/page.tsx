@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppTabs } from "@/components/shared/app-tabs";
 import { AppText } from "@/components/shared/app-text";
 import { StatCard } from "@/components/shared/stat-card";
@@ -7,9 +8,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn, formatMoneyCompact } from "@/lib/utils";
-import type { AdminReferralOverview, ReferralLeader, ReferralNetwork as Network } from "@/types/referral";
+import type {
+  AdminReferralOverview,
+  ReferralLeader,
+  ReferralNetwork as Network,
+} from "@/types/referral";
 import type { APIResponse } from "@/types/response";
-import { CheckCheck, Gift, ShieldAlert, UsersRound, Wallet } from "lucide-react";
+import {
+  CheckCheck,
+  Gift,
+  ShieldAlert,
+  UsersRound,
+  Wallet,
+  Trophy,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { NetworkLegend, ReferralNetwork } from "./_components/referral-network";
@@ -20,17 +32,26 @@ import { WeeklySignupsChart } from "./_components/weekly-signups-chart";
 
 type Range = "7d" | "30d" | "90d" | "all";
 
-const card = "border-border rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
+const card =
+  "border-border rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]";
 
 function ReferralsDashboard() {
   const [range, setRange] = useState<Range>("30d");
   const [scope, setScope] = useState<"6" | "50">("6");
   const [driverId, setDriverId] = useState<string | null>(null);
-  const [reviewId, setReviewId] = useState<string | null>(useSearchParams().get("review"));
+  const [reviewId, setReviewId] = useState<string | null>(
+    useSearchParams().get("review"),
+  );
 
-  const { data: overviewData } = useGetData<APIResponse<AdminReferralOverview>>({ url: API_ENDPOINTS.adminReferrals.overview(range) });
-  const { data: networkData, isFetching: networkLoading } = useGetData<APIResponse<Network>>({ url: API_ENDPOINTS.adminReferrals.network(Number(scope)) });
-  const { data: leaderData } = useGetData<APIResponse<ReferralLeader[]>>({ url: API_ENDPOINTS.adminReferrals.leaderboard(8) });
+  const { data: overviewData } = useGetData<APIResponse<AdminReferralOverview>>(
+    { url: API_ENDPOINTS.adminReferrals.overview(range) },
+  );
+  const { data: networkData, isFetching: networkLoading } = useGetData<
+    APIResponse<Network>
+  >({ url: API_ENDPOINTS.adminReferrals.network(Number(scope)) });
+  const { data: leaderData } = useGetData<APIResponse<ReferralLeader[]>>({
+    url: API_ENDPOINTS.adminReferrals.leaderboard(8),
+  });
 
   const overview = overviewData?.data;
   const leaders = leaderData?.data ?? [];
@@ -41,11 +62,18 @@ function ReferralsDashboard() {
     <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <AppText type="h2" className="text-[22px] font-semibold tracking-tight">
+          <AppText
+            type="h2"
+            className="text-[22px] font-semibold tracking-tight"
+          >
             Referrals
           </AppText>
-          <AppText type="subtitle" className="text-muted-foreground text-[13px]">
-            Who brought whom onto the platform, what it cost, and which rewards need a second look.
+          <AppText
+            type="subtitle"
+            className="text-muted-foreground text-[13px]"
+          >
+            Who brought whom onto the platform, what it cost, and which rewards
+            need a second look.
           </AppText>
         </div>
         <AppTabs
@@ -63,7 +91,9 @@ function ReferralsDashboard() {
 
       <section className="grid grid-cols-2 gap-3 md:gap-4 xl:grid-cols-4">
         {!overview ? (
-          Array.from({ length: 4 }).map((_, index) => <Skeleton key={index} className="h-36 rounded-2xl" />)
+          Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} className="h-36 rounded-2xl" />
+          ))
         ) : (
           <>
             <StatCard
@@ -75,7 +105,14 @@ function ReferralsDashboard() {
                   ? "No earlier period to compare"
                   : `${overview.kpis.signups_change_pct >= 0 ? "▲" : "▼"} ${Math.abs(overview.kpis.signups_change_pct)}% vs previous period`
               }
-              captionTone={overview.kpis.signups_change_pct !== null && overview.kpis.signups_change_pct < 0 ? "warning" : overview.kpis.signups_change_pct === null ? "muted" : "positive"}
+              captionTone={
+                overview.kpis.signups_change_pct !== null &&
+                overview.kpis.signups_change_pct < 0
+                  ? "warning"
+                  : overview.kpis.signups_change_pct === null
+                    ? "muted"
+                    : "positive"
+              }
             />
             <StatCard
               icon={CheckCheck}
@@ -89,16 +126,29 @@ function ReferralsDashboard() {
               icon={Wallet}
               tone="violet"
               label="Rewards paid"
-              value={formatMoneyCompact(overview.kpis.rewards_paid_minor, overview.currency)}
+              value={formatMoneyCompact(
+                overview.kpis.rewards_paid_minor,
+                overview.currency,
+              )}
               caption="Net of reversals"
               captionTone="muted"
             />
             <StatCard
               icon={overview.kpis.held_for_review ? ShieldAlert : Gift}
               tone="amber"
-              label={overview.kpis.held_for_review ? "Held for review" : "Active referrers"}
-              value={overview.kpis.held_for_review || overview.kpis.active_referrers}
-              caption={overview.kpis.held_for_review ? `${overview.kpis.active_referrers} active referrers` : "Drivers with at least one referral"}
+              label={
+                overview.kpis.held_for_review
+                  ? "Held for review"
+                  : "Active referrers"
+              }
+              value={
+                overview.kpis.held_for_review || overview.kpis.active_referrers
+              }
+              caption={
+                overview.kpis.held_for_review
+                  ? `${overview.kpis.active_referrers} active referrers`
+                  : "Drivers with at least one referral"
+              }
               captionTone={overview.kpis.held_for_review ? "warning" : "muted"}
             />
           </>
@@ -113,7 +163,11 @@ function ReferralsDashboard() {
           <AppText type="caption" className="text-muted-foreground mb-5 block">
             Last 12 weeks · hover a bar for the count
           </AppText>
-          {overview ? <WeeklySignupsChart weekly={overview.weekly} /> : <Skeleton className="h-48 rounded-xl" />}
+          {overview ? (
+            <WeeklySignupsChart weekly={overview.weekly} />
+          ) : (
+            <Skeleton className="h-48 rounded-xl" />
+          )}
         </div>
 
         <div className={cn(card, "p-4 md:p-5")}>
@@ -125,10 +179,16 @@ function ReferralsDashboard() {
           </AppText>
           <div className="space-y-3">
             {(overview?.funnel ?? []).map((step) => (
-              <div key={step.key} className="grid grid-cols-[120px_1fr_40px] items-center gap-3 text-[12.5px]">
+              <div
+                key={step.key}
+                className="grid grid-cols-[120px_1fr_40px] items-center gap-3 text-[12.5px]"
+              >
                 <span className="text-muted-foreground">{step.label}</span>
                 <span className="bg-muted h-2.5 overflow-hidden rounded-full">
-                  <i className="bg-brand block h-full rounded-full" style={{ width: `${(step.count / funnelTop) * 100}%` }} />
+                  <i
+                    className="bg-brand block h-full rounded-full"
+                    style={{ width: `${(step.count / funnelTop) * 100}%` }}
+                  />
                 </span>
                 <b className="text-right font-semibold">{step.count}</b>
               </div>
@@ -145,7 +205,8 @@ function ReferralsDashboard() {
                 Referral network
               </AppText>
               <AppText type="caption" className="text-muted-foreground block">
-                Each line is one referral, pointing down to the driver who joined. Click a driver to see their branch.
+                Each line is one referral, pointing down to the driver who
+                joined. Click a driver to see their branch.
               </AppText>
             </div>
             <AppTabs
@@ -162,12 +223,22 @@ function ReferralsDashboard() {
             <NetworkLegend />
           </div>
           {networkData ? (
-            <ReferralNetwork roots={networkData.data.roots} onSelect={(node) => setDriverId(node.id)} />
+            <ReferralNetwork
+              roots={networkData.data.roots}
+              onSelect={(node) => setDriverId(node.id)}
+            />
           ) : (
-            <Skeleton className={cn("mx-5 mb-5 h-64 rounded-xl", networkLoading && "animate-pulse")} />
+            <Skeleton
+              className={cn(
+                "mx-5 mb-5 h-64 rounded-xl",
+                networkLoading && "animate-pulse",
+              )}
+            />
           )}
           {networkData?.data.truncated && (
-            <p className="text-muted-foreground border-border border-t px-5 py-2 text-xs">Showing the first 400 drivers in these branches.</p>
+            <p className="text-muted-foreground border-border border-t px-5 py-2 text-xs">
+              Showing the first 400 drivers in these branches.
+            </p>
           )}
         </div>
 
@@ -187,30 +258,57 @@ function ReferralsDashboard() {
                   <button
                     type="button"
                     onClick={() => setDriverId(leader.user_id)}
-                    className={cn("border-border hover:bg-brand-soft/60 flex w-full items-center gap-3 border-t px-4 py-2.5 text-left md:px-5", driverId === leader.user_id && "bg-brand-soft/60")}
+                    className={cn(
+                      "border-border hover:bg-brand-soft/60 flex w-full items-center gap-3 border-t px-4 py-2.5 text-left md:px-5",
+                      driverId === leader.user_id && "bg-brand-soft/60",
+                    )}
                   >
-                    <span className="text-muted-foreground w-5 text-center text-xs font-bold">{index + 1}</span>
+                    <span className="text-muted-foreground w-5 text-center text-xs font-bold">
+                      {index + 1}
+                    </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[13px] font-semibold">{leader.name}</span>
+                      <span className="block truncate text-[13px] font-semibold">
+                        {leader.name}
+                      </span>
                       <span className="bg-muted mt-1.5 block h-1.5 overflow-hidden rounded-full">
-                        <i className="bg-brand block h-full rounded-full" style={{ width: `${(leader.rewarded / topRewarded) * 100}%` }} />
+                        <i
+                          className="bg-brand block h-full rounded-full"
+                          style={{
+                            width: `${(leader.rewarded / topRewarded) * 100}%`,
+                          }}
+                        />
                       </span>
                     </span>
                     <span className="text-right">
-                      <span className="block text-[13px] font-semibold">{leader.rewarded}</span>
-                      <span className="text-muted-foreground block text-[11px]">of {leader.total}</span>
+                      <span className="block text-[13px] font-semibold">
+                        {leader.rewarded}
+                      </span>
+                      <span className="text-muted-foreground block text-[11px]">
+                        of {leader.total}
+                      </span>
                     </span>
                   </button>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-muted-foreground px-5 pb-5 text-sm">Nobody has earned a referral reward yet.</p>
+            <EmptyState
+              size="compact"
+              icon={Trophy}
+              title="No rewards yet"
+              description="Nobody has earned a referral reward yet."
+            />
           )}
         </div>
       </section>
 
-      {overview && <ReferralsTable heldCount={overview.kpis.held_for_review} onReview={setReviewId} onSelectDriver={setDriverId} />}
+      {overview && (
+        <ReferralsTable
+          heldCount={overview.kpis.held_for_review}
+          onReview={setReviewId}
+          onSelectDriver={setDriverId}
+        />
+      )}
 
       <ReferrerSheet
         userId={driverId}
@@ -218,7 +316,10 @@ function ReferralsDashboard() {
         onReview={setReviewId}
         onSelectDriver={setDriverId}
       />
-      <ReferralReviewDialog referralId={reviewId} onOpenChange={(open) => !open && setReviewId(null)} />
+      <ReferralReviewDialog
+        referralId={reviewId}
+        onOpenChange={(open) => !open && setReviewId(null)}
+      />
     </div>
   );
 }

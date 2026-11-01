@@ -91,8 +91,11 @@ export default function Marketplace() {
       <section className="mt-10">
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
-            <AppText type="h2" className="text-lg font-medium md:text-xl">
-              See Drivers in
+            <AppText
+              type="h2"
+              className="text-lg font-semibold tracking-tight md:text-[22px]"
+            >
+              See drivers in
             </AppText>
             <AppSimpleSelect
               options={states}

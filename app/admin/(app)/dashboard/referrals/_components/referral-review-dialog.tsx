@@ -1,7 +1,9 @@
 "use client";
 
-import { AppDialog } from "@/components/shared/app-dialog";
+import { Skeleton } from "@/components/ui/skeleton";
+import { AppDialog, DIALOG_BUTTON } from "@/components/shared/app-dialog";
 import { AppTextArea } from "@/components/shared/app-textarea";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
@@ -19,8 +21,14 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Props) {
+export const ReferralReviewDialog = function ({
+  referralId,
+  onOpenChange,
+}: Props) {
   const [note, setNote] = useState("");
+  const [confirming, setConfirming] = useState<"reject" | "reverse" | null>(
+    null,
+  );
 
   const { data } = useGetData<APIResponse<AdminReferral>>({
     url: API_ENDPOINTS.adminReferrals.detail(referralId ?? ""),
@@ -29,6 +37,7 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
 
   const close = () => {
     setNote("");
+    setConfirming(null);
     onOpenChange(false);
   };
 
@@ -42,19 +51,24 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
     onSuccessMessage: "Reward rejected",
     onSuccess: close,
   });
-  const reverse = useSubmitData<{ reason: string }, APIResponse<AdminReferral>>({
-    url: API_ENDPOINTS.adminReferrals.reverse(referralId ?? ""),
-    onSuccessMessage: "Reward reversed",
-    onSuccess: close,
-  });
+  const reverse = useSubmitData<{ reason: string }, APIResponse<AdminReferral>>(
+    {
+      url: API_ENDPOINTS.adminReferrals.reverse(referralId ?? ""),
+      onSuccessMessage: "Reward reversed",
+      onSuccess: close,
+    },
+  );
 
   const referral = data?.data;
-  const needsReason = (action: { mutate: (body: { reason: string }) => void }) => {
-    if (note.trim().length < 3) return showToast("error", "Write a short reason first");
-    action.mutate({ reason: note.trim() });
+  const needsReason = (kind: "reject" | "reverse") => {
+    if (note.trim().length < 3)
+      return showToast("error", "Write a short reason first");
+    setConfirming(kind);
   };
 
-  const held = referral?.status === "HELD" || (referral?.status === "SIGNED_UP" && !!referral.qualified_at);
+  const held =
+    referral?.status === "HELD" ||
+    (referral?.status === "SIGNED_UP" && !!referral.qualified_at);
   const paid = referral?.status === "REWARDED";
 
   return (
@@ -68,22 +82,39 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
         referral &&
         (held ? (
           <>
-            <Button variant="outline" onClick={() => needsReason(reject)} isLoading={reject.isPending} className="h-10 rounded-lg px-4 text-red-600">
+            <Button
+              variant="outline"
+              onClick={() => needsReason("reject")}
+              isLoading={reject.isPending}
+              className={cn(DIALOG_BUTTON, "text-red-600")}
+            >
               Reject reward
             </Button>
-            <Button onClick={() => approve.mutate({ note: note.trim() || undefined })} isLoading={approve.isPending} className="h-10 rounded-lg px-4">
+            <Button
+              onClick={() => approve.mutate({ note: note.trim() || undefined })}
+              isLoading={approve.isPending}
+              className={DIALOG_BUTTON}
+            >
               Approve and pay reward
             </Button>
           </>
         ) : paid ? (
-          <Button variant="outline" onClick={() => needsReason(reverse)} isLoading={reverse.isPending} className="h-10 rounded-lg px-4 text-red-600">
+          <Button
+            variant="outline"
+            onClick={() => needsReason("reverse")}
+            isLoading={reverse.isPending}
+            className={cn(DIALOG_BUTTON, "text-red-600")}
+          >
             Reverse reward
           </Button>
         ) : undefined)
       }
     >
       {!referral ? (
-        <p className="text-muted-foreground py-6 text-sm">Loading…</p>
+        <div className="space-y-3 py-1">
+          <Skeleton className="h-16 rounded-xl" />
+          <Skeleton className="h-24 rounded-xl" />
+        </div>
       ) : (
         <div className="space-y-4 py-1">
           <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -96,10 +127,24 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
           <dl className="border-border grid grid-cols-2 gap-x-4 gap-y-2 border-y border-dashed py-3 text-[13px]">
             {[
               ["Code", referral.code],
-              ["Added at", referral.channel === "SIGNUP" ? "Sign-up" : "Onboarding"],
+              [
+                "Added at",
+                referral.channel === "SIGNUP" ? "Sign-up" : "Onboarding",
+              ],
               ["Referee email", referral.referee.email],
-              ["Referrer status", referral.referrer.verification_status ? referral.referrer.verification_status.charAt(0) + referral.referrer.verification_status.slice(1).toLowerCase() : "-"],
-              ["Submitted", referral.qualified_at ? formatDateTime(referral.qualified_at) : "Not yet"],
+              [
+                "Referrer status",
+                referral.referrer.verification_status
+                  ? referral.referrer.verification_status.charAt(0) +
+                    referral.referrer.verification_status.slice(1).toLowerCase()
+                  : "-",
+              ],
+              [
+                "Submitted",
+                referral.qualified_at
+                  ? formatDateTime(referral.qualified_at)
+                  : "Not yet",
+              ],
               ["Risk score", `${referral.risk_score} / 100`],
             ].map(([label, value]) => (
               <div key={label} className="min-w-0">
@@ -118,7 +163,9 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
                     key={flag.key}
                     className={cn(
                       "flex items-start gap-2 rounded-lg px-3 py-2 text-[13px]",
-                      flag.blocks ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-800",
+                      flag.blocks
+                        ? "bg-red-50 text-red-700"
+                        : "bg-amber-50 text-amber-800",
                     )}
                   >
                     <ShieldAlert className="mt-0.5 size-4 shrink-0" />
@@ -129,11 +176,14 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
             ) : (
               <p className="flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-[13px] text-emerald-700">
                 <ShieldCheck className="size-4" />
-                {referral.qualified_at ? "Passed every check" : "Checks run when the referee submits"}
+                {referral.qualified_at
+                  ? "Passed every check"
+                  : "Checks run when the referee submits"}
               </p>
             )}
             <p className="text-muted-foreground text-[11.5px]">
-              Shared networks are common on mobile data and in offices - weigh a network match against the other signals.
+              Shared networks are common on mobile data and in offices - weigh a
+              network match against the other signals.
             </p>
           </div>
 
@@ -145,8 +195,14 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
 
           {(held || paid) && (
             <AppTextArea
-              label={held ? "Note (required to reject)" : "Reason for reversing"}
-              placeholder={held ? "e.g. Same household - checked with both drivers" : "e.g. Duplicate account confirmed"}
+              label={
+                held ? "Note (required to reject)" : "Reason for reversing"
+              }
+              placeholder={
+                held
+                  ? "e.g. Same household - checked with both drivers"
+                  : "e.g. Duplicate account confirmed"
+              }
               value={note}
               onChange={(event) => setNote(event.target.value)}
               rows={3}
@@ -154,11 +210,38 @@ export const ReferralReviewDialog = function ({ referralId, onOpenChange }: Prop
           )}
           {paid && (
             <p className="text-muted-foreground text-[11.5px]">
-              Reversing voids the reward if it&apos;s still on hold, or debits it from the referrer&apos;s wallet if it was already released.
+              Reversing voids the reward if it&apos;s still on hold, or debits
+              it from the referrer&apos;s wallet if it was already released.
             </p>
           )}
         </div>
       )}
+      <ConfirmDialog
+        isOpen={!!confirming}
+        onOpenChange={(open) => !open && setConfirming(null)}
+        icon={ShieldAlert}
+        iconClassName="text-destructive"
+        title={
+          confirming === "reverse"
+            ? "Reverse this reward?"
+            : "Reject this reward?"
+        }
+        description={
+          confirming === "reverse"
+            ? "The reward is voided, or taken back from the referrer's wallet if it has already landed. They are notified."
+            : "The referrer won't be paid for this referral and is notified it was declined."
+        }
+        confirmLabel={
+          confirming === "reverse" ? "Reverse reward" : "Reject reward"
+        }
+        confirmVariant="destructive"
+        isLoading={reject.isPending || reverse.isPending}
+        onConfirm={() =>
+          (confirming === "reverse" ? reverse : reject).mutate({
+            reason: note.trim(),
+          })
+        }
+      />
     </AppDialog>
   );
 };

@@ -10,7 +10,7 @@ import { redirect, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { NotificationSettings } from "./_components/notification-settings";
 import { ProfileSettings } from "./_components/profile-settings";
-import { SecuritySettings } from "./_components/security-settings";
+import { SecuritySettings } from "@/components/settings/security-settings";
 import { VerificationSettings } from "./_components/verification-settings";
 import { WorkPreferencesSettings } from "./_components/work-preferences-settings";
 

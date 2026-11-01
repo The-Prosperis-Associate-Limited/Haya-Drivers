@@ -1,7 +1,7 @@
 "use client";
 
 import { FormTextarea } from "@/components/form/form-textarea";
-import { AppDialog } from "@/components/shared/app-dialog";
+import { AppDialog, DIALOG_BUTTON } from "@/components/shared/app-dialog";
 import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -67,31 +67,66 @@ export const ResolveSalaryDialog = function ({ payment, onClose }: Props) {
       }
       width="520px"
       isSubmitting={isPending}
+      dialogFooter={
+        <>
+          <Button
+            type="button"
+            variant="outline"
+            isLoading={isPending && outcome === "PAID"}
+            disabled={isPending}
+            className={DIALOG_BUTTON}
+            onClick={() => submit("PAID")}
+          >
+            It was paid
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            isLoading={isPending && outcome === "UNPAID"}
+            disabled={isPending}
+            className={DIALOG_BUTTON}
+            onClick={() => submit("UNPAID")}
+          >
+            Still unpaid
+          </Button>
+        </>
+      }
     >
       <form onSubmit={(event) => event.preventDefault()} className="space-y-4">
         {payment?.dispute_reason && (
-          <p className="text-muted-foreground rounded-xl bg-slate-50 p-3 text-xs">
-            Driver: &ldquo;{payment.dispute_reason}&rdquo;
+          <dl className="border-border divide-border divide-y rounded-xl border text-[13px]">
+            <div className="space-y-0.5 px-3.5 py-2.5">
+              <dt className="text-muted-foreground text-[11.5px] font-semibold tracking-wide uppercase">
+                Driver says
+              </dt>
+              <dd>&ldquo;{payment.dispute_reason}&rdquo;</dd>
+            </div>
             {payment.client_note && (
-              <>
-                <br />
-                Client: &ldquo;{payment.client_note}&rdquo;
-              </>
+              <div className="space-y-0.5 px-3.5 py-2.5">
+                <dt className="text-muted-foreground text-[11.5px] font-semibold tracking-wide uppercase">
+                  Client&apos;s note
+                </dt>
+                <dd>&ldquo;{payment.client_note}&rdquo;</dd>
+              </div>
             )}
             {payment.receipt_url && (
-              <>
-                <br />
-                <a
-                  href={payment.receipt_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-brand font-medium hover:underline"
-                >
-                  Open the client&apos;s receipt
-                </a>
-              </>
+              <div className="flex items-center justify-between gap-3 px-3.5 py-2.5">
+                <dt className="text-muted-foreground text-[11.5px] font-semibold tracking-wide uppercase">
+                  Receipt
+                </dt>
+                <dd>
+                  <a
+                    href={payment.receipt_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-brand font-medium hover:underline"
+                  >
+                    Open the client&apos;s receipt
+                  </a>
+                </dd>
+              </div>
             )}
-          </p>
+          </dl>
         )}
 
         <FormTextarea
@@ -102,29 +137,6 @@ export const ResolveSalaryDialog = function ({ payment, onClose }: Props) {
           placeholder="E.g. The client's bank confirmed the transfer on the 28th."
           rows={4}
         />
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <Button
-            type="button"
-            variant="outline"
-            isLoading={isPending && outcome === "PAID"}
-            disabled={isPending}
-            className="h-11 rounded-xl text-sm"
-            onClick={() => submit("PAID")}
-          >
-            It was paid
-          </Button>
-          <Button
-            type="button"
-            variant="destructive"
-            isLoading={isPending && outcome === "UNPAID"}
-            disabled={isPending}
-            className="h-11 rounded-xl text-sm"
-            onClick={() => submit("UNPAID")}
-          >
-            Still unpaid
-          </Button>
-        </div>
       </form>
     </AppDialog>
   );

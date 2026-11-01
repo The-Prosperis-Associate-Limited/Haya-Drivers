@@ -246,14 +246,16 @@ export const API_ENDPOINTS = {
       role,
       status,
       search,
+      verified,
     }: {
       page: number;
       limit: number;
       role?: "DRIVER" | "CLIENT";
       status?: string;
       search?: string;
+      verified?: boolean;
     }) =>
-      `/admin/users?page=${page}&limit=${limit}${role ? `&role=${role}` : ""}${status ? `&status=${status}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+      `/admin/users?page=${page}&limit=${limit}${role ? `&role=${role}` : ""}${status ? `&status=${status}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}${verified ? "&verified=true" : ""}`,
     stats: (role: "DRIVER" | "CLIENT") => `/admin/users/stats?role=${role}`,
     detail: (id: string) => `/admin/users/${id}`,
     wallet: (id: string, { page, limit }: { page: number; limit: number }) =>

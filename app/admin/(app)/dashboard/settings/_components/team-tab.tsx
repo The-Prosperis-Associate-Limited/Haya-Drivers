@@ -20,7 +20,7 @@ import {
 } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatRelativeTime } from "@/lib/utils";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, UsersRound } from "lucide-react";
 import { useState } from "react";
 import type { PaginatedResponse } from "@/types/response";
 import type { AdminRole, TeamMember } from "@/types/admin";
@@ -110,7 +110,11 @@ export const TeamTab = function () {
         isLoading={isFetching}
       >
         {!rows.length ? (
-          <EmptyState title="No admins yet" />
+          <EmptyState
+            icon={UsersRound}
+            title="No admins yet"
+            description="Invite a teammate to share the console."
+          />
         ) : (
           <>
             <div className="mt-4 hidden overflow-x-auto md:block">

@@ -22,6 +22,7 @@ import { HireSalary } from "../_components/hire-salary";
 import { ReviewCard } from "../_components/review-card";
 import { useHire } from "../_hooks/use-hires";
 import Link from "next/link";
+import { BadgeCheck } from "lucide-react";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -112,79 +113,88 @@ export default function HireDetail({
   ];
 
   return (
-    <div className="mx-auto max-w-[1360px]">
+    <div className="mx-auto max-w-[1360px] space-y-5">
       <BackLink href="/dashboard/my-hire" label="My hire" />
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-14 w-14">
-            <AvatarImage src={hire.driver?.profile_pic ?? undefined} alt="" />
-            <AvatarFallback>
-              {getInitials(hire.driver?.first_name, hire.driver?.last_name)}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <span className="flex flex-wrap items-center gap-2">
-              <AppText type="h2" className="text-lg font-semibold">
-                {name}
-              </AppText>
-              {hire.today_attendance && (
-                <TodayAttendanceBadge today={hire.today_attendance} />
-              )}
-            </span>
-            <AppText type="caption" className="text-muted-foreground block">
-              {driverTypeLabel(hire.driver_type)} · {hire.title}
-            </AppText>
-            <span className="mt-1 flex items-center gap-2">
-              {location && (
-                <AppText type="caption" className="text-muted-foreground">
-                  {location}
-                </AppText>
-              )}
-              {profile?.years_of_experience != null && (
-                <AppText type="caption" className="text-muted-foreground">
-                  {profile.years_of_experience} years experience
-                </AppText>
-              )}
-              {hire.driver_review_count > 0 && (
-                <span className="flex items-center gap-1">
-                  <StarRating
-                    rating={hire.driver_rating}
-                    starClassName="h-3.5 w-3.5"
-                  />
-                  <AppText type="caption" className="text-muted-foreground">
-                    {hire.driver_rating.toFixed(1)} ({hire.driver_review_count}{" "}
-                    reviews)
-                  </AppText>
+      <div className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+        <div className="from-brand-soft/80 flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r to-white p-4 md:p-5">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="relative shrink-0">
+              <Avatar className="size-16">
+                <AvatarImage
+                  src={hire.driver?.profile_pic ?? undefined}
+                  alt=""
+                />
+                <AvatarFallback className="text-base">
+                  {getInitials(hire.driver?.first_name, hire.driver?.last_name)}
+                </AvatarFallback>
+              </Avatar>
+              <BadgeCheck className="fill-brand absolute -right-0.5 -bottom-0.5 size-5 text-white" />
+            </div>
+            <div className="min-w-0">
+              <span className="flex flex-wrap items-center gap-2">
+                <h1 className="text-[22px] font-semibold tracking-tight">
+                  {name}
+                </h1>
+                <span
+                  className={cn(
+                    "rounded-full px-2.5 py-0.5 text-xs font-medium",
+                    ended
+                      ? "bg-slate-100 text-slate-600"
+                      : "bg-emerald-50 text-emerald-600",
+                  )}
+                >
+                  {ended ? "Ended" : started ? "Ongoing" : "Starting soon"}
                 </span>
-              )}
-            </span>
+                {hire.today_attendance && (
+                  <TodayAttendanceBadge today={hire.today_attendance} />
+                )}
+              </span>
+              <AppText type="caption" className="text-muted-foreground block">
+                {driverTypeLabel(hire.driver_type)} · {hire.title}
+              </AppText>
+              <span className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                {location && (
+                  <AppText type="caption" className="text-muted-foreground">
+                    {location}
+                  </AppText>
+                )}
+                {profile?.years_of_experience != null && (
+                  <AppText type="caption" className="text-muted-foreground">
+                    {profile.years_of_experience} years experience
+                  </AppText>
+                )}
+                {hire.driver_review_count > 0 && (
+                  <span className="flex items-center gap-1">
+                    <StarRating
+                      rating={hire.driver_rating}
+                      starClassName="h-3.5 w-3.5"
+                    />
+                    <AppText type="caption" className="text-muted-foreground">
+                      {hire.driver_rating.toFixed(1)} (
+                      {hire.driver_review_count} reviews)
+                    </AppText>
+                  </span>
+                )}
+              </span>
+            </div>
           </div>
+          <Button asChild className="h-10 w-full rounded-xl px-5 sm:w-auto">
+            <Link href={`/dashboard/drivers/${hire.driver?.id}`}>
+              View full profile
+            </Link>
+          </Button>
         </div>
       </div>
 
-      <div className="border-border mt-5 border-t" />
-
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
-        <div className="space-y-6">
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-6">
+        <div className="min-w-0 space-y-5 xl:space-y-6">
           <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
-            <span className="flex items-center justify-between gap-3">
-              <AppText type="h4" className="text-[15px] font-semibold">
-                {hire.engagement_type === "MONTHLY"
-                  ? "Full-time engagement"
-                  : `${prettifyEnum(hire.engagement_type)} engagement`}
-              </AppText>
-              <span
-                className={cn(
-                  "rounded-full px-3 py-1 text-xs font-medium",
-                  ended
-                    ? "bg-slate-100 text-slate-600"
-                    : "bg-emerald-50 text-emerald-600",
-                )}
-              >
-                {ended ? "Ended" : started ? "Ongoing" : "Starting soon"}
-              </span>
-            </span>
+            <AppText type="h4" className="text-[15px] font-semibold">
+              {hire.engagement_type === "MONTHLY"
+                ? "Full-time engagement"
+                : `${prettifyEnum(hire.engagement_type)} engagement`}
+            </AppText>
 
             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
               {[
@@ -195,7 +205,7 @@ export default function HireDetail({
                 <span key={entry.label}>
                   <AppText
                     type="caption"
-                    className="text-muted-foreground block text-xs tracking-wide uppercase"
+                    className="text-muted-foreground block text-xs"
                   >
                     {entry.label}
                   </AppText>
@@ -234,16 +244,16 @@ export default function HireDetail({
           <ReviewCard hire={hire} />
         </div>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-5 xl:space-y-6">
           <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
             <AppText type="h4" className="text-[15px] font-semibold">
               Haya Drivers profile
             </AppText>
-            <div className="mt-4 space-y-3">
+            <div className="divide-border mt-3 divide-y">
               {profileRows.map((row) => (
                 <span
                   key={row.label}
-                  className="flex items-center justify-between gap-3"
+                  className="flex items-center justify-between gap-3 py-2.5"
                 >
                   <AppText type="caption" className="text-muted-foreground">
                     {row.label}
@@ -254,16 +264,6 @@ export default function HireDetail({
                 </span>
               ))}
             </div>
-
-            <Button
-              variant="outline"
-              className="mt-5 h-11 w-full rounded-xl text-sm"
-              asChild
-            >
-              <Link href={`/dashboard/drivers/${hire.driver?.id}`}>
-                View Full profile
-              </Link>
-            </Button>
           </div>
 
           <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">

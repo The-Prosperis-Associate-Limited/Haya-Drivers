@@ -20,7 +20,10 @@ export const BankAccounts = function () {
   const [adding, setAdding] = useState(false);
   const [bankCode, setBankCode] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
-  const [resolved, setResolved] = useState<{ key: string; name: string } | null>(null);
+  const [resolved, setResolved] = useState<{
+    key: string;
+    name: string;
+  } | null>(null);
 
   const { bankAccounts, isFetching } = useBankAccounts();
   const { banks } = useBanks({
@@ -48,7 +51,7 @@ export const BankAccounts = function () {
 
   // The name always comes from the bank, never the driver - so a typo can't send money to a stranger.
   useEffect(() => {
-    if (!selectedBank || !/^d{10}$/.test(accountNumber)) return;
+    if (!selectedBank || !/^\d{10}$/.test(accountNumber)) return;
 
     resolveAccount({
       bank_code: selectedBank.code,
@@ -65,7 +68,10 @@ export const BankAccounts = function () {
       return showToast("error", "Enter a valid account number");
     }
     if (!accountName) {
-      return showToast("error", "Wait for your bank to confirm the account name");
+      return showToast(
+        "error",
+        "Wait for your bank to confirm the account name",
+      );
     }
 
     addBankAccount({

@@ -1,7 +1,7 @@
 "use client";
 
 import { AppText } from "@/components/shared/app-text";
-import { BackLink } from "@/components/shared/back-link";
+import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { FormDatePicker } from "@/components/form/form-date-picker";
@@ -210,22 +210,15 @@ export default function RequestDriver() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <BackLink href="/dashboard/my-hire" label="Back to My Hire" />
-
-      <AppText
-        type="h2"
-        className="mt-4 text-[22px] font-semibold tracking-tight"
-      >
-        Request a driver
-      </AppText>
-      <AppText type="subtitle" className="text-muted-foreground mt-1 text-sm">
-        Tell us what you need - our team matches you with a vetted driver and
-        sends you an invoice. You pay nothing now.
-      </AppText>
+      <PageHeader
+        back={{ href: "/dashboard/my-hire", label: "My hire" }}
+        title="Request a driver"
+        subtitle="Tell us what you need - our team matches you with a vetted driver and sends you an invoice. You pay nothing now."
+      />
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="border-border mt-6 space-y-4 rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5"
+        className="border-border space-y-4 rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5"
       >
         <Controller
           control={control}
@@ -444,7 +437,7 @@ export default function RequestDriver() {
           placeholder="E.g school runs on weekdays, occasional weekend trips"
         />
 
-        <Button className="h-12 w-full rounded-lg text-sm">
+        <Button className="h-11 w-full rounded-xl">
           Review request
         </Button>
       </form>

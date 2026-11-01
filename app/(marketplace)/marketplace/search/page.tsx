@@ -89,8 +89,11 @@ function SearchResults() {
         ))}
       </nav>
 
-      <AppText type="h2" className="mt-3 text-xl font-medium md:text-2xl">
-        Search results for Drivers in {areaLabel}
+      <AppText
+        type="h2"
+        className="mt-3 text-xl font-semibold tracking-tight md:text-[22px]"
+      >
+        Search results for drivers in {areaLabel}
       </AppText>
 
       <SearchPanel

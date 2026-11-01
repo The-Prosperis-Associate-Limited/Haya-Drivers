@@ -21,7 +21,7 @@ import {
 } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn, formatDate } from "@/lib/utils";
-import { Ban, Building2, UserCheck } from "lucide-react";
+import { Ban, Building2, UserCheck, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
@@ -159,6 +159,7 @@ export default function AdminClients() {
         >
           {!rows.length ? (
             <EmptyState
+              icon={UserSearch}
               title="No clients found"
               description="Try a different search or status filter."
             />

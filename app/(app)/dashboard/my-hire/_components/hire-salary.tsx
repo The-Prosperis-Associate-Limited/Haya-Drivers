@@ -75,6 +75,11 @@ export const HireSalary = function ({ reference, driverName }: Props) {
         }
         width="480px"
         isSubmitting={isPending}
+        primaryAction={{
+          label: "Mark as paid",
+          onClick: submit,
+          isLoading: isPending,
+        }}
       >
         <div className="space-y-4">
           <AppDropzone
@@ -96,13 +101,6 @@ export const HireSalary = function ({ reference, driverName }: Props) {
             onChange={(event) => setNote(event.target.value)}
             rows={2}
           />
-          <Button
-            isLoading={isPending}
-            onClick={submit}
-            className="h-11 w-full rounded-xl text-sm"
-          >
-            Mark as paid
-          </Button>
         </div>
       </AppDialog>
     </>

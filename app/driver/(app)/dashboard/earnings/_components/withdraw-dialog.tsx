@@ -62,25 +62,10 @@ export const WithdrawDialog = function ({
       onOpenChange={onOpenChange}
       title="Withdraw funds"
       isSubmitting={isPending}
-      dialogFooter={
-        !!bankAccounts.length && (
-          <>
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="h-10 rounded-lg px-5"
-            >
-              Cancel
-            </Button>
-            <Button
-              isLoading={isPending}
-              onClick={onSubmit}
-              className="h-10 rounded-lg px-5"
-            >
-              Withdraw
-            </Button>
-          </>
-        )
+      primaryAction={
+        bankAccounts.length
+          ? { label: "Withdraw", onClick: onSubmit, isLoading: isPending }
+          : undefined
       }
     >
       {!bankAccounts.length ? (

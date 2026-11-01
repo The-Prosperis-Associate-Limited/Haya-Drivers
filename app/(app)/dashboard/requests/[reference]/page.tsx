@@ -1,15 +1,15 @@
 "use client";
 
 import { TalentCard } from "@/components/drivers/talent-card";
-import { AppText } from "@/components/shared/app-text";
 import { BackLink } from "@/components/shared/back-link";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PageHeader } from "@/components/shared/page-header";
 import { Pagination } from "@/components/shared/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn, formatMoney, HIRE_ENGAGEMENT_LABELS } from "@/lib/utils";
-import { SearchX } from "lucide-react";
+import { SearchX, ShieldCheck } from "lucide-react";
 import { use, useState } from "react";
 import type { DriverSearchResult } from "@/types/driver";
 import type { APIResponse } from "@/types/response";
@@ -49,11 +49,10 @@ export default function RequestMatches({
   const matched = payload?.matched;
 
   return (
-    <div className="mx-auto max-w-[1360px]">
-      <BackLink href="/dashboard/requests" label="Back to requests" />
-
+    <div className="mx-auto max-w-[1360px] space-y-5">
       {!request ? (
-        <div className="mt-4 space-y-4">
+        <div className="space-y-4">
+          <BackLink href="/dashboard/requests" label="Requests" />
           {isFetching && (
             <>
               <Skeleton className="h-20 rounded-2xl" />
@@ -63,59 +62,54 @@ export default function RequestMatches({
         </div>
       ) : (
         <>
-          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0">
-              <AppText
-                type="h2"
-                className="text-[22px] font-semibold tracking-tight"
-              >
+          <PageHeader
+            back={{ href: "/dashboard/requests", label: "Requests" }}
+            title={
+              <span className="flex flex-wrap items-center gap-2">
                 {request.title}
-              </AppText>
-              <AppText
-                type="caption"
-                className="text-muted-foreground mt-1 block text-sm"
-              >
-                {[
-                  [request.city, request.state].filter(Boolean).join(", "),
-                  HIRE_ENGAGEMENT_LABELS[request.engagement_type],
-                  `${formatMoney(request.budget, request.currency)} / month`,
-                  request.preferred_ethnicity,
-                  request.preferred_religion,
-                  request.preferred_age_range &&
-                    `Age ${request.preferred_age_range}`,
-                ]
-                  .filter(Boolean)
-                  .join(" · ")}
-              </AppText>
-            </div>
-            <span
-              className={cn(
-                "shrink-0 self-start rounded-full px-3 py-1 text-[10px] font-semibold tracking-wide uppercase",
-                request.status === "OPEN"
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "bg-muted text-muted-foreground",
-              )}
-            >
-              {request.status === "OPEN" ? "Open" : "Closed"}
-            </span>
-          </div>
+                <span
+                  className={cn(
+                    "rounded-full px-2.5 py-0.5 text-xs font-medium tracking-normal",
+                    request.status === "OPEN"
+                      ? "bg-emerald-50 text-emerald-600"
+                      : "bg-slate-100 text-slate-600",
+                  )}
+                >
+                  {request.status === "OPEN" ? "Open" : "Closed"}
+                </span>
+              </span>
+            }
+            subtitle={[
+              [request.city, request.state].filter(Boolean).join(", "),
+              HIRE_ENGAGEMENT_LABELS[request.engagement_type],
+              `${formatMoney(request.budget, request.currency)} / month`,
+              request.preferred_ethnicity,
+              request.preferred_religion,
+              request.preferred_age_range &&
+                `Age ${request.preferred_age_range}`,
+            ]
+              .filter(Boolean)
+              .join(" · ")}
+          />
 
-          <section className="mt-8">
-            <AppText type="h3" className="text-[15px] font-semibold">
-              Matched drivers
-            </AppText>
-            <AppText
-              type="caption"
-              className="text-muted-foreground mt-1 block text-sm"
-            >
-              Verified drivers who fit this request&apos;s category, location
-              and budget.
-            </AppText>
+          <section className="space-y-4">
+            <div>
+              <p className="flex items-center gap-2 text-[15px] font-semibold">
+                <ShieldCheck className="size-4 text-emerald-600" />
+                {matched
+                  ? `${matched.total} matched ${matched.total === 1 ? "driver" : "drivers"}`
+                  : "Matched drivers"}
+              </p>
+              <p className="text-muted-foreground mt-0.5 text-[13px]">
+                Verified drivers who fit this request&apos;s category, location
+                and budget.
+              </p>
+            </div>
 
             {isFetching && !matched?.data.length ? (
-              <div className="mt-4 grid grid-cols-1 gap-5 lg:grid-cols-2">
-                {Array.from({ length: 4 }).map((_, index) => (
-                  <Skeleton key={index} className="h-[230px] rounded-2xl" />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <Skeleton key={index} className="h-[210px] rounded-2xl" />
                 ))}
               </div>
             ) : !matched?.data.length ? (
@@ -123,7 +117,7 @@ export default function RequestMatches({
                 icon={SearchX}
                 title="No matches yet"
                 description="No verified driver fits these criteria right now - new drivers are verified every week."
-                className="mt-6"
+                className="border-border rounded-2xl border bg-white"
               />
             ) : (
               <Pagination
@@ -132,9 +126,8 @@ export default function RequestMatches({
                 total={matched.total}
                 onPageChange={setPage}
                 isLoading={isFetching}
-                className="mt-4"
               >
-                <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {matched.data.map((driver) => (
                     <TalentCard key={driver.id} driver={driver} />
                   ))}

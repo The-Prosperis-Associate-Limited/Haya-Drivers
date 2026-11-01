@@ -1,6 +1,8 @@
 "use client";
 
+import { FormChoiceChips } from "@/components/form/form-choices";
 import { FormInput } from "@/components/form/form-input";
+import { FormSection } from "@/components/form/form-section";
 import { FormSelect } from "@/components/form/form-select";
 import { FormTextarea } from "@/components/form/form-textarea";
 import { AppDialog } from "@/components/shared/app-dialog";
@@ -8,7 +10,6 @@ import {
   RequestPreviewDialog,
   type PreviewRow,
 } from "@/components/shared/request-preview-dialog";
-import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { lgaOptionsForState } from "@/lib/nigeria-lgas";
@@ -164,17 +165,22 @@ export const CreateRequestDialog = function ({ isOpen, onOpenChange }: Props) {
       description="Tell us what you need - we match verified drivers to your request for you to review."
       width="520px"
       isSubmitting={isPending}
+      primaryAction={{ label: "Review request", form: "create-request-form" }}
     >
-      <form onSubmit={handleSubmit(submit)} className="space-y-4">
-        <FormInput
-          control={control}
-          name="title"
-          errors={errors}
-          label="Title"
-          placeholder="E.g Executive corporate driver"
-        />
+      <form
+        id="create-request-form"
+        onSubmit={handleSubmit(submit)}
+        className="space-y-4"
+      >
+        <FormSection title="The role">
+          <FormInput
+            control={control}
+            name="title"
+            errors={errors}
+            label="Title"
+            placeholder="E.g Executive corporate driver"
+          />
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormSelect
             control={control}
             name="driver_type"
@@ -183,84 +189,90 @@ export const CreateRequestDialog = function ({ isOpen, onOpenChange }: Props) {
             label="Driver category"
             placeholder="Select a category"
           />
-          <FormSelect
+
+          <FormChoiceChips
             control={control}
             name="engagement_type"
             errors={errors}
             options={ENGAGEMENT_OPTIONS}
             label="Engagement"
-            placeholder="Select"
           />
-        </div>
+        </FormSection>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <FormSelect
-            control={control}
-            name="state"
-            errors={errors}
-            options={states}
-            label="State"
-            placeholder="Select a state"
-          />
-          <FormSelect
-            control={control}
-            name="city"
-            errors={errors}
-            options={cities}
-            label="City / LGA"
-            placeholder={state ? "Select a city" : "Pick a state first"}
-            disabled={!state}
-          />
-        </div>
+        <FormSection title="Location and budget">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormSelect
+              control={control}
+              name="state"
+              errors={errors}
+              options={states}
+              label="State"
+              placeholder="Select a state"
+            />
+            <FormSelect
+              control={control}
+              name="city"
+              errors={errors}
+              options={cities}
+              label="City / LGA"
+              placeholder={state ? "Select a city" : "Pick a state first"}
+              disabled={!state}
+            />
+          </div>
 
-        <FormInput
-          control={control}
-          name="budget"
-          errors={errors}
-          label="Monthly budget (₦)"
-          placeholder="E.g 250000"
-          inputMode="numeric"
-        />
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <FormSelect
+          <FormInput
             control={control}
-            name="preferred_ethnicity"
+            name="budget"
             errors={errors}
-            options={ETHNICITY_OPTIONS}
-            label="Ethnicity (optional)"
-            placeholder="Any"
+            label="Monthly budget (₦)"
+            placeholder="E.g 250000"
+            inputMode="numeric"
+            suffix="/ month"
           />
-          <FormSelect
-            control={control}
-            name="preferred_religion"
-            errors={errors}
-            options={RELIGION_PREFERENCE_OPTIONS}
-            label="Religion (optional)"
-            placeholder="Any"
-          />
-          <FormSelect
-            control={control}
-            name="preferred_age_range"
-            errors={errors}
-            options={AGE_RANGE_OPTIONS}
-            label="Age range (optional)"
-            placeholder="Any"
-          />
-        </div>
+        </FormSection>
 
-        <FormTextarea
-          control={control}
-          name="description"
-          errors={errors}
-          label="Description"
-          placeholder="Routes, schedule, vehicle - anything that helps us match the right driver."
-          rows={4}
-        />
+        <FormSection
+          title="Preferences"
+          description="Optional - leave any of these as Any."
+        >
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <FormSelect
+              control={control}
+              name="preferred_ethnicity"
+              errors={errors}
+              options={ETHNICITY_OPTIONS}
+              label="Ethnicity"
+              placeholder="Any"
+            />
+            <FormSelect
+              control={control}
+              name="preferred_religion"
+              errors={errors}
+              options={RELIGION_PREFERENCE_OPTIONS}
+              label="Religion"
+              placeholder="Any"
+            />
+            <FormSelect
+              control={control}
+              name="preferred_age_range"
+              errors={errors}
+              options={AGE_RANGE_OPTIONS}
+              label="Age range"
+              placeholder="Any"
+            />
+          </div>
+        </FormSection>
 
-        <Button type="submit" className="h-11 w-full rounded-xl text-sm">
-          Review request
-        </Button>
+        <FormSection title="Details">
+          <FormTextarea
+            control={control}
+            name="description"
+            errors={errors}
+            label="Description"
+            placeholder="Routes, schedule, vehicle - anything that helps us match the right driver."
+            rows={4}
+          />
+        </FormSection>
       </form>
 
       <RequestPreviewDialog

@@ -1,7 +1,8 @@
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { clientNameOf, cn, formatDate } from "@/lib/utils";
-import { Clock, MapPin } from "lucide-react";
+import { Clock, MapPin, CalendarDays } from "lucide-react";
 import Link from "next/link";
 import type { Booking } from "@/types/booking";
 import { ShiftControl } from "../job-request/_components/shift-control";
@@ -134,9 +135,13 @@ export const WeekCard = function ({ job }: Props) {
             )}
           </>
         ) : (
-          <AppText type="caption" className="text-muted-foreground block">
-            No engagement this week. Jobs you're hired for will show up here.
-          </AppText>
+          <EmptyState
+            size="compact"
+            icon={CalendarDays}
+            title="No engagement this week"
+            description="Jobs you're hired for will show up here."
+            className="py-4"
+          />
         )}
       </div>
     </div>

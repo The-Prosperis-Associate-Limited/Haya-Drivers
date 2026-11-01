@@ -13,6 +13,7 @@ import {
   DRIVER_TYPE_OPTIONS,
   TRANSMISSION_OPTIONS,
   formatDate,
+  formatMoney,
 } from "@/lib/utils";
 import { CheckCircle2, CircleAlert, Pencil } from "lucide-react";
 import Link from "next/link";
@@ -22,6 +23,9 @@ const REQUIRED_DOCUMENTS = [
   "NIN_SLIP",
   "PASSPORT_PHOTO",
   "DRIVERS_LICENCE",
+  "PROOF_OF_ADDRESS",
+  "GUARANTOR_PASSPORT",
+  "GUARANTOR_NIN_SLIP",
 ] as const;
 
 export const getVerificationReadiness = function (
@@ -35,7 +39,13 @@ export const getVerificationReadiness = function (
     user?.date_of_birth &&
     user?.country
   );
-  const hasExperience = !!(profile?.driver_type && profile?.license_number);
+  const hasExperience = !!(
+    profile?.driver_type &&
+    profile?.license_number &&
+    profile?.expected_monthly_rate &&
+    profile?.availability?.length
+  );
+  const hasGuarantor = !!(profile?.guarantors?.length && profile?.reference);
   const hasDocuments = REQUIRED_DOCUMENTS.every((type) =>
     documents.some((document) => document.type === type),
   );
@@ -43,8 +53,9 @@ export const getVerificationReadiness = function (
   return {
     hasPersonal,
     hasExperience,
+    hasGuarantor,
     hasDocuments,
-    canSubmit: hasPersonal && hasExperience && hasDocuments,
+    canSubmit: hasPersonal && hasExperience && hasGuarantor && hasDocuments,
   };
 };
 
@@ -191,6 +202,20 @@ export const VerificationReview = function ({ profile, documents }: Props) {
               ? formatDate(profile.license_expires_at)
               : null
           }
+        />
+        <Row
+          label="Monthly rate"
+          value={
+            profile?.expected_monthly_rate
+              ? `${formatMoney(profile.expected_monthly_rate, profile.rate_currency)} / month`
+              : null
+          }
+        />
+        <Row
+          label="Working hours"
+          value={profile?.availability
+            ?.map((slot) => `${slot.day_range}, ${slot.start} - ${slot.end}`)
+            .join(" · ")}
         />
       </Section>
 

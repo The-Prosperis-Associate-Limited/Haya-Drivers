@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AppText } from "@/components/shared/app-text";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,6 +25,7 @@ interface Props {
 
 export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   const [draft, setDraft] = useState("");
+  const [resolveOpen, setResolveOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const { profile } = useGetProfile();
@@ -83,7 +85,10 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
   const { mutate: resolve, isPending: isResolving } = useSubmitData({
     url: API_ENDPOINTS.adminChat.resolve(conversationId),
     onSuccessMessage: "Conversation resolved",
-    onSuccess: onChanged,
+    onSuccess: () => {
+      setResolveOpen(false);
+      onChanged();
+    },
   });
 
   const { mutate: reply, isPending: isSending } = useSubmitData<{
@@ -131,8 +136,7 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
           {!resolved && (
             <Button
               variant="outline"
-              onClick={() => resolve({})}
-              isLoading={isResolving}
+              onClick={() => setResolveOpen(true)}
               className="h-9 rounded-lg px-4 text-xs"
             >
               <CheckCheck className="h-3.5 w-3.5" />
@@ -250,6 +254,17 @@ export const TranscriptPane = function ({ conversationId, onChanged }: Props) {
           Join the chat to reply.
         </AppText>
       )}
+
+      <ConfirmDialog
+        isOpen={resolveOpen}
+        onOpenChange={setResolveOpen}
+        icon={CheckCheck}
+        title="Resolve this conversation?"
+        description="The chat is closed for both sides. If they write again, it opens as a new conversation."
+        confirmLabel="Resolve"
+        isLoading={isResolving}
+        onConfirm={() => resolve({})}
+      />
     </div>
   );
 };
