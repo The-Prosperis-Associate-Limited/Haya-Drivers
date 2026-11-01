@@ -25,11 +25,16 @@ export const useLiveChat = function (isOpen: boolean) {
   const conversationId = conversation?.id ?? null;
 
   // A resolved thread stays resolved until the server hands us a new open one.
-  useEffect(() => {
+  const [syncedMessages, setSyncedMessages] = useState(conversation?.messages);
+  if (syncedMessages !== conversation?.messages) {
+    setSyncedMessages(conversation?.messages);
     setResolved(false);
     setLiveMessages([]);
+  }
+
+  useEffect(() => {
     seenIds.current = new Set(conversation?.messages.map((m) => m.id));
-  }, [conversationId, conversation?.messages]);
+  }, [conversation?.messages]);
 
   useEffect(() => {
     if (!isOpen) return;
