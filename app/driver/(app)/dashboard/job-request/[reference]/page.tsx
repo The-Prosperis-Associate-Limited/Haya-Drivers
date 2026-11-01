@@ -112,8 +112,6 @@ export default function JobRequestDetail() {
   const location = [booking.city, booking.state].filter(Boolean).join(", ");
   const clientName = clientNameOf(booking.client);
 
-  // Contact details only make sense once the job is on - before that the driver
-  // has not agreed to anything.
   const canSeeContact = ["ACCEPTED", "IN_PROGRESS", "COMPLETED"].includes(
     booking.status,
   );

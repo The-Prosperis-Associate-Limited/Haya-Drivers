@@ -2,7 +2,6 @@
 
 import { AppDialog } from "@/components/shared/app-dialog";
 import { AppText } from "@/components/shared/app-text";
-import { Button } from "@/components/ui/button";
 import { TriangleAlert } from "lucide-react";
 
 export interface PreviewRow {
@@ -19,8 +18,6 @@ interface Props {
   confirmLabel?: string;
 }
 
-// The last stop before a request reaches our team - requests have no edit
-// flow, so this is the user's one chance to catch a mistake.
 export const RequestPreviewDialog = function ({
   isOpen,
   onOpenChange,
@@ -37,6 +34,12 @@ export const RequestPreviewDialog = function ({
       title="Review your request"
       description="Make sure everything is correct before you submit."
       width="480px"
+      cancelLabel="Go back"
+      primaryAction={{
+        label: confirmLabel,
+        onClick: onConfirm,
+        isLoading: isSubmitting,
+      }}
     >
       <div className="space-y-4">
         <dl className="border-border divide-border divide-y rounded-xl border">
@@ -61,26 +64,6 @@ export const RequestPreviewDialog = function ({
             A request cannot be edited after it is submitted. If anything above
             is wrong, go back and fix it now.
           </AppText>
-        </div>
-
-        <div className="flex gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-            className="h-11 flex-1 rounded-lg text-sm"
-          >
-            Go back
-          </Button>
-          <Button
-            type="button"
-            onClick={onConfirm}
-            isLoading={isSubmitting}
-            className="h-11 flex-1 rounded-lg text-sm"
-          >
-            {confirmLabel}
-          </Button>
         </div>
       </div>
     </AppDialog>

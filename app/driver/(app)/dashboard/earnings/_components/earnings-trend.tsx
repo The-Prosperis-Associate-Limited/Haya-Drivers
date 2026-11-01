@@ -18,8 +18,6 @@ interface Props {
 }
 
 export const EarningsTrend = function ({ trend, currency }: Props) {
-  // The server already fills empty months with 0, so the line stays continuous
-  // rather than skipping a month with no work.
   const data = trend.map((point) => ({
     ...point,
     total: toMajorUnits(point.total_minor),

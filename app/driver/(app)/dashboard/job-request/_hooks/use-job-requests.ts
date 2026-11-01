@@ -34,8 +34,6 @@ export const useJobRequests = function ({
   };
 };
 
-// Every endpoint on this router 403s an unverified driver, so the screen asks
-// before it fetches rather than toasting two rejections at them.
 export const useJobRequestSummary = function (shouldFetch = true) {
   const { data, isFetching } = useGetData<APIResponse<JobRequestSummary>>({
     url: API_ENDPOINTS.jobRequests.summary,

@@ -19,12 +19,6 @@ import {
 } from "./_hooks/use-job-requests";
 import type { JobRequestBucket } from "@/types/booking";
 
-/*
-  The bucket names only - the server owns which statuses each one covers, so a
-  job cannot be counted under one tab and listed under another. Jobs arrive
-  already accepted (the platform brokers every hire), so the tabs track the
-  engagement lifecycle rather than a request inbox.
-*/
 const TABS: {
   value: JobRequestBucket;
   label: string;

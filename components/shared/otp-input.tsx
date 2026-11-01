@@ -30,8 +30,6 @@ export const OtpInput = function ({
     const digits = raw.replace(/\D/g, "");
     if (!digits) return setDigit(index, "");
 
-    // A paste lands in whichever box has focus, so it fills forward from there
-    // rather than being truncated to one digit.
     if (digits.length > 1) {
       const next = value.split("");
       digits.split("").forEach((digit, offset) => {

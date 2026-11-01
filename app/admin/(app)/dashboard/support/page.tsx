@@ -1,5 +1,7 @@
 "use client";
 
+import { MessagesSquare } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { useEffect, useState } from "react";
 import { AppText } from "@/components/shared/app-text";
 import { useGetData } from "@/hooks/use-get-data";
@@ -19,8 +21,6 @@ export default function AdminSupportInbox() {
 
   const conversations = data?.data.data ?? [];
 
-  // The support pool broadcasts on every user message, claim and resolve -
-  // refetching the inbox is enough to keep the list live.
   useEffect(() => {
     const socket = getChatSocket();
     if (!socket) return;
@@ -66,8 +66,16 @@ export default function AdminSupportInbox() {
             onChanged={refetch}
           />
         ) : (
-          <div className="border-border text-muted-foreground flex min-h-[420px] items-center justify-center rounded-2xl border bg-white text-sm">
-            {isFetching ? "Loading conversations…" : "No open conversations."}
+          <div className="border-border flex min-h-[420px] items-center justify-center rounded-2xl border bg-white">
+            <EmptyState
+              icon={MessagesSquare}
+              title={
+                isFetching ? "Loading conversations…" : "No open conversations"
+              }
+              description={
+                isFetching ? undefined : "Pick a conversation to read it here."
+              }
+            />
           </div>
         )}
       </div>

@@ -33,6 +33,8 @@ export interface ClientProfile {
   primary_location: string | null;
   hiring_timeline: HiringTimeline | null;
   monthly_budget: number | null;
+  // Only on the onboarding preferences payload - the phone lives on User.
+  phone_no?: string | null;
   onboarding_completed_at: string | null;
 }
 

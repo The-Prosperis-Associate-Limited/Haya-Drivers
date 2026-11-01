@@ -4,8 +4,6 @@ import { API_ENDPOINTS } from "@/lib/endpoints";
 import type { APIResponse } from "@/types/response";
 import type { SignupFormValues } from "@/schemas/auth/signup";
 
-// "web" (the server default) sends the emailed verification link rather than a
-// 6-digit code - a desktop signup has a mailbox one tab away.
 type SignupPayload = SignupFormValues & { role: "CLIENT" };
 
 export const useSignup = function () {

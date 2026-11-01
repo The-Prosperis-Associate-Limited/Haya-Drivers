@@ -1,12 +1,13 @@
 "use client";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn, formatAge, getInitials } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MessagesSquare } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { AdminNav } from "@/types/admin";
@@ -54,12 +55,12 @@ export const SupportInboxCard = function () {
         {isFetching && !data ? (
           <Skeleton className="h-28 w-full rounded-xl" />
         ) : !conversations.length ? (
-          <AppText
-            type="caption"
-            className="text-muted-foreground block py-4 text-center"
-          >
-            No open conversations.
-          </AppText>
+          <EmptyState
+            size="compact"
+            icon={MessagesSquare}
+            title="No open conversations"
+            description="New chats appear here as they come in."
+          />
         ) : (
           conversations.map((conversation) => {
             const person = conversation.initiatedBy;

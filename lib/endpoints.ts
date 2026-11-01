@@ -1,8 +1,3 @@
-/*
-  The query key IS the url - useGetData keys on it and useSubmitData refetches
-  that key on success. A url built inline in a component invalidates nothing, so
-  every endpoint the app calls belongs here.
-*/
 export const API_ENDPOINTS = {
   auth: {
     signup: "/auth/create-user",
@@ -42,8 +37,6 @@ export const API_ENDPOINTS = {
     },
   },
 
-  // The driver surface. Section names carry the driver prefix where a client
-  // section of the same name already exists.
   driverOnboarding: {
     profile: "/driver/onboarding/profile",
     verificationStatus: "/driver/onboarding/verification-status",
@@ -246,14 +239,16 @@ export const API_ENDPOINTS = {
       role,
       status,
       search,
+      verified,
     }: {
       page: number;
       limit: number;
       role?: "DRIVER" | "CLIENT";
       status?: string;
       search?: string;
+      verified?: boolean;
     }) =>
-      `/admin/users?page=${page}&limit=${limit}${role ? `&role=${role}` : ""}${status ? `&status=${status}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}`,
+      `/admin/users?page=${page}&limit=${limit}${role ? `&role=${role}` : ""}${status ? `&status=${status}` : ""}${search ? `&search=${encodeURIComponent(search)}` : ""}${verified ? "&verified=true" : ""}`,
     stats: (role: "DRIVER" | "CLIENT") => `/admin/users/stats?role=${role}`,
     detail: (id: string) => `/admin/users/${id}`,
     wallet: (id: string, { page, limit }: { page: number; limit: number }) =>

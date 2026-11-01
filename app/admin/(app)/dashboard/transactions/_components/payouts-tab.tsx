@@ -1,6 +1,7 @@
 "use client";
 
-import { AppDialog } from "@/components/shared/app-dialog";
+import { Banknote } from "lucide-react";
+import { AppDialog, DIALOG_BUTTON } from "@/components/shared/app-dialog";
 import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { AppTextArea } from "@/components/shared/app-textarea";
@@ -133,6 +134,7 @@ export const PayoutsTab = function () {
       >
         {!rows.length ? (
           <EmptyState
+            icon={Banknote}
             title="No payouts here"
             description="Driver withdrawal requests land in this queue."
           />
@@ -222,8 +224,12 @@ export const PayoutsTab = function () {
         width="480px"
         dialogFooter={
           viewing && (
-            <Button variant="outline" onClick={() => downloadReceipt(viewing)}>
-              Download Receipt
+            <Button
+              variant="outline"
+              onClick={() => downloadReceipt(viewing)}
+              className={DIALOG_BUTTON}
+            >
+              Download receipt
             </Button>
           )
         }
@@ -301,28 +307,19 @@ export const PayoutsTab = function () {
         title="Mark payout as failed"
         description="The wallet debit is reversed exactly as a provider failure would - the driver keeps the money."
         width="480px"
-        dialogFooter={
-          <div className="flex w-full justify-end gap-3">
-            <Button variant="outline" onClick={() => setFailing(null)}>
-              Cancel
-            </Button>
-            <Button
-              isLoading={isSettling}
-              disabled={!failureReason.trim()}
-              onClick={() =>
-                failing &&
-                settle({
-                  reference: failing.reference,
-                  status: "FAILED",
-                  failure_reason: failureReason.trim(),
-                })
-              }
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Mark as Failed
-            </Button>
-          </div>
-        }
+        primaryAction={{
+          label: "Mark as failed",
+          variant: "destructive",
+          isLoading: isSettling,
+          disabled: !failureReason.trim(),
+          onClick: () =>
+            failing &&
+            settle({
+              reference: failing.reference,
+              status: "FAILED",
+              failure_reason: failureReason.trim(),
+            }),
+        }}
       >
         <AppTextArea
           label="Failure reason"

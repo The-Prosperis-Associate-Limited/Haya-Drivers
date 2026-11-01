@@ -34,8 +34,6 @@ export const useAdminLogin = function ({
         user: user.role,
       });
 
-      // An invited admin cannot touch /api/admin until the temporary password
-      // is rotated, so the dashboard would only greet them with 403s.
       if (user.role === "ADMIN" && user.admin_profile?.must_change_password) {
         window.location.href = "/admin/auth/change-password";
         return;

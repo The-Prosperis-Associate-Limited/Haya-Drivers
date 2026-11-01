@@ -72,8 +72,6 @@ export function FormTimePicker<TFieldValues extends FieldValues>({
 }: Props<TFieldValues>) {
   const errorMessage = get(errors, name)?.message as string | undefined;
   const [open, setOpen] = useState(false);
-  // Which columns the user has picked since opening - hour, then minute, then
-  // AM/PM in any order; the popover closes itself once all three are chosen.
   const picked = useRef({ hour: false, minute: false, period: false });
 
   const inputId = label?.toLowerCase().replace(/\s+/g, "-");
@@ -87,8 +85,6 @@ export function FormTimePicker<TFieldValues extends FieldValues>({
 
         const pick = (update: Partial<Parts>, column: keyof Parts) => {
           const next: Parts = { ...parts, ...update };
-          // An incomplete pick still needs a storable value - default the
-          // missing columns so the field is never half-set.
           field.onChange(
             valueFromParts({
               hour: next.hour ?? 12,

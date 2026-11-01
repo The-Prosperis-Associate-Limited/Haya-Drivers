@@ -48,8 +48,6 @@ const JOB_TYPES: { icon: LucideIcon; title: string; body: string }[] = [
   },
 ];
 
-// Reveals finish at 85% of the pin so the completed layout holds briefly
-// before the section releases.
 const REVEAL_SPAN = 0.85;
 
 const StepItem = function ({
@@ -106,9 +104,6 @@ const SectionHeader = function ({ compact = false }: { compact?: boolean }) {
   );
 };
 
-// The tall wrapper is the scroll track: the section pins (sticky) for its
-// full height while scroll progress reveals one step at a time - and hides
-// them again in reverse on the way up.
 const PinnedJobTypes = function () {
   const { trackRef, revealed } = usePinnedSteps(JOB_TYPES.length, REVEAL_SPAN);
 

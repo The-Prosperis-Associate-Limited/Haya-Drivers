@@ -3,7 +3,6 @@
 import { AttendanceLog } from "@/components/attendance/attendance-log";
 import { FormTextarea } from "@/components/form/form-textarea";
 import { AppDialog } from "@/components/shared/app-dialog";
-import { Button } from "@/components/ui/button";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatTime, formatWorkDate, monthKeyOf } from "@/lib/utils";
@@ -74,8 +73,14 @@ export const HireAttendance = function ({ reference, driverName }: Props) {
         }
         width="480px"
         isSubmitting={isPending}
+        primaryAction={{
+          label: "Flag day",
+          form: "flag-day-form",
+          isLoading: isPending,
+        }}
       >
         <form
+          id="flag-day-form"
           onSubmit={handleSubmit((values) => mutate(values))}
           className="space-y-4"
         >
@@ -87,13 +92,6 @@ export const HireAttendance = function ({ reference, driverName }: Props) {
             placeholder="E.g. checked in but arrived at 10am, left before closing time."
             rows={4}
           />
-          <Button
-            type="submit"
-            isLoading={isPending}
-            className="h-11 w-full rounded-xl text-sm"
-          >
-            Flag day
-          </Button>
         </form>
       </AppDialog>
     </>

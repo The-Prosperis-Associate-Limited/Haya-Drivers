@@ -1,9 +1,4 @@
-/*
-  The driver's course certificate is the one surface that is not General Sans -
-  Zodiak for the title and a formal script for the name. Nothing outside the
-  certificate may use these. All three faces load through next/font in
-  app/_lib/fonts.ts; a remote @import here is dropped by the CSS pipeline.
-*/
+/* Fonts load through next/font in app/_lib/fonts.ts; a remote @import here is dropped by the CSS pipeline. */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -101,13 +96,16 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* Edge adds its own reveal button beside AppInput's show/hide toggle. */
+  input::-ms-reveal,
+  input::-ms-clear {
+    display: none;
+  }
 
   body {
     @apply bg-background text-foreground font-general-sans;
   }
 
-  /* The onboarding and auth screens are the only places a heading is not the
-     page title, so the weight is set globally rather than per screen. */
   h1,
   h2,
   h3,
@@ -127,12 +125,7 @@
   }
 }
 
-/*
-  Printing a certificate. The driver hits Download, the browser opens its print
-  dialog, and only the certificate reaches the page - the sidebar, the lesson
-  list and the dialog chrome are all hidden. `visibility` rather than `display`
-  so the sheet keeps the certificate's own layout intact.
-*/
+/* visibility, not display, so the printed sheet keeps its own layout. */
 @media print {
   body * {
     visibility: hidden;

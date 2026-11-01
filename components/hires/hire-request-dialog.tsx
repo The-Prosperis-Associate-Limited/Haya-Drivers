@@ -6,10 +6,13 @@ import {
   RequestPreviewDialog,
   type PreviewRow,
 } from "@/components/shared/request-preview-dialog";
-import { Button } from "@/components/ui/button";
 import { FormDatePicker } from "@/components/form/form-date-picker";
 import { FormInput } from "@/components/form/form-input";
-import { FormSelect } from "@/components/form/form-select";
+import {
+  FormChoiceChips,
+  FormOptionCards,
+} from "@/components/form/form-choices";
+import { FormSection } from "@/components/form/form-section";
 import { FormTextarea } from "@/components/form/form-textarea";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -25,7 +28,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { BriefcaseBusiness, CalendarRange } from "lucide-react";
 import type { APIResponse } from "@/types/response";
 import type { HireRequest } from "@/types/hire";
 
@@ -40,12 +44,30 @@ interface Props {
 
 // A brokered hire is an ongoing engagement - one-off trips go through requests.
 const ENGAGEMENT_OPTIONS = [
-  { value: "MONTHLY", label: "Full-time (monthly)" },
-  { value: "CONTRACT", label: "Contract" },
+  {
+    value: "MONTHLY",
+    label: "Full-time",
+    description: "Monthly salary, no fixed end",
+    icon: BriefcaseBusiness,
+  },
+  {
+    value: "CONTRACT",
+    label: "Contract",
+    description: "A fixed number of days",
+    icon: CalendarRange,
+  },
 ];
 
-// Submitting costs nothing: an admin reviews the request and sends back an
-// invoice; the driver's contact details unlock after that invoice is paid.
+const SCHEDULE_CHIPS = WORK_SCHEDULE_OPTIONS.map((option) => ({
+  value: option.value,
+  label: option.label.replace(/ schedule$/, ""),
+}));
+
+const TRANSMISSION_CHIPS = TRANSMISSION_OPTIONS.map((option) => ({
+  value: option.value,
+  label: option.value === "BOTH" ? "Either" : option.label,
+}));
+
 export const HireRequestDialog = function ({
   isOpen,
   onOpenChange,
@@ -59,12 +81,12 @@ export const HireRequestDialog = function ({
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<HireRequestFormValues>({
     resolver: zodResolver(hireRequestSchema),
     defaultValues: { engagement_type: "MONTHLY", schedule: "WEEKDAYS" },
   });
+  const engagementType = useWatch({ control, name: "engagement_type" });
 
   const { mutate, isPending } = useSubmitData<
     HireRequestFormValues & { driverId: string },
@@ -120,8 +142,14 @@ export const HireRequestDialog = function ({
       onOpenChange={onOpenChange}
       title={`Hire ${driverName}`}
       description="Tell us when you need them. Our team reviews every hire and sends you an invoice - you pay nothing now."
+      width="560px"
+      primaryAction={{
+        label: "Review hire request",
+        form: "hire-request-form",
+      }}
     >
       <form
+        id="hire-request-form"
         onSubmit={handleSubmit((data) => setPreview(data))}
         className="space-y-4"
       >
@@ -134,61 +162,68 @@ export const HireRequestDialog = function ({
           </AppText>
         </div>
 
-        <FormSelect<HireRequestFormValues>
-          control={control}
-          name="engagement_type"
-          errors={errors}
-          label="Engagement type"
-          options={ENGAGEMENT_OPTIONS}
-        />
-
-        {watch("engagement_type") === "CONTRACT" && (
-          <FormInput<HireRequestFormValues>
+        <FormSection title="The engagement">
+          <FormOptionCards<HireRequestFormValues>
             control={control}
-            name="duration_days"
+            name="engagement_type"
             errors={errors}
-            label="For how many days?"
-            inputMode="numeric"
-            placeholder="E.g 14"
+            options={ENGAGEMENT_OPTIONS}
+            columns="sm:grid-cols-2"
           />
-        )}
 
-        <FormDatePicker<HireRequestFormValues>
-          control={control}
-          mode="single"
-          name="starts_at"
-          errors={errors}
-          label="When should they start?"
-          minDate={new Date()}
-        />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <FormDatePicker<HireRequestFormValues>
+              control={control}
+              mode="single"
+              name="starts_at"
+              errors={errors}
+              label="When should they start?"
+              minDate={new Date()}
+            />
+            {engagementType === "CONTRACT" && (
+              <FormInput<HireRequestFormValues>
+                control={control}
+                name="duration_days"
+                errors={errors}
+                label="For how many days?"
+                inputMode="numeric"
+                placeholder="E.g 14"
+              />
+            )}
+          </div>
+        </FormSection>
 
-        <FormSelect<HireRequestFormValues>
-          control={control}
-          name="schedule"
-          errors={errors}
-          label="Work schedule"
-          options={WORK_SCHEDULE_OPTIONS}
-        />
+        <FormSection title="Working pattern">
+          <FormChoiceChips<HireRequestFormValues>
+            control={control}
+            name="schedule"
+            errors={errors}
+            label="Work schedule"
+            options={SCHEDULE_CHIPS}
+          />
+          <FormChoiceChips<HireRequestFormValues>
+            control={control}
+            name="transmission"
+            errors={errors}
+            label={
+              <>
+                Vehicle transmission{" "}
+                <span className="font-normal text-slate-400">(optional)</span>
+              </>
+            }
+            options={TRANSMISSION_CHIPS}
+          />
+        </FormSection>
 
-        <FormSelect<HireRequestFormValues>
-          control={control}
-          name="transmission"
-          errors={errors}
-          label="Vehicle transmission (optional)"
-          options={TRANSMISSION_OPTIONS}
-        />
-
-        <FormTextarea<HireRequestFormValues>
-          control={control}
-          name="note"
-          errors={errors}
-          label="Anything we should know? (optional)"
-          placeholder="E.g school runs on weekdays, occasional weekend trips"
-        />
-
-        <Button className="h-12 w-full rounded-lg text-sm">
-          Review hire request
-        </Button>
+        <FormSection title="Notes">
+          <FormTextarea<HireRequestFormValues>
+            control={control}
+            name="note"
+            errors={errors}
+            label="Anything we should know? (optional)"
+            placeholder="E.g school runs on weekdays, occasional weekend trips"
+          />
+        </FormSection>
       </form>
 
       <RequestPreviewDialog

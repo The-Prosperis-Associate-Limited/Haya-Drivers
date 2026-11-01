@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { StatCard } from "@/components/shared/stat-card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,6 +14,7 @@ import {
   Clock,
   Users,
   Wallet,
+  UsersRound,
 } from "lucide-react";
 import Link from "next/link";
 import type { APIResponse } from "@/types/response";
@@ -195,12 +197,12 @@ export default function DashboardOverview() {
                 <Skeleton className="h-14 rounded-xl" />
               </div>
             ) : !overview?.hired_staff.length ? (
-              <AppText
-                type="caption"
-                className="text-muted-foreground block px-4 pb-5 md:px-5"
-              >
-                No hires yet - drivers appear here once their invoice is paid.
-              </AppText>
+              <EmptyState
+                size="compact"
+                icon={UsersRound}
+                title="No hires yet"
+                description="Drivers appear here once their invoice is paid."
+              />
             ) : (
               <HiredStaffTable hires={overview.hired_staff} />
             )}

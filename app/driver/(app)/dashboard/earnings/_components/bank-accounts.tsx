@@ -7,7 +7,14 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { showToast } from "@/lib/show-toast";
-import { Banknote, BadgeCheck, Check, Loader2 } from "lucide-react";
+import {
+  Banknote,
+  BadgeCheck,
+  Check,
+  Landmark,
+  Loader2,
+  Plus,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   useAddBankAccount,
@@ -20,7 +27,10 @@ export const BankAccounts = function () {
   const [adding, setAdding] = useState(false);
   const [bankCode, setBankCode] = useState<string | null>(null);
   const [accountNumber, setAccountNumber] = useState("");
-  const [resolved, setResolved] = useState<{ key: string; name: string } | null>(null);
+  const [resolved, setResolved] = useState<{
+    key: string;
+    name: string;
+  } | null>(null);
 
   const { bankAccounts, isFetching } = useBankAccounts();
   const { banks } = useBanks({
@@ -48,7 +58,7 @@ export const BankAccounts = function () {
 
   // The name always comes from the bank, never the driver - so a typo can't send money to a stranger.
   useEffect(() => {
-    if (!selectedBank || !/^d{10}$/.test(accountNumber)) return;
+    if (!selectedBank || !/^\d{10}$/.test(accountNumber)) return;
 
     resolveAccount({
       bank_code: selectedBank.code,
@@ -65,7 +75,10 @@ export const BankAccounts = function () {
       return showToast("error", "Enter a valid account number");
     }
     if (!accountName) {
-      return showToast("error", "Wait for your bank to confirm the account name");
+      return showToast(
+        "error",
+        "Wait for your bank to confirm the account name",
+      );
     }
 
     addBankAccount({
@@ -78,15 +91,14 @@ export const BankAccounts = function () {
 
   return (
     <div className="space-y-4">
-      <div className="border-border overflow-hidden rounded-xl border bg-white">
+      <div>
         {isFetching && !bankAccounts.length ? (
-          <div className="space-y-3 p-4">
-            <Skeleton className="h-14 w-full rounded-lg" />
-          </div>
+          <Skeleton className="h-14 w-full rounded-xl" />
         ) : !bankAccounts.length ? (
           <EmptyState
+            size="compact"
             icon={Banknote}
-            title="No payout account yet."
+            title="No payout account yet"
             description="Add the account your withdrawals should land in."
           />
         ) : (
@@ -94,18 +106,23 @@ export const BankAccounts = function () {
             {bankAccounts.map((account) => (
               <div
                 key={account.id}
-                className="flex items-center justify-between gap-3 p-4 md:p-5"
+                className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
               >
-                <div className="min-w-0">
-                  <AppText type="label" className="block truncate">
-                    {account.account_name}
-                  </AppText>
-                  <AppText
-                    type="caption"
-                    className="text-muted-foreground block truncate"
-                  >
-                    {account.bank_name} · {account.account_number}
-                  </AppText>
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="bg-brand-soft text-brand grid size-10 shrink-0 place-items-center rounded-xl">
+                    <Landmark className="size-4" />
+                  </span>
+                  <div className="min-w-0">
+                    <AppText type="label" className="block truncate">
+                      {account.account_name}
+                    </AppText>
+                    <AppText
+                      type="caption"
+                      className="text-muted-foreground block truncate"
+                    >
+                      {account.bank_name} · {account.account_number}
+                    </AppText>
+                  </div>
                 </div>
 
                 {account.is_default && (
@@ -121,7 +138,10 @@ export const BankAccounts = function () {
       </div>
 
       {adding ? (
-        <div className="border-border space-y-4 rounded-xl border bg-white p-4 md:p-5">
+        <div className="border-border space-y-4 border-t pt-4">
+          <AppText type="label" className="block text-sm font-semibold">
+            Add a bank account
+          </AppText>
           <AppSelect
             label="Bank"
             placeholder="Select your bank"
@@ -148,7 +168,7 @@ export const BankAccounts = function () {
             </p>
           )}
           {accountName && (
-            <div className="flex items-center gap-2.5 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3">
+            <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3">
               <BadgeCheck className="size-4 shrink-0 text-emerald-600" />
               <span className="text-sm">
                 <span className="block font-semibold">{accountName}</span>
@@ -159,26 +179,21 @@ export const BankAccounts = function () {
             </div>
           )}
 
-          <AppText type="caption" className="text-muted-foreground block">
-            We confirm the name on the account with your bank, so a typo can
-            never send your money to someone else.
-          </AppText>
-
-          <div className="flex gap-3">
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setAdding(false)}
+              className="h-10 rounded-xl px-5"
+            >
+              Cancel
+            </Button>
             <Button
               isLoading={isPending}
               disabled={!accountName}
               onClick={onSubmit}
-              className="h-11 rounded-lg px-6"
+              className="h-10 rounded-xl px-5"
             >
               Save account
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setAdding(false)}
-              className="h-11 rounded-lg px-6"
-            >
-              Cancel
             </Button>
           </div>
         </div>
@@ -186,8 +201,9 @@ export const BankAccounts = function () {
         <Button
           variant="outline"
           onClick={() => setAdding(true)}
-          className="text-brand border-brand/40 h-11 rounded-lg px-6"
+          className="text-brand border-brand/40 h-10 w-full rounded-xl px-5"
         >
+          <Plus className="size-4" />
           Add a bank account
         </Button>
       )}

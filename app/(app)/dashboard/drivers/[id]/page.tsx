@@ -2,16 +2,16 @@
 
 import {
   DriverPublicProfile,
+  HireDriverButton,
   driverNameOf,
 } from "@/components/drivers/driver-public-profile";
 import { HireRequestDialog } from "@/components/hires/hire-request-dialog";
 import { BackLink } from "@/components/shared/back-link";
 import { EmptyState } from "@/components/shared/empty-state";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { Plus, UserRound } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { use, useState } from "react";
 import type { DriverReview, PublicDriverProfile } from "@/types/driver";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
@@ -57,17 +57,10 @@ export default function DriverProfilePage({
             profile={profile}
             reviews={reviewsData?.data ?? []}
             action={
-              // The paid hire flow: request → admin invoice → pay → contact details.
-              <Button
-                className="h-11 w-full rounded-xl px-6 text-sm sm:w-auto"
+              <HireDriverButton
+                profile={profile}
                 onClick={() => setHireOpen(true)}
-                disabled={profile.open_to_work === false}
-              >
-                <Plus className="h-4 w-4" />
-                {profile.open_to_work === false
-                  ? "Not taking new jobs"
-                  : "Hire driver"}
-              </Button>
+              />
             }
           />
 

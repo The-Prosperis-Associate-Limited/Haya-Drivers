@@ -6,8 +6,6 @@ import { ENV } from "./utils";
 
 let socket: Socket | null = null;
 
-// One socket per tab, shared by the support chat and the admin inbox. The
-// server authenticates the handshake with the same access token axios uses.
 export const getChatSocket = function (): Socket | null {
   const token = Cookies.get("session_id");
 

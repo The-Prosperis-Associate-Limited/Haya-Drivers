@@ -22,7 +22,7 @@ import {
 } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { cn, driverTypeLabel, formatDate } from "@/lib/utils";
-import { BadgeCheck, Car, ShieldCheck } from "lucide-react";
+import { BadgeCheck, Car, ShieldCheck, UserSearch } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
@@ -171,6 +171,7 @@ export default function AdminDrivers() {
         >
           {!rows.length ? (
             <EmptyState
+              icon={UserSearch}
               title="No drivers found"
               description="Try a different search or status filter."
             />

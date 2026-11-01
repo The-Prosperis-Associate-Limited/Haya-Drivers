@@ -1,12 +1,13 @@
 "use client";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useDriverSearch } from "@/hooks/use-driver-search";
 import { formatMoney, getInitials } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, UserSearch } from "lucide-react";
 import Link from "next/link";
 
 interface Props {
@@ -48,13 +49,12 @@ export const TopDriversCard = function ({ state }: Props) {
             <Skeleton className="h-12 rounded-xl" />
           </div>
         ) : !drivers.length ? (
-          <AppText
-            type="caption"
-            className="text-muted-foreground block px-4 pt-1 pb-5 md:px-5"
-          >
-            No verified drivers {state ? `in ${state} ` : ""}yet - browse every
-            state from Find drivers.
-          </AppText>
+          <EmptyState
+            size="compact"
+            icon={UserSearch}
+            title={`No verified drivers ${state ? `in ${state} ` : ""}yet`}
+            description="Browse every state from Find drivers."
+          />
         ) : (
           drivers.map((driver) => {
             const name =

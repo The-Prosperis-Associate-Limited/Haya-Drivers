@@ -1,6 +1,6 @@
 "use client";
 
-import { AppDialog } from "@/components/shared/app-dialog";
+import { AppDialog, DIALOG_BUTTON } from "@/components/shared/app-dialog";
 import { AppText } from "@/components/shared/app-text";
 import { FormInput } from "@/components/form/form-input";
 import { FormSelect } from "@/components/form/form-select";
@@ -84,21 +84,16 @@ export const InviteAdminDialog = function ({ isOpen, onOpenChange }: Props) {
       width="520px"
       dialogFooter={
         result ? (
-          <Button onClick={close}>Done</Button>
-        ) : (
-          <div className="flex w-full justify-end gap-3">
-            <Button variant="outline" onClick={close}>
-              Cancel
-            </Button>
-            <Button
-              isLoading={isPending}
-              onClick={handleSubmit((data) => invite(data))}
-            >
-              Send Invite
-            </Button>
-          </div>
-        )
+          <Button onClick={close} className={DIALOG_BUTTON}>
+            Done
+          </Button>
+        ) : undefined
       }
+      primaryAction={{
+        label: "Send invite",
+        isLoading: isPending,
+        onClick: handleSubmit((data) => invite(data)),
+      }}
     >
       {result ? (
         <div className="space-y-4">

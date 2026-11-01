@@ -3,7 +3,7 @@
 import { AppTabs } from "@/components/shared/app-tabs";
 import { AppText } from "@/components/shared/app-text";
 import { EmptyState } from "@/components/shared/empty-state";
-import { HireRequestRow } from "@/components/hires/hire-request-row";
+import { HireRequestsTable } from "@/components/hires/hire-request-row";
 import { PageHeader } from "@/components/shared/page-header";
 import { Pagination } from "@/components/shared/pagination";
 import { Button } from "@/components/ui/button";
@@ -100,20 +100,19 @@ export default function MyHire() {
           )}
         </div>
       ) : (
-        <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
-          <AppText type="h3" className="text-[15px] font-semibold">
-            Your hire requests
-          </AppText>
-          <AppText
-            type="caption"
-            className="text-muted-foreground mt-1 block text-xs"
-          >
-            Each request is reviewed by our team, invoiced, and unlocked once
-            paid.
-          </AppText>
+        <div className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+          <div className="px-4 pt-4 pb-3 md:px-5 md:pt-5">
+            <AppText type="h3" className="text-[15px] font-semibold">
+              Your hire requests
+            </AppText>
+            <AppText type="caption" className="text-muted-foreground block">
+              Each request is reviewed by our team, invoiced, and unlocked once
+              paid
+            </AppText>
+          </div>
 
           {isFetchingRequests && !requests.length ? (
-            <div className="mt-4 space-y-3">
+            <div className="space-y-3 p-4 md:p-5">
               {Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton key={index} className="h-16 rounded-xl" />
               ))}
@@ -123,7 +122,6 @@ export default function MyHire() {
               icon={FileClock}
               title="No hire requests yet"
               description="Request a driver from the marketplace and track it here."
-              className="mt-4"
             />
           ) : (
             <Pagination
@@ -132,12 +130,9 @@ export default function MyHire() {
               total={requestsData?.total ?? 0}
               onPageChange={setRequestsPage}
               isLoading={isFetchingRequests}
+              controlsClassName="px-4 md:px-5"
             >
-              <div className="divide-y">
-                {requests.map((request) => (
-                  <HireRequestRow key={request.id} request={request} />
-                ))}
-              </div>
+              <HireRequestsTable requests={requests} />
             </Pagination>
           )}
         </div>

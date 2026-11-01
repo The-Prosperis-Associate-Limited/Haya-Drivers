@@ -6,8 +6,6 @@ interface Props {
   className?: string;
 }
 
-// The mark is square and ships as a single colour version, so there is no
-// light/dark variant to pick between - it sits on white everywhere it appears.
 export const TegatLogo = function ({ size = 44, className }: Props) {
   return (
     <Image

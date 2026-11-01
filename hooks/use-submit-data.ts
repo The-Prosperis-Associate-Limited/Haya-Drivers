@@ -16,9 +16,6 @@ interface UseSubmitDataOptions<TData, TResponse> {
   onSuccess?: (data: TResponse) => void;
   redirectTo?: string;
   skipAuth?: boolean;
-  // Background writes - a player autosaving its position - must not toast on
-  // every ping, and must not refetch the query that renders the player, which
-  // would remount it and lose playback.
   silent?: boolean;
   skipRefetch?: boolean;
 }
@@ -52,8 +49,6 @@ export function useSubmitData<TData = unknown, TResponse = unknown>(
 
       const resolvedUrl = typeof url === "function" ? url(data) : url;
 
-      // an unset url resolves to the API root, which 404s with a generic message -
-      // fail loudly here instead so a half-wired action is obvious
       if (!resolvedUrl.trim()) {
         throw new Error("This action isn't wired up to an endpoint yet");
       }

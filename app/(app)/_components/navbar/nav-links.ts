@@ -14,8 +14,6 @@ export interface NavLink {
   icon: LucideIcon;
 }
 
-// Wallet and Transactions left the nav with the org-account payment pivot -
-// the routes still exist but nothing links to them.
 export const NAV_LINKS: NavLink[] = [
   { label: "Overview", href: "/dashboard", icon: LayoutGrid },
   {

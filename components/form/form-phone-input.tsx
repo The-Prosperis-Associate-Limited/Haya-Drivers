@@ -47,8 +47,6 @@ interface Props<TFieldValues extends FieldValues> {
   containerClassName?: string;
 }
 
-// A phone field split into a dial-code dropdown and a national number input;
-// the form value stays one E.164 string, so schemas and the server never change.
 export function FormPhoneInput<TFieldValues extends FieldValues>({
   control,
   name,

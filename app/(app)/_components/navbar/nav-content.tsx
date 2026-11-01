@@ -30,8 +30,6 @@ interface Props {
 
 const MY_HIRE_HREF = "/dashboard/my-hire";
 
-// The longest matching href wins, so /dashboard/requests/find-talent lights up
-// "Find drivers" without also lighting up "Requests".
 export const activeNavHref = function (pathname: string) {
   return [...NAV_LINKS, ...FOOTER_LINKS]
     .map((link) => link.href)
@@ -54,8 +52,6 @@ export const NavContent = function ({ user, onNavigate }: Props) {
   const openRequests = data?.data.open_requests ?? 0;
   const activeHref = activeNavHref(pathname);
 
-  // Clients never set a location anywhere, so the email stands in rather than
-  // a permanent "Location not set".
   const location = [user?.state_of_residence, user?.country]
     .filter(Boolean)
     .join(", ");
@@ -145,7 +141,7 @@ export const NavContent = function ({ user, onNavigate }: Props) {
             <>
               <span className="flex items-center gap-2 text-sm font-semibold">
                 <ListChecks className="size-4" />
-                Finish setting up
+                Finish setting up your account
               </span>
               <p className="mt-1 text-xs text-white/70">
                 Five quick questions so we can match you with the right drivers.

@@ -1,8 +1,6 @@
 import z from "zod";
 
 export const workPreferencesSchema = z.object({
-  // Major units in the input; converted to minor units at submit. Empty clears
-  // the rate - an unset rate never filters the driver out of a search.
   expected_monthly_rate: z
     .string()
     .trim()

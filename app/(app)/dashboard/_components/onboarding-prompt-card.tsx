@@ -14,8 +14,6 @@ interface Props {
 export const OnboardingPromptCard = function ({ clientProfile }: Props) {
   if (clientProfile?.onboarding_completed_at) return null;
 
-  // Step 1 (client_type) is always set at signup, so progress is read off the
-  // four detectable slices; step 1 counts as done once anything later is.
   const answered = [
     (clientProfile?.hiring_categories.length ?? 0) > 0,
     Boolean(clientProfile?.drivers_needed && clientProfile?.assignment_type),

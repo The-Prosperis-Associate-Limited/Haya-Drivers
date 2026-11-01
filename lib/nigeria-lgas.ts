@@ -1,6 +1,3 @@
-// All 774 Nigerian LGAs keyed by the state names country-state-city emits,
-// vendored because that package's "cities" are sparse (Lagos had 8 entries, no
-// Alimosho). LGAs have been fixed since 1996 - this list does not need a live API.
 export const NIGERIA_LGAS: Record<string, string[]> = {
   Abia: [
     "Aba North",

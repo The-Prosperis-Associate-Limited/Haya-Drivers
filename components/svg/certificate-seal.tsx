@@ -3,8 +3,6 @@ interface Props {
   className?: string;
 }
 
-// Drawn rather than exported: the rosette in the reference template belongs to
-// another product's certificate. Scales cleanly and prints without a raster.
 export const CertificateSeal = function ({ size = 120, className }: Props) {
   const points = Array.from({ length: 28 }, (_, index) => {
     const angle = (index / 28) * Math.PI * 2;

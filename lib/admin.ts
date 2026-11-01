@@ -36,13 +36,9 @@ export const clientName = (client: {
   client_profile?: { organisation_name: string | null } | null;
 }) => client.client_profile?.organisation_name || personName(client);
 
-// No stored Haya Drivers ID exists - this is a stable display form of the record id,
-// not a second identifier.
 export const tegatDisplayId = (userId: string, role: "DRIVER" | "CLIENT") =>
   `TG-${role === "DRIVER" ? "DRV" : "CLT"}-${userId.slice(-4).toUpperCase()}`;
 
-// One palette for every status badge on the console - green for settled
-// states, orange for in-flight, red for refusals.
 export const STATUS_BADGE_CLASSES: Record<string, string> = {
   APPROVED: "border-emerald-200 bg-emerald-50 text-emerald-700",
   ACTIVE: "border-emerald-200 bg-emerald-50 text-emerald-700",

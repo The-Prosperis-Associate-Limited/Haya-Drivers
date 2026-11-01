@@ -1,6 +1,6 @@
 "use client";
 
-import { AppDialog } from "@/components/shared/app-dialog";
+import { AppDialog, DIALOG_BUTTON } from "@/components/shared/app-dialog";
 import { AppText } from "@/components/shared/app-text";
 import { AppTextArea } from "@/components/shared/app-textarea";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
@@ -12,7 +12,7 @@ import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { personName, statusBadgeClass, statusLabel } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import { DOCUMENT_LABELS, formatDate } from "@/lib/utils";
+import { DOCUMENT_LABELS, cn, formatDate } from "@/lib/utils";
 import { Download, ExternalLink, Eye, FileText } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -104,8 +104,6 @@ export const DriverDocuments = function ({ userId }: Props) {
   const rejectDocument = () => {
     if (!rejecting) return;
 
-    // The picked reasons plus the free note become the one string the driver's
-    // resubmission screen renders verbatim.
     const rejection_reason = [...reasons, note.trim()]
       .filter(Boolean)
       .join(". ");
@@ -122,6 +120,7 @@ export const DriverDocuments = function ({ userId }: Props) {
   if (submission && !documents.length) {
     return (
       <EmptyState
+        icon={FileText}
         title="No documents yet"
         description="This driver has not uploaded any verification documents."
       />
@@ -132,7 +131,21 @@ export const DriverDocuments = function ({ userId }: Props) {
     <div className="space-y-6">
       <div className="border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="divide-border grid flex-1 grid-cols-1 gap-x-10 sm:grid-cols-2">
+          <div>
+            <AppText type="h4" className="text-[15px] font-semibold">
+              Submission
+            </AppText>
+            <AppText type="caption" className="text-muted-foreground block">
+              Approving the driver approves every document below
+            </AppText>
+          </div>
+          <StatusBadge
+            label={statusLabel(verification?.status ?? "UNSUBMITTED")}
+            className={statusBadgeClass(verification?.status ?? "UNSUBMITTED")}
+          />
+        </div>
+        <div className="mt-2">
+          <div className="divide-border grid grid-cols-1 gap-x-10 sm:grid-cols-2">
             <DetailRow
               label="Submitted"
               value={
@@ -150,11 +163,6 @@ export const DriverDocuments = function ({ userId }: Props) {
               }
             />
           </div>
-
-          <StatusBadge
-            label={statusLabel(verification?.status ?? "UNSUBMITTED")}
-            className={statusBadgeClass(verification?.status ?? "UNSUBMITTED")}
-          />
         </div>
 
         {verification?.status === "PENDING" && (
@@ -162,11 +170,19 @@ export const DriverDocuments = function ({ userId }: Props) {
             <Button
               variant="outline"
               onClick={() => setRejectSubmissionOpen(true)}
-              className="text-destructive border-red-200 hover:bg-red-50"
+              className={cn(
+                DIALOG_BUTTON,
+                "text-destructive border-red-200 hover:bg-red-50",
+              )}
             >
-              Reject Application
+              Reject application
             </Button>
-            <Button onClick={() => setApproveOpen(true)}>Approve Driver</Button>
+            <Button
+              onClick={() => setApproveOpen(true)}
+              className={DIALOG_BUTTON}
+            >
+              Approve driver
+            </Button>
           </div>
         )}
       </div>
@@ -180,7 +196,7 @@ export const DriverDocuments = function ({ userId }: Props) {
           return (
             <div
               key={document.id}
-              className="border-border overflow-hidden rounded-xl border bg-white"
+              className="border-border overflow-hidden rounded-2xl border bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]"
             >
               <div className="relative h-36 w-full bg-slate-50">
                 {thumbnail ? (
@@ -223,23 +239,27 @@ export const DriverDocuments = function ({ userId }: Props) {
                 <div className="flex gap-2">
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => setViewing(document)}
-                    className="flex-1"
+                    className="h-9 flex-1 rounded-xl"
                   >
                     <Eye className="h-4 w-4" />
                     View
                   </Button>
-                  <a
-                    href={document.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    download
-                    className="border-border hover:bg-muted inline-flex flex-1 items-center justify-center gap-2 rounded-md border px-3 text-sm font-medium transition-colors"
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-9 flex-1 rounded-xl"
                   >
-                    <Download className="h-4 w-4" />
-                    Download
-                  </a>
+                    <a
+                      href={document.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      download
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                    </a>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -257,7 +277,7 @@ export const DriverDocuments = function ({ userId }: Props) {
         width="640px"
         dialogFooter={
           viewing && (
-            <div className="flex w-full flex-wrap justify-end gap-3">
+            <>
               <Button
                 variant="outline"
                 disabled={isReviewingDocument || viewing.status === "REJECTED"}
@@ -265,13 +285,17 @@ export const DriverDocuments = function ({ userId }: Props) {
                   setRejecting(viewing);
                   setViewing(null);
                 }}
-                className="text-destructive border-red-200 hover:bg-red-50"
+                className={cn(
+                  DIALOG_BUTTON,
+                  "text-destructive border-red-200 hover:bg-red-50",
+                )}
               >
-                Reject Document
+                Reject document
               </Button>
               <Button
                 isLoading={isReviewingDocument}
                 disabled={viewing.status === "APPROVED"}
+                className={DIALOG_BUTTON}
                 onClick={() =>
                   reviewDocument({
                     documentId: viewing.id,
@@ -279,9 +303,9 @@ export const DriverDocuments = function ({ userId }: Props) {
                   })
                 }
               >
-                Approve Document
+                Approve document
               </Button>
-            </div>
+            </>
           )
         }
       >
@@ -323,21 +347,13 @@ export const DriverDocuments = function ({ userId }: Props) {
         title="Reject document"
         description={`Give ${driverName || "the driver"} a reason they can act on - it is sent with the resubmission notice.`}
         width="520px"
-        dialogFooter={
-          <div className="flex w-full justify-end gap-3">
-            <Button variant="outline" onClick={closeRejectForm}>
-              Cancel
-            </Button>
-            <Button
-              isLoading={isReviewingDocument}
-              disabled={!reasons.length && !note.trim()}
-              onClick={rejectDocument}
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Confirm Rejection
-            </Button>
-          </div>
-        }
+        primaryAction={{
+          label: "Reject document",
+          variant: "destructive",
+          isLoading: isReviewingDocument,
+          disabled: !reasons.length && !note.trim(),
+          onClick: rejectDocument,
+        }}
       >
         <div className="space-y-4">
           <div className="space-y-3">
@@ -400,29 +416,17 @@ export const DriverDocuments = function ({ userId }: Props) {
         title="Reject application"
         description="The reason is sent to the driver with resubmission instructions."
         width="520px"
-        dialogFooter={
-          <div className="flex w-full justify-end gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setRejectSubmissionOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              isLoading={isReviewingSubmission}
-              disabled={!submissionReason.trim()}
-              onClick={() =>
-                reviewSubmission({
-                  status: "REJECTED",
-                  rejection_reason: submissionReason.trim(),
-                })
-              }
-              className="bg-destructive hover:bg-destructive/90"
-            >
-              Confirm Rejection
-            </Button>
-          </div>
-        }
+        primaryAction={{
+          label: "Reject application",
+          variant: "destructive",
+          isLoading: isReviewingSubmission,
+          disabled: !submissionReason.trim(),
+          onClick: () =>
+            reviewSubmission({
+              status: "REJECTED",
+              rejection_reason: submissionReason.trim(),
+            }),
+        }}
       >
         <AppTextArea
           label="Reason"

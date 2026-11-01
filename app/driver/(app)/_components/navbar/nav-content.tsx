@@ -64,8 +64,6 @@ export const NavContent = function ({ status, user, onNavigate }: Props) {
   const renderLink = (link: NavLink) => {
     const Icon = link.icon;
     const active = isActive(link.href);
-    // Children only unfold once the section is the one being looked at, so the
-    // sidebar stays four rows tall the rest of the time.
     const expanded = active && !!link.children?.length;
     const count = link.href === JOBS_HREF ? summary?.active : undefined;
 

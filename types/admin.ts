@@ -62,10 +62,14 @@ export interface AdminUserRow {
   anonymised_at: string | null;
   lastLogin: string;
   createdAt: string;
+  state_of_residence?: string | null;
   driver_profile: {
     driver_type: DriverType | null;
     trust_score: number;
     verification_status: DriverVerificationStatus;
+    expected_monthly_rate?: number | null;
+    rate_currency?: string;
+    open_to_work?: boolean;
   } | null;
   client_profile: {
     client_type: ClientType;

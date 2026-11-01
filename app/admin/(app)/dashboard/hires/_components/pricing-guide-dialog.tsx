@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 import { AppDialog } from "@/components/shared/app-dialog";
 import { AppText } from "@/components/shared/app-text";
@@ -10,8 +11,6 @@ import { CircleHelp } from "lucide-react";
 import type { APIResponse } from "@/types/response";
 import type { HirePricingGuide } from "@/types/hire";
 
-// Served from the same module the invoice maths runs on, so what this shows
-// can never drift from what gets charged.
 export const PricingGuideDialog = function () {
   const [open, setOpen] = useState(false);
 
@@ -41,9 +40,10 @@ export const PricingGuideDialog = function () {
         width="560px"
       >
         {!guide ? (
-          <AppText type="caption" className="text-muted-foreground block">
-            Loading…
-          </AppText>
+          <div className="space-y-3">
+            <Skeleton className="h-24 rounded-xl" />
+            <Skeleton className="h-40 rounded-xl" />
+          </div>
         ) : (
           <div className="space-y-5">
             <section>

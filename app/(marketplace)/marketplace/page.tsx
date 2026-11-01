@@ -38,8 +38,7 @@ export default function Marketplace() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-6 pb-16 md:px-8">
-      {/* No overflow-hidden: the search panel's dropdowns open past the hero's
-          bottom edge; the clouds all sit inside the bounds anyway. */}
+      {/* No overflow-hidden: the search panel's dropdowns open past the hero's bottom edge. */}
       <section className="bg-brand relative rounded-3xl">
         <Image
           src="/cloud-top-left.svg"
@@ -91,8 +90,11 @@ export default function Marketplace() {
       <section className="mt-10">
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
-            <AppText type="h2" className="text-lg font-medium md:text-xl">
-              See Drivers in
+            <AppText
+              type="h2"
+              className="text-lg font-semibold tracking-tight md:text-[22px]"
+            >
+              See drivers in
             </AppText>
             <AppSimpleSelect
               options={states}

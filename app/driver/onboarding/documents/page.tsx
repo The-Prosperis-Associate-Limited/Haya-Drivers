@@ -4,7 +4,11 @@ import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { OnboardingShell } from "@/components/shared/onboarding-shell";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useDeleteDocument, useGetDocuments, useUploadDocument } from "@/hooks/use-documents";
+import {
+  useDeleteDocument,
+  useGetDocuments,
+  useUploadDocument,
+} from "@/hooks/use-documents";
 import { useOnboardingProfile } from "@/hooks/use-onboarding-profile";
 import { DOCUMENT_LABELS, ONBOARDING_TIPS } from "@/lib/utils";
 import type { DocumentType, DriverDocument } from "@/types/driver";
@@ -15,11 +19,19 @@ import { DocumentRow } from "../_components/document-row";
 import { StepHeader } from "../_components/step-header";
 import { StepNote, StepPanel } from "../_components/step-panel";
 
-// The three the review screen refuses to submit without. Proof of address and
-// the guarantor files are collected but do not block a first submission.
-const REQUIRED_DOCUMENTS: DocumentType[] = ["NIN_SLIP", "PASSPORT_PHOTO", "DRIVERS_LICENCE"];
+const YOUR_DOCUMENTS: DocumentType[] = [
+  "NIN_SLIP",
+  "PASSPORT_PHOTO",
+  "DRIVERS_LICENCE",
+  "PROOF_OF_ADDRESS",
+];
 
-const OPTIONAL_DOCUMENTS: DocumentType[] = ["PROOF_OF_ADDRESS", "GUARANTOR_PASSPORT", "GUARANTOR_NIN_SLIP"];
+const GUARANTOR_DOCUMENTS: DocumentType[] = [
+  "GUARANTOR_PASSPORT",
+  "GUARANTOR_NIN_SLIP",
+];
+
+const REQUIRED_DOCUMENTS = [...YOUR_DOCUMENTS, ...GUARANTOR_DOCUMENTS];
 
 const HINTS: Partial<Record<DocumentType, string>> = {
   NIN_SLIP: "The whole slip, all four corners in the photo",
@@ -36,9 +48,13 @@ export default function DocumentsStep() {
   const { documents, isFetching } = useGetDocuments();
 
   const [uploadingType, setUploadingType] = useState<DocumentType | null>(null);
-  const [pendingRemoval, setPendingRemoval] = useState<DriverDocument | null>(null);
+  const [pendingRemoval, setPendingRemoval] = useState<DriverDocument | null>(
+    null,
+  );
 
-  const { uploadDocument } = useUploadDocument({ onSuccess: () => setUploadingType(null) });
+  const { uploadDocument } = useUploadDocument({
+    onSuccess: () => setUploadingType(null),
+  });
   const { deleteDocument, isPending: isDeleting } = useDeleteDocument();
 
   const handleUpload = (type: DocumentType, file: File) => {
@@ -50,13 +66,18 @@ export default function DocumentsStep() {
     uploadDocument(formData, { onError: () => setUploadingType(null) });
   };
 
-  const documentFor = (type: DocumentType) => documents.find((document) => document.type === type);
+  const documentFor = (type: DocumentType) =>
+    documents.find((document) => document.type === type);
 
-  const requiredDone = REQUIRED_DOCUMENTS.filter((type) => !!documentFor(type)).length;
-  const rejected = documents.filter((document) => document.status === "REJECTED");
+  const requiredDone = REQUIRED_DOCUMENTS.filter(
+    (type) => !!documentFor(type),
+  ).length;
+  const rejected = documents.filter(
+    (document) => document.status === "REJECTED",
+  );
   const resubmitting = profile?.verification_status === "REJECTED";
 
-  const row = (type: DocumentType, required: boolean) => {
+  const row = (type: DocumentType) => {
     const document = documentFor(type);
     return (
       <DocumentRow
@@ -64,7 +85,7 @@ export default function DocumentsStep() {
         type={type}
         label={DOCUMENT_LABELS[type]}
         hint={HINTS[type]}
-        required={required}
+        required
         status={document?.status}
         fileName={document?.file_name}
         rejectionReason={document?.rejection_reason}
@@ -82,7 +103,10 @@ export default function DocumentsStep() {
       footer={{
         label: resubmitting ? "Review and resubmit" : "Continue",
         onClick: () => router.push("/driver/onboarding/review"),
-        disabled: requiredDone < REQUIRED_DOCUMENTS.length || !!rejected.length || !!uploadingType,
+        disabled:
+          requiredDone < REQUIRED_DOCUMENTS.length ||
+          !!rejected.length ||
+          !!uploadingType,
         hint: rejected.length
           ? `${rejected.length} document${rejected.length === 1 ? "" : "s"} to replace`
           : requiredDone < REQUIRED_DOCUMENTS.length
@@ -92,14 +116,22 @@ export default function DocumentsStep() {
     >
       <StepHeader
         step="DOCUMENTS"
-        title={resubmitting ? "Replace the documents we couldn't verify" : "Upload your documents"}
-        description="Clear photos taken in good light, nothing cropped or blurry. Three are required to submit; the rest speed up your review."
+        title={
+          resubmitting
+            ? "Replace the documents we couldn't verify"
+            : "Upload your documents"
+        }
+        description="Clear photos taken in good light, nothing cropped or blurry. All six are required before you can submit for review."
       />
 
       {resubmitting && !!rejected.length && (
         <div className="mb-3.5">
           <StepNote icon={CircleAlert} tone="red">
-            {rejected.length === 1 ? "One document needs replacing" : `${rejected.length} documents need replacing`} - the reviewer&apos;s reason is under each one. Everything else is kept.
+            {rejected.length === 1
+              ? "One document needs replacing"
+              : `${rejected.length} documents need replacing`}{" "}
+            - the reviewer&apos;s reason is under each one. Everything else is
+            kept.
           </StepNote>
         </div>
       )}
@@ -113,18 +145,30 @@ export default function DocumentsStep() {
       ) : (
         <div className="space-y-3.5">
           <StepPanel
-            title="Required"
+            title="Your documents"
             description={`${requiredDone} of ${REQUIRED_DOCUMENTS.length} uploaded`}
-            aside={<Progress value={(requiredDone / REQUIRED_DOCUMENTS.length) * 100} className="h-1.5 w-24" />}
+            aside={
+              <Progress
+                value={(requiredDone / REQUIRED_DOCUMENTS.length) * 100}
+                className="h-1.5 w-24"
+              />
+            }
           >
-            <div className="space-y-2.5">{REQUIRED_DOCUMENTS.map((type) => row(type, true))}</div>
+            <div className="space-y-2.5">{YOUR_DOCUMENTS.map(row)}</div>
           </StepPanel>
 
-          <StepPanel title="Recommended" description="Drivers with these get verified faster">
-            <div className="space-y-2.5">{OPTIONAL_DOCUMENTS.map((type) => row(type, false))}</div>
+          <StepPanel
+            title="Your guarantor"
+            description="Ask them for these before you start"
+          >
+            <div className="space-y-2.5">{GUARANTOR_DOCUMENTS.map(row)}</div>
           </StepPanel>
 
-          <StepNote icon={Lock}>Documents are only seen by our verification team - never by clients. Clients see a &quot;Verified&quot; badge once we&apos;ve checked them.</StepNote>
+          <StepNote icon={Lock}>
+            Documents are only seen by our verification team - never by clients.
+            Clients see a &quot;Verified&quot; badge once we&apos;ve checked
+            them.
+          </StepNote>
         </div>
       )}
 

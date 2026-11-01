@@ -6,7 +6,7 @@ import { Pagination } from "@/components/shared/pagination";
 import { useGetData } from "@/hooks/use-get-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { formatDateTime } from "@/lib/utils";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Activity } from "lucide-react";
 import { useState } from "react";
 import type { PaginatedResponse } from "@/types/response";
 import type { AdminActivityRow } from "@/types/admin";
@@ -35,6 +35,7 @@ export const ActivityTimeline = function ({ userId }: Props) {
       >
         {!activities.length ? (
           <EmptyState
+            icon={Activity}
             title="No activity yet"
             description="Everything this account does is recorded here."
           />

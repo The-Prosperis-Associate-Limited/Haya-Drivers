@@ -1,11 +1,12 @@
 "use client";
 
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { StarRating } from "@/components/shared/star-rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDate, getInitials } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Star } from "lucide-react";
 import Link from "next/link";
 import { useReviews } from "../reviews/_hooks/use-reviews";
 
@@ -34,12 +35,12 @@ export const RecentReviewsCard = function () {
             <Skeleton className="h-16 rounded-xl" />
           </div>
         ) : !reviews.length ? (
-          <AppText
-            type="caption"
-            className="text-muted-foreground block px-4 pb-5 md:px-5"
-          >
-            No reviews yet. Clients can review you once a job is underway.
-          </AppText>
+          <EmptyState
+            size="compact"
+            icon={Star}
+            title="No reviews yet"
+            description="Clients can review you once a job is underway."
+          />
         ) : (
           reviews.map((review) => (
             <div

@@ -1,7 +1,6 @@
 "use client";
 
 import { AppText } from "@/components/shared/app-text";
-import { BackLink } from "@/components/shared/back-link";
 import { PageHeader } from "@/components/shared/page-header";
 import { StatusBadge } from "@/components/shared/status-badge";
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,6 @@ export default function TicketThread() {
   const params = useParams<{ reference: string }>();
   const [draft, setDraft] = useState("");
 
-  // The server sends the reference in notification action urls and the sheet
-  // holds the id; /tickets/:id resolves either.
   const { ticket, isFetching } = useTicket(params.reference);
   const { sendMessage, isPending } = useCommentOnTicket(params.reference);
 
@@ -52,9 +49,8 @@ export default function TicketThread() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
-      <BackLink href="/driver/dashboard/support" label="Back to support" />
-
       <PageHeader
+        back={{ href: "/driver/dashboard/support", label: "Support" }}
         title={ticket.subject}
         subtitle={`${ticket.reference} · ${formatDateTime(ticket.createdAt)}`}
         action={

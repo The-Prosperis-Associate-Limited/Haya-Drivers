@@ -16,8 +16,6 @@ const isPublicPath = (pathname: string) =>
   pathname === "/drivers" ||
   PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix));
 
-// Counts unique daily visitors on the public pages. One beacon per browser
-// session is enough - the server dedupes per day anyway. No cookie, no PII.
 export const VisitTracker = function () {
   const pathname = usePathname();
 

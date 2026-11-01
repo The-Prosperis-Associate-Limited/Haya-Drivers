@@ -57,8 +57,6 @@ const UseCaseContent = function ({
   );
 };
 
-// Same pinned step reveal as the driver landing's job types: the panel holds
-// while scrolling steps each use case in, reversing on the way up.
 const PinnedUseCases = function () {
   const { trackRef, revealed } = usePinnedSteps(USE_CASES.length);
 

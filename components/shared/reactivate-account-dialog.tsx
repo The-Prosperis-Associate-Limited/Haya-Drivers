@@ -1,14 +1,13 @@
 "use client";
 
-import { AppDialog } from "@/components/shared/app-dialog";
+import { AppDialog, DIALOG_BUTTON } from "@/components/shared/app-dialog";
 import { AppText } from "@/components/shared/app-text";
 import { Button } from "@/components/ui/button";
 import { useGetProfile } from "@/hooks/use-get-profile";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
+import { UserRoundCheck } from "lucide-react";
 
-// Shown on any dashboard when the inactivity sweep has parked the account.
-// The dialog cannot be dismissed - reactivating is the only way forward.
 export const ReactivateAccountDialog = function () {
   const { profile } = useGetProfile();
 
@@ -28,21 +27,26 @@ export const ReactivateAccountDialog = function () {
       isOpen
       onOpenChange={() => {}}
       isSubmitting
-      title="Welcome back 👋"
+      title="Welcome back"
       description="Your account was deactivated after 90 days of inactivity."
-    >
-      <div className="space-y-4">
-        <AppText type="caption" className="text-muted-foreground block text-sm">
-          Everything is exactly as you left it. Reactivate your account to pick
-          up where you stopped.
-        </AppText>
+      dialogFooter={
         <Button
           isLoading={isPending}
           onClick={() => mutate({})}
-          className="h-12 w-full rounded-lg text-sm"
+          className={DIALOG_BUTTON}
         >
           Reactivate my account
         </Button>
+      }
+    >
+      <div className="flex items-start gap-3">
+        <span className="bg-brand-soft text-brand grid size-10 shrink-0 place-items-center rounded-xl">
+          <UserRoundCheck className="size-5" />
+        </span>
+        <AppText type="caption" className="text-muted-foreground block text-sm">
+          Everything is exactly as you left it - your profile, history and
+          settings. Reactivate your account to pick up where you stopped.
+        </AppText>
       </div>
     </AppDialog>
   );

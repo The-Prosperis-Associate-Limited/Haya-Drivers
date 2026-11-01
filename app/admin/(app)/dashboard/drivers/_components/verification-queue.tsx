@@ -1,5 +1,6 @@
 "use client";
 
+import { ShieldCheck } from "lucide-react";
 import { AppInput } from "@/components/shared/app-input";
 import { AppSimpleSelect } from "@/components/shared/app-simple-select";
 import { AppText } from "@/components/shared/app-text";
@@ -100,6 +101,7 @@ export const VerificationQueue = function () {
       >
         {!rows.length ? (
           <EmptyState
+            icon={ShieldCheck}
             title="Nothing in the queue"
             description="Submissions land here the moment a driver completes onboarding."
           />

@@ -7,6 +7,7 @@ import { FormInput } from "@/components/form/form-input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetProfile } from "@/hooks/use-get-profile";
+import { useIsClient } from "@/hooks/use-is-client";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { ADMIN_ROLE_LABELS, personName } from "@/lib/admin";
 import { API_ENDPOINTS } from "@/lib/endpoints";
@@ -30,6 +31,8 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export const ProfileTab = function () {
   const { profile, isFetching, refetch } = useGetProfile();
+  // Settings hydrates after the layout has cached the profile, so the first client render must match the server skeleton.
+  const isClient = useIsClient();
 
   const {
     control,
@@ -57,7 +60,7 @@ export const ProfileTab = function () {
     },
   );
 
-  if (isFetching && !profile) {
+  if (!isClient || (isFetching && !profile)) {
     return <Skeleton className="h-64 w-full rounded-2xl" />;
   }
 

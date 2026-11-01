@@ -1,5 +1,7 @@
 "use client";
 
+import { Activity } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useGetData } from "@/hooks/use-get-data";
@@ -38,12 +40,12 @@ export const RecentActivityCard = function () {
       {isFetching && !data ? (
         <Skeleton className="mt-4 h-40 w-full rounded-xl" />
       ) : !activities.length ? (
-        <AppText
-          type="caption"
-          className="text-muted-foreground block py-4 text-center"
-        >
-          Nothing has happened yet.
-        </AppText>
+        <EmptyState
+          size="compact"
+          icon={Activity}
+          title="Nothing has happened yet"
+          description="Sign-ups, verifications and payments show up here."
+        />
       ) : (
         <ol className="mt-4">
           {activities.map((activity, index) => {

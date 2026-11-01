@@ -1,6 +1,7 @@
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { formatDate, formatMoney } from "@/lib/utils";
-import { ChevronRight, Receipt } from "lucide-react";
+import { ChevronRight, Receipt, ReceiptText } from "lucide-react";
 import Link from "next/link";
 import type { OverviewData } from "@/types/booking";
 
@@ -30,13 +31,12 @@ export const RecentPaymentsCard = function ({ payments }: Props) {
       </div>
 
       {!payments.length ? (
-        <AppText
-          type="caption"
-          className="text-muted-foreground block px-4 pt-3 pb-5 md:px-5"
-        >
-          No payments yet. Paid invoices land here once we confirm your
-          transfer.
-        </AppText>
+        <EmptyState
+          size="compact"
+          icon={ReceiptText}
+          title="No payments yet"
+          description="Paid invoices land here once we confirm your transfer."
+        />
       ) : (
         <div className="mt-2">
           {payments.map((payment) => (

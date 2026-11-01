@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { NotificationSettings } from "./_components/notification-settings";
 import { ProfileSettings } from "./_components/profile-settings";
-import { SecuritySettings } from "./_components/security-settings";
+import { SecuritySettings } from "@/components/settings/security-settings";
 
 const TAB_VALUES = ["profile", "notifications", "security"] as const;
 

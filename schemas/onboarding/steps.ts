@@ -51,6 +51,14 @@ export const experienceSchema = z.object({
     .min(1, "Select at least one licence class"),
   license_number: z.string().trim().min(4, "Enter your driver licence number"),
   license_expires_at: z.string().min(1, "Select your licence expiry date"),
+  expected_monthly_rate: z
+    .string()
+    .trim()
+    .regex(/^\d+$/, "Enter your monthly rate in naira, digits only")
+    .refine((value) => Number(value) > 0, "Enter what you expect to earn"),
+  day_range: z.string().min(1, "Pick the days you work"),
+  work_start: z.string().min(1, "Set a start time"),
+  work_end: z.string().min(1, "Set a finish time"),
 });
 
 export const academicQualificationSchema = z.object({
@@ -87,8 +95,6 @@ export const workExperienceSchema = z.object({
     .min(1, "Add at least one role"),
 });
 
-// One previous-employer reference and exactly one guarantor - the guarantor
-// must be a working professional, never a family member or friend.
 export const guarantorSchema = z.object({
   reference: z.object({
     full_name: z.string().trim().min(2, "Enter your reference's name"),

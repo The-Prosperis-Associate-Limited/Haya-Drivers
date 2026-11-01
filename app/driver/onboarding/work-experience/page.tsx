@@ -68,8 +68,6 @@ export default function WorkExperienceStep() {
     onSuccessMessage: "Work experience saved",
   });
 
-  // Only a row that already exists on the server is worth stopping for - a
-  // freshly added one has nothing to lose.
   const savedCount = profile?.work_experiences.length ?? 0;
 
   const removeRow = (index: number) => {
@@ -85,8 +83,7 @@ export default function WorkExperienceStep() {
     >
       <StepHeader step="WORK_EXPERIENCE" title="Where have you driven before?" description="Add your previous driving jobs so clients can see your track record. Even a short role counts." />
 
-      {/* An empty or current-role end date must be omitted - the server
-          coerces "" into Invalid Date and rejects the whole step. */}
+      {/* Omit an empty end date: the server coerces "" to Invalid Date and rejects the whole step. */}
       <form
         id="step-form"
         onSubmit={handleSubmit((data) =>

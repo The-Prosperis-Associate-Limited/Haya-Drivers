@@ -29,12 +29,14 @@ export default function Wallet() {
       <PageHeader
         title="Wallet"
         subtitle="Referral rewards and any balance from before direct salaries - withdraw it to your bank any time."
-        className="mb-0"
       />
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px] xl:items-start xl:gap-6">
         {wallet ? (
-          <WalletBalanceCard wallet={wallet} onWithdraw={() => setWithdrawOpen(true)} />
+          <WalletBalanceCard
+            wallet={wallet}
+            onWithdraw={() => setWithdrawOpen(true)}
+          />
         ) : (
           <Skeleton className="h-64 rounded-[20px]" />
         )}
@@ -49,7 +51,7 @@ export default function Wallet() {
             </AppText>
           </div>
           <BankAccounts />
-          <p className="bg-muted/60 flex gap-2 rounded-lg p-3 text-xs">
+          <p className="text-muted-foreground flex gap-2 rounded-xl bg-slate-50 p-3 text-xs">
             <ShieldCheck className="text-brand size-4 shrink-0" />
             The account name is confirmed with your bank, not typed by you - so
             a typo can never send your money to a stranger.
@@ -57,14 +59,18 @@ export default function Wallet() {
         </div>
       </section>
 
-      <p className="border-border flex gap-2.5 rounded-xl border bg-white p-3.5 text-[13px]">
+      <p className="bg-brand-soft/60 flex gap-3 rounded-2xl px-4 py-3 text-[13px] text-blue-950">
         <Info className="text-brand mt-0.5 size-4 shrink-0" />
         <span>
           Salaries from clients are paid straight to your bank and tracked under{" "}
-          <Link href="/driver/dashboard/earnings" className="text-brand font-semibold">
+          <Link
+            href="/driver/dashboard/earnings"
+            className="text-brand font-semibold"
+          >
             Earnings
           </Link>
-          . Referral rewards are held for a few days before you can withdraw them.
+          . Referral rewards are held for a few days before you can withdraw
+          them.
         </span>
       </p>
 

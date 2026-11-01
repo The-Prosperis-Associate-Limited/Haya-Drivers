@@ -1,5 +1,6 @@
 "use client";
 
+import { SettingsCard } from "@/components/settings/settings-card";
 import { AppText } from "@/components/shared/app-text";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
@@ -7,6 +8,7 @@ import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
 import { SMS_ALERTS_ENABLED } from "@/lib/utils";
+import { Bell, BriefcaseBusiness, type LucideIcon } from "lucide-react";
 import type { APIResponse } from "@/types/response";
 import type { NotificationPreferences } from "@/types/notification";
 
@@ -14,11 +16,13 @@ type PreferenceKey = keyof NotificationPreferences;
 
 const GROUPS: {
   title: string;
+  icon: LucideIcon;
   description?: string;
   items: { key: PreferenceKey; label: string; description: string }[];
 }[] = [
   {
     title: "Job alerts",
+    icon: BriefcaseBusiness,
     description:
       "Each switch covers in-app, push and email for that kind of update.",
     items: [
@@ -42,6 +46,7 @@ const GROUPS: {
   },
   {
     title: "Account & platform",
+    icon: Bell,
     items: [
       {
         key: "verification_updates",
@@ -86,22 +91,13 @@ export const NotificationSettings = function () {
   return (
     <div className="space-y-4">
       {GROUPS.map((group) => (
-        <div
+        <SettingsCard
           key={group.title}
-          className="border-border rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6"
+          title={group.title}
+          description={group.description}
+          icon={group.icon}
         >
-          <div className="space-y-1">
-            <AppText type="h4" className="text-[15px] font-semibold">
-              {group.title}
-            </AppText>
-            {group.description && (
-              <AppText type="caption" className="text-muted-foreground block">
-                {group.description}
-              </AppText>
-            )}
-          </div>
-
-          <div className="divide-border mt-4 divide-y">
+          <div className="divide-border -my-3 divide-y">
             {group.items
               .filter((item) => item.key !== "sms_alerts" || SMS_ALERTS_ENABLED)
               .map((item) => (
@@ -132,7 +128,7 @@ export const NotificationSettings = function () {
                 </div>
               ))}
           </div>
-        </div>
+        </SettingsCard>
       ))}
       <AppText type="caption" className="text-muted-foreground block px-1">
         Payments, invoices, payouts and security alerts are always sent - they

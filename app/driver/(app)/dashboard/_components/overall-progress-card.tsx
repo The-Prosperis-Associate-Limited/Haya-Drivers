@@ -12,11 +12,6 @@ interface Props {
   status: DriverVerificationStatus;
 }
 
-/*
-  The percentage is how far through onboarding the driver is - the only progress
-  figure the server actually reports. Once the application is in, their part is
-  done and the bar sits full while the copy explains that review is what is left.
-*/
 const COPY: Record<DriverVerificationStatus, string> = {
   UNSUBMITTED:
     "Applying as Driver. Your profile stays private and unsearchable until identity, licence and criminal-record checks are complete.",

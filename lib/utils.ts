@@ -49,20 +49,12 @@ export const isSafeCallback = function (url: string | null): url is string {
   return !!url && url.startsWith("/") && !url.startsWith("//");
 };
 
-// One codebase, three surfaces - everyone lands on their dashboard. The
-// onboarding wizards are prompts reached from there, never a gate after auth.
 export const handleSigninRedirect = function (role: string) {
   if (role === "DRIVER") return "/driver/dashboard";
   if (role === "CLIENT") return "/dashboard";
   if (role === "ADMIN") return "/admin/dashboard";
   return "/";
 };
-
-/*
-================= NOTE: onboarding - the step order the wizard runs in. The
-server returns onboarding_step and never moves it backwards, so this is only
-used to turn that value into a route.
-*/
 
 export const ONBOARDING_STEPS: {
   step: OnboardingStep;
@@ -111,12 +103,6 @@ export const ONBOARDING_STEPS: {
   },
 ];
 
-/*
-  One set per step, rotated under the card. They are step-specific on purpose -
-  a single global tip ends up wrong on most screens, which is how the wizard
-  came to advertise a role question it never asks. Every line here has to be
-  true of what the server actually does; nothing invented to fill a slot.
-*/
 export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
   PERSONAL_INFORMATION: [
     "Each step is saved as you finish it, so you can stop here and pick up where you left off.",
@@ -127,6 +113,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
     "Your driver type is one of the filters clients search by.",
     "Add every licence class you hold - each one widens the jobs you match.",
     "Your licence needs at least a year left before it expires.",
+    "Your monthly rate and hours show on your profile - you can change them any time in Settings.",
   ],
   ACADEMIC_QUALIFICATION: [
     "Nothing on this step blocks your verification. Fill in what you have.",
@@ -138,7 +125,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
   ],
   GUARANTORS: [
     "Your reference should be a previous employer - someone you have actually driven for.",
-    "Your guarantor must be a working professional: a civil servant (grade level 8+) or a business owner. Family and friends are not accepted.",
+    "Your guarantor must be a civil servant (grade level 8+), a business owner or a working professional. Family and friends are not accepted.",
     "A guarantor needs their own passport photo and NIN slip, so pick someone who can send you both.",
   ],
   ADDITIONAL_INFORMATION: [
@@ -146,7 +133,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
     "You can come back and fill this in at any time.",
   ],
   DOCUMENTS: [
-    "Three documents are required: your NIN slip, a passport photo and your driver's licence.",
+    "All six documents are required: yours, plus proof of address and your guarantor's passport photo and NIN slip.",
     "Photograph documents flat and in good light - a reviewer has to read every detail.",
     "If one is turned down you'll get the reviewer's reason, and you only replace that one.",
   ],
@@ -171,11 +158,6 @@ export const getOnboardingProgress = function (
   if (index < 0) return 0;
   return Math.round(((index + 1) / ONBOARDING_STEPS.length) * 100);
 };
-
-/*
-================= NOTE: money - the API returns integers in minor units plus a
-currency code. Format at the edge, never compute in major units.
-*/
 
 export const currencyMapper = {
   NGN: "₦",
@@ -210,11 +192,6 @@ export const toMinorUnits = (amount: number) => Math.round(amount * 100);
 
 export const toMajorUnits = (minor: number) => minor / 100;
 
-/*
-================= NOTE: verification - three of the four statuses render a
-different dashboard, so the copy lives here rather than inside each screen.
-*/
-
 export const VERIFICATION_COPY: Record<
   DriverVerificationStatus,
   { label: string; tone: string; headline: string }
@@ -240,11 +217,6 @@ export const VERIFICATION_COPY: Record<
     headline: "Some documents could not be verified.",
   },
 };
-
-/*
-================= NOTE: bookings - the status machine lives on the server, this
-is only how each status is shown.
-*/
 
 export const BOOKING_STATUS_STYLES: Record<BookingStatus, string> = {
   REQUESTED: "bg-amber-50 text-amber-700 border-amber-200",
@@ -372,10 +344,6 @@ export const BOOKING_STATUS_LABELS: Record<BookingStatus, string> = {
   DISPUTED: "Disputed",
 };
 
-/*
-================= NOTE: notifications - icon and colour per server type
-*/
-
 export const TYPE_CONFIG: Record<
   string,
   { icon: LucideIcon; color: string; bg: string }
@@ -476,15 +444,7 @@ export const formatDateTime = (date: string | Date) =>
 export const formatTime = (date: string | Date) =>
   format(new Date(date), "h:mm a");
 
-/*
-================= NOTE: course video. Modules hold whatever url the course was
-authored with. A recognised YouTube url yields an id, which the player hands to
-YouTube's IFrame API - that API is the only way to read playback position back
-out of an embed. Anything else is a direct file the browser decodes in a <video>.
-Both report position the same way, so a module moving from YouTube to Cloudinary
-needs no other change. Remove nothing here when the real uploads land.
-*/
-
+// YouTube urls play through the IFrame API (the only way to read an embed's position), anything else as a <video> - keep both when real uploads land.
 export const youTubeVideoId = function (url: string) {
   const match = url.match(
     /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/,
@@ -507,12 +467,6 @@ export const getInitials = function (
   return `${firstName?.[0] ?? ""}${lastName?.[0] ?? ""}`.toUpperCase() || "?";
 };
 
-/*
-================= NOTE: the option lists the onboarding selects render. These
-mirror the server enums exactly - a value that is not in the server enum is a
-400 the driver cannot fix.
-*/
-
 export const DRIVER_TYPE_OPTIONS = [
   { value: "CORPORATE_DRIVER", label: "Corporate Driver" },
   { value: "PRIVATE_DRIVER", label: "Private Driver" },
@@ -521,8 +475,6 @@ export const DRIVER_TYPE_OPTIONS = [
   { value: "HEAVY_DUTY_DRIVER", label: "Heavy Duty Driver" },
 ];
 
-// FRSC licence classes under Nigeria's National Road Traffic Regulations
-// (there is no class I). Values mirror the server's LicenceClass enum.
 export const LICENCE_CLASS_OPTIONS = [
   { value: "A", label: "Class A", description: "Motorcycles and tricycles" },
   { value: "B", label: "Class B", description: "Private cars under 3 tonnes" },
@@ -598,8 +550,6 @@ export const ACADEMIC_LEVEL_OPTIONS = [
   { value: "PHD", label: "PhD" },
 ];
 
-// Family and friends are not acceptable guarantors - the guarantor must be a
-// working professional (civil servant grade level 8+, or a business owner).
 export const GUARANTOR_RELATIONSHIP_OPTIONS = [
   { value: "FORMER_EMPLOYER", label: "Former Employer" },
   { value: "COLLEAGUE", label: "Colleague" },
@@ -662,8 +612,6 @@ export const AGE_RANGE_OPTIONS = [
   { value: "60+", label: "60 and above" },
 ];
 
-// Preference dropdowns rendered for clients - religion stored as the label,
-// not the driver-side enum value, so the admin reads it verbatim.
 export const RELIGION_PREFERENCE_OPTIONS = [
   { value: "Christianity", label: "Christianity" },
   { value: "Islam", label: "Islam" },
@@ -711,12 +659,6 @@ export const TICKET_CATEGORIES = [
   { value: "BUG_REPORT", label: "Report an issue" },
   { value: "OTHER", label: "Other" },
 ];
-
-/*
-================= NOTE: the client surface - wizard steps, search options and
-display helpers. The option values mirror the server enums exactly; a value
-outside them is a 400 the client cannot fix.
-*/
 
 export const CLIENT_ONBOARDING_STEPS = [
   { path: "/onboarding/hire-type", label: "How will you hire?" },
@@ -791,8 +733,6 @@ export const HIRING_TIMELINE_OPTIONS: {
   { value: "EXPLORING", label: "Just exploring" },
 ];
 
-// The hire screens say "Full-time" where the booking model says MONTHLY - the
-// driver screens keep the literal engagement labels above.
 export const HIRE_ENGAGEMENT_LABELS: Record<string, string> = {
   ONE_OFF: "One-off",
   DAILY: "Daily",
@@ -846,8 +786,6 @@ export const driverTypeLabel = function (type?: string | null) {
   );
 };
 
-// ₦405k - the overview stat card format. Falls back to the full figure below
-// four digits, where compacting saves nothing.
 export const formatMoneyCompact = function (
   minor: number | undefined,
   currency = "NGN",

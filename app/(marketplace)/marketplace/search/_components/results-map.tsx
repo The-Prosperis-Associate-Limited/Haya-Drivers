@@ -7,12 +7,9 @@ interface Props {
   center: [number, number];
 }
 
-// No pins yet - drivers carry no coordinates, only state and LGA. The map gives
-// the searched area, nothing more.
 export const ResultsMap = function ({ center }: Props) {
   return (
-    // Leaflet's internal panes carry triple-digit z-indexes; isolating the map
-    // keeps them from stacking above dialog overlays.
+    // Leaflet panes carry triple-digit z-indexes; isolate keeps them under dialog overlays.
     <div className="isolate z-0 h-full">
       <MapContainer
         center={center}

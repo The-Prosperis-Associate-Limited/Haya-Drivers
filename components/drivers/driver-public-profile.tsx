@@ -1,3 +1,4 @@
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { StarRating } from "@/components/shared/star-rating";
 import { TrustRing } from "@/components/drivers/trust-ring";
@@ -9,7 +10,16 @@ import {
   formatRelativeTime,
   getInitials,
 } from "@/lib/utils";
-import { BadgeCheck, CircleCheck, ShieldCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  BadgeCheck,
+  CircleCheck,
+  Clock,
+  Plus,
+  ShieldCheck,
+  BriefcaseBusiness,
+  MessageSquareText,
+} from "lucide-react";
 import type { DriverReview, PublicDriverProfile } from "@/types/driver";
 
 interface Props {
@@ -19,17 +29,15 @@ interface Props {
     "id" | "rating" | "comment" | "createdAt" | "author"
   >[];
   action?: React.ReactNode;
+  aside?: React.ReactNode;
 }
 
-// The checks an APPROVED driver has actually passed - identity (NIN slip),
-// licence and guarantor documents are what verification reviews. A police
-// record check does not exist yet, so it is not listed.
 const VERIFIED_CHECKS = ["NIMC identity", "FRSC licence", "Guarantor"];
 
 const CARD =
-  "border-border rounded-2xl border bg-white p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-6";
+  "border-border rounded-2xl border bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)] md:p-5";
 
-function Card({
+export function ProfileCard({
   title,
   icon,
   children,
@@ -51,6 +59,33 @@ function Card({
   );
 }
 
+const Card = ProfileCard;
+
+const responseTimeLabel = (minutes: number) =>
+  minutes < 60 ? `${minutes} mins` : `${Math.round(minutes / 60)} hrs`;
+
+// The paid hire flow: request → admin invoice → pay → contact details.
+export const HireDriverButton = function ({
+  profile,
+  onClick,
+}: {
+  profile: PublicDriverProfile;
+  onClick: () => void;
+}) {
+  const available = profile.open_to_work !== false;
+
+  return (
+    <Button
+      className="h-10 w-full rounded-xl px-5 sm:w-auto"
+      onClick={onClick}
+      disabled={!available}
+    >
+      <Plus className="h-4 w-4" />
+      {available ? "Hire driver" : "Not taking new jobs"}
+    </Button>
+  );
+};
+
 export const driverNameOf = (profile: PublicDriverProfile) =>
   [profile.user.first_name, profile.user.last_name].filter(Boolean).join(" ") ||
   "Driver";
@@ -59,6 +94,7 @@ export const DriverPublicProfile = function ({
   profile,
   reviews,
   action,
+  aside,
 }: Props) {
   const name = driverNameOf(profile);
   const available = profile.open_to_work !== false;
@@ -183,12 +219,12 @@ export const DriverPublicProfile = function ({
 
           <Card title="Work history">
             {profile.work_experiences.length === 0 ? (
-              <AppText
-                type="caption"
-                className="text-muted-foreground mt-3 block"
-              >
-                No work history shared yet.
-              </AppText>
+              <EmptyState
+                size="compact"
+                icon={BriefcaseBusiness}
+                title="No work history yet"
+                description="This driver hasn't shared previous roles."
+              />
             ) : (
               <div className="mt-3 space-y-4">
                 {profile.work_experiences.map((experience) => (
@@ -224,12 +260,12 @@ export const DriverPublicProfile = function ({
 
           <Card title="Client reviews">
             {reviews.length === 0 ? (
-              <AppText
-                type="caption"
-                className="text-muted-foreground mt-3 block"
-              >
-                No reviews yet.
-              </AppText>
+              <EmptyState
+                size="compact"
+                icon={MessageSquareText}
+                title="No reviews yet"
+                description="Reviews appear once clients rate this driver."
+              />
             ) : (
               <div className="mt-3 divide-y">
                 {reviews.slice(0, 4).map((review) => (
@@ -307,6 +343,43 @@ export const DriverPublicProfile = function ({
             </div>
           </Card>
 
+          {(!!profile.availability?.length ||
+            profile.response_time_minutes !== null) && (
+            <Card
+              title="Working hours"
+              icon={<Clock className="text-brand h-4 w-4" />}
+            >
+              {!!profile.availability?.length && (
+                <div className="divide-border mt-3 divide-y">
+                  {profile.availability.map((slot) => (
+                    <span
+                      key={slot.day_range}
+                      className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
+                    >
+                      <AppText type="caption" className="text-muted-foreground">
+                        {slot.day_range}
+                      </AppText>
+                      <AppText type="label" className="text-sm">
+                        {slot.start} - {slot.end}
+                      </AppText>
+                    </span>
+                  ))}
+                </div>
+              )}
+              {profile.response_time_minutes !== null && (
+                <AppText
+                  type="caption"
+                  className="text-muted-foreground mt-3 block border-t border-slate-100 pt-3"
+                >
+                  Usually replies within{" "}
+                  <span className="text-ink font-medium">
+                    {responseTimeLabel(profile.response_time_minutes)}
+                  </span>
+                </AppText>
+              )}
+            </Card>
+          )}
+
           <Card title="Rate">
             <AppText type="h2" className="mt-3 block text-2xl font-semibold">
               {profile.expected_monthly_rate
@@ -317,6 +390,8 @@ export const DriverPublicProfile = function ({
               {driverTypeLabel(profile.driver_type)}
             </AppText>
           </Card>
+
+          {aside}
         </div>
       </div>
     </div>

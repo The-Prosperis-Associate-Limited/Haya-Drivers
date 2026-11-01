@@ -1,5 +1,7 @@
 "use client";
 
+import { MessagesSquare } from "lucide-react";
+import { EmptyState } from "@/components/shared/empty-state";
 import { AppText } from "@/components/shared/app-text";
 import { Skeleton } from "@/components/ui/skeleton";
 import { personName } from "@/lib/admin";
@@ -38,12 +40,12 @@ export const ConversationList = function ({
           ))}
         </div>
       ) : !conversations.length ? (
-        <AppText
-          type="caption"
-          className="text-muted-foreground block p-6 text-center text-sm"
-        >
-          No conversations yet.
-        </AppText>
+        <EmptyState
+          size="compact"
+          icon={MessagesSquare}
+          title="No conversations yet"
+          description="Chats from clients and drivers land here."
+        />
       ) : (
         <ul className="divide-border divide-y">
           {conversations.map((conversation) => {

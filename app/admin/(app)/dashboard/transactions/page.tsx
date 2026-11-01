@@ -10,9 +10,6 @@ import type { APIResponse } from "@/types/response";
 import type { AdminTransactionStats } from "@/types/admin";
 import { PayoutsTab } from "./_components/payouts-tab";
 
-// Client wallets and wallet service fees were retired with the direct-salary
-// pivot - the money that still moves through us is driver payouts of
-// referral rewards and historical wallet balances, so that is all this page tracks.
 export default function AdminTransactions() {
   const { data } = useGetData<APIResponse<AdminTransactionStats>>({
     url: API_ENDPOINTS.adminTransactions.stats,
