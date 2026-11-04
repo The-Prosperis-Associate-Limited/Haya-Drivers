@@ -39,8 +39,8 @@ export const ClientHero = function () {
             Drivers, verified before they reach you
           </h1>
           <p className="mt-5 max-w-lg text-base text-blue-100 md:text-lg">
-            Hire a verified professional driver for a single trip, a recurring
-            schedule, or your whole business, without agencies or guesswork.
+            Hire a verified professional driver on a short contract, full time,
+            or for your whole business, without agencies or guesswork.
           </p>
 
           <Link

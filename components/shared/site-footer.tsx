@@ -19,8 +19,8 @@ export const SiteFooter = function () {
             <span className="font-serif text-xl">Haya Drivers</span>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-white/70">
-            Vetted drivers and professional staff, verified against NIMC, FRSC
-            and police records - so you hire on trust, not guesswork.
+            Vetted drivers and professional staff, verified through NIMC, FRSC
+            and guarantor checks - so you hire on trust, not guesswork.
           </p>
         </div>
 

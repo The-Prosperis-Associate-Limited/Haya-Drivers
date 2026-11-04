@@ -5,8 +5,8 @@ import { Reveal } from "@/components/shared/reveal";
 import { SectionChip } from "../section-chip";
 
 const BULLETS = [
-  "Choose opportunities that suit you",
-  "See job and pay details upfront",
+  "Say yes only to jobs that suit you",
+  "See job details before you reply",
   "Get support throughout each job",
 ];
 
