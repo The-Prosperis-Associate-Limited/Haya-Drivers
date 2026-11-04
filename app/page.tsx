@@ -89,7 +89,7 @@ export default function Home() {
             },
             {
               title: "Make payment",
-              body: "Pay securely from your wallet or by bank transfer-no hidden fees, ever.",
+              body: "Pay our service fee by bank transfer, then pay your driver directly-no hidden fees, ever.",
             },
           ]}
         />
@@ -134,7 +134,7 @@ export default function Home() {
             {
               question: "What does it cost?",
               answer:
-                "Each driver sets a clear monthly rate you see before you request them. You pay from your Haya Drivers wallet or by bank transfer, with the platform fee itemised upfront-no hidden charges.",
+                "Each driver sets a clear monthly rate you see before you request them. You pay the driver's salary directly to them, and our service fee and VAT by bank transfer on an itemised invoice-no hidden charges.",
             },
             {
               question: "Can I book recurring trips?",

@@ -134,7 +134,7 @@ export default function DriversLanding() {
             {
               question: "How do I get paid?",
               answer:
-                "Earnings land in your Haya Drivers wallet when a job completes, and you withdraw to your own bank account whenever you choose. You always see the full pay for a job before you accept it.",
+                "Your client pays your salary directly into your own bank account, at the rate agreed for the engagement. Haya Drivers never holds it or takes a cut. Referral rewards go to your wallet, and you can withdraw them in multiples of ₦10,000.",
             },
             {
               question: "Can I choose my own schedule?",
