@@ -28,10 +28,10 @@ export default function Wallet() {
     <div className="mx-auto max-w-[1360px] space-y-5 lg:space-y-6">
       <PageHeader
         title="Wallet"
-        subtitle="Referral rewards and any balance from before direct salaries - withdraw it to your bank any time."
+        subtitle="Referral rewards and any balance from before direct salaries, withdrawn to your bank in round figures."
       />
 
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px] xl:items-start xl:gap-6">
+      <section className="grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-[minmax(0,1fr)_380px] xl:items-start xl:gap-6">
         {wallet ? (
           <WalletBalanceCard
             wallet={wallet}
@@ -53,8 +53,8 @@ export default function Wallet() {
           <BankAccounts />
           <p className="text-muted-foreground flex gap-2 rounded-xl bg-slate-50 p-3 text-xs">
             <ShieldCheck className="text-brand size-4 shrink-0" />
-            The account name is confirmed with your bank, not typed by you - so
-            a typo can never send your money to a stranger.
+            Our team sends your money to exactly what you enter here, so check
+            the bank, number and name match your account.
           </p>
         </div>
       </section>
@@ -76,12 +76,16 @@ export default function Wallet() {
 
       <WalletLedger />
 
-      <WithdrawDialog
-        open={withdrawOpen}
-        onOpenChange={setWithdrawOpen}
-        availableMinor={wallet?.available_minor ?? 0}
-        currency={wallet?.currency ?? "NGN"}
-      />
+      {wallet && wallet.withdrawable_minor > 0 && (
+        <WithdrawDialog
+          key={wallet.withdrawable_minor}
+          open={withdrawOpen}
+          onOpenChange={setWithdrawOpen}
+          withdrawableMinor={wallet.withdrawable_minor}
+          stepMinor={wallet.payout_step_minor}
+          currency={wallet.currency}
+        />
+      )}
     </div>
   );
 }

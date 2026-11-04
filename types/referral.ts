@@ -22,6 +22,7 @@ export interface ReferralOverview {
   reward_minor: number;
   currency: string;
   hold_hours: number;
+  payout_step_minor: number;
   stats: {
     invited: number;
     invited_this_month: number;
@@ -58,7 +59,10 @@ export interface WalletOverview {
   withdrawn_minor: number;
   referral_earned_minor: number;
   has_open_payout: boolean;
-  minimum_payout_minor: number;
+  payout_step_minor: number;
+  withdrawable_minor: number;
+  to_next_step_minor: number;
+  referrals_to_next_step: number;
 }
 
 export interface WalletLedgerEntry {

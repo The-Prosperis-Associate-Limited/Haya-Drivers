@@ -7,8 +7,8 @@ import { blueGrid } from "../cta-section";
 
 const BULLETS = [
   "Browse verified profiles and experience",
-  "Book one-off or recurring transport",
-  "Get clear updates from request to arrival",
+  "Hire on a short contract or full time",
+  "Follow your request from shortlist to hire",
 ];
 
 export const FindDriverSection = function () {
@@ -24,9 +24,9 @@ export const FindDriverSection = function () {
             Find the right driver
           </h2>
           <p className="mt-4 max-w-lg text-sm leading-relaxed text-blue-100 md:text-base">
-            Haya Drivers vets every candidate against national identity, licence
-            and police records, then scores them on reliability so you decide
-            with confidence.
+            Haya Drivers vets every candidate's national identity, licence and
+            guarantor, then scores them on reliability so you decide with
+            confidence.
           </p>
 
           <ul className="mt-6 list-disc space-y-3 pl-5 text-sm text-blue-100 md:text-base">

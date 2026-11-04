@@ -119,9 +119,11 @@ export default function TermsOfService() {
             for a client's failure to pay.
           </li>
           <li>
-            Earnings balances accrued on the platform before 4 October 2026
-            remain yours and can be withdrawn through the payout process in your
-            settings.
+            Referral rewards are credited to your wallet and can be withdrawn
+            once they clear their hold, only in multiples of ₦10,000. Our team
+            pays each withdrawal by bank transfer to the account you give us. We
+            do not check those details with your bank, so you are responsible
+            for entering them correctly.
           </li>
           <li>
             You agree to show up for engagements you accept, to drive safely and

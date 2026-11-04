@@ -94,7 +94,7 @@ export const PayoutsTab = function () {
 
     if (row.status === "REQUESTED" || row.status === "PROCESSING") {
       actions.push(
-        { value: "pay", label: "Release Funds" },
+        { value: "pay", label: "Mark as paid" },
         { value: "fail", label: "Mark as Failed" },
       );
     }
@@ -136,7 +136,7 @@ export const PayoutsTab = function () {
           <EmptyState
             icon={Banknote}
             title="No payouts here"
-            description="Driver withdrawal requests land in this queue."
+            description="Driver withdrawal requests land in this queue for the team to transfer."
           />
         ) : (
           <>
@@ -163,9 +163,19 @@ export const PayoutsTab = function () {
                         </span>
                       </td>
                       <td className="text-muted-foreground py-3 pr-4">
-                        {row.bankAccount
-                          ? `${row.bankAccount.bank_name} ·· ${row.bankAccount.account_number.slice(-4)}`
-                          : "-"}
+                        {row.bankAccount ? (
+                          <>
+                            <span className="block">
+                              {row.bankAccount.account_name}
+                            </span>
+                            <span className="block text-xs">
+                              {row.bankAccount.bank_name} ·{" "}
+                              {row.bankAccount.account_number}
+                            </span>
+                          </>
+                        ) : (
+                          "-"
+                        )}
                       </td>
                       <td className="py-3 pr-4 font-semibold">
                         {formatMoney(row.amount_minor, row.currency)}
@@ -210,6 +220,13 @@ export const PayoutsTab = function () {
                     {personName(row.user)} · {statusLabel(row.status)} ·{" "}
                     {formatDate(row.createdAt)}
                   </p>
+                  {row.bankAccount && (
+                    <p className="mt-1 text-xs">
+                      {row.bankAccount.account_name} ·{" "}
+                      {row.bankAccount.bank_name} ·{" "}
+                      {row.bankAccount.account_number}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -260,11 +277,7 @@ export const PayoutsTab = function () {
             />
             <DetailRow
               label="Account"
-              value={
-                viewing.bankAccount
-                  ? `·· ${viewing.bankAccount.account_number.slice(-4)}`
-                  : "-"
-              }
+              value={viewing.bankAccount?.account_number ?? "-"}
             />
             <DetailRow
               label="Requested"
@@ -285,11 +298,15 @@ export const PayoutsTab = function () {
         onOpenChange={(open) => !open && setPaying(null)}
         title={
           paying
-            ? `Release ${formatMoney(paying.amount_minor, paying.currency)}?`
+            ? `Have you sent ${formatMoney(paying.amount_minor, paying.currency)}?`
             : ""
         }
-        description="Marks the payout as paid - the driver's wallet debit becomes final and they are notified."
-        confirmLabel="Release Funds"
+        description={
+          paying?.bankAccount
+            ? `Only confirm after transferring to ${paying.bankAccount.account_name}, ${paying.bankAccount.bank_name} ${paying.bankAccount.account_number}. The driver is told the money has been sent.`
+            : "Only confirm after making the transfer. The driver is told the money has been sent."
+        }
+        confirmLabel="Mark as paid"
         isLoading={isSettling}
         onConfirm={() =>
           paying && settle({ reference: paying.reference, status: "PAID" })
@@ -305,7 +322,7 @@ export const PayoutsTab = function () {
           }
         }}
         title="Mark payout as failed"
-        description="The wallet debit is reversed exactly as a provider failure would - the driver keeps the money."
+        description="The money goes back into the driver's wallet and they are told why."
         width="480px"
         primaryAction={{
           label: "Mark as failed",
@@ -323,7 +340,7 @@ export const PayoutsTab = function () {
       >
         <AppTextArea
           label="Failure reason"
-          placeholder="E.g. bank account could not be resolved"
+          placeholder="E.g. the bank rejected the account number"
           value={failureReason}
           onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
             setFailureReason(event.target.value)

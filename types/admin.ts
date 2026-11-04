@@ -138,7 +138,7 @@ export interface AdminWalletTransaction {
 export interface AdminTransactionStats {
   paid_to_drivers_minor: number;
   paid_payouts: number;
-  awaiting_release: { amount_minor: number; count: number };
+  awaiting_transfer: { amount_minor: number; count: number };
   failed_payouts: number;
   currency: string;
 }

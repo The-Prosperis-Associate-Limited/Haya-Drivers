@@ -13,7 +13,7 @@ import { WhySection } from "@/components/landing/why-section";
 export const metadata: Metadata = {
   title: "Hire verified drivers in Nigeria",
   description:
-    "Hire a verified professional driver for a single trip, a recurring schedule, or your whole business. Every Haya Drivers driver passes identity, licence and background checks before they reach you.",
+    "Hire a verified professional driver on a short contract, full time, or for your whole business. Every Haya Drivers driver passes identity, licence and guarantor checks before they reach you.",
   keywords: [
     "hire a driver",
     "verified drivers",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Haya Drivers - Drivers, verified before they reach you",
     description:
-      "Hire a verified professional driver for a single trip, a recurring schedule, or your whole business - without agencies or guesswork.",
+      "Hire a verified professional driver on a short contract, full time, or for your whole business - without agencies or guesswork.",
     type: "website",
     siteName: "Haya Drivers",
     url: "/",
@@ -57,7 +57,7 @@ export default function Home() {
             {
               icon: ShieldCheck,
               title: "Verified professionals",
-              body: "Every driver passes identity, licence, insurance, and background checks.",
+              body: "Every driver passes identity, licence and guarantor checks.",
             },
             {
               icon: ReceiptText,
@@ -66,8 +66,8 @@ export default function Home() {
             },
             {
               icon: MapPin,
-              title: "Real-time updates",
-              body: "Track progress and get arrival notifications from request to drop-off.",
+              title: "Daily check-ins",
+              body: "Follow your request through to hire, then see when your driver checks in each day.",
             },
           ]}
           ctaLabel="Sign up"
@@ -77,19 +77,19 @@ export default function Home() {
         />
 
         <StepsSection
-          heading="From request to arrival in three steps"
+          heading="From sign-up to hire in three steps"
           steps={[
             {
               title: "Sign up",
-              body: "Create your account in minutes and tell us who you are, where you go, and what you need.",
+              body: "Create your account in minutes and tell us who you are, where you need a driver, and your budget.",
             },
             {
               title: "Find a driver",
-              body: "Browse verified professionals matched to your route, schedule, and preferences.",
+              body: "Browse verified professionals, or tell us what you need and we'll shortlist drivers for you.",
             },
             {
               title: "Make payment",
-              body: "Pay securely from your wallet or by bank transfer-no hidden fees, ever.",
+              body: "Pay our service fee by bank transfer, then pay your driver directly-no hidden fees, ever.",
             },
           ]}
         />
@@ -127,29 +127,29 @@ export default function Home() {
           heading="Client questions, answered"
           items={[
             {
-              question: "How do I book a driver?",
+              question: "How do I hire a driver?",
               answer:
-                "Create an account, tell us where you're going and when, and browse verified drivers matched to your route and budget. Send a request and the driver confirms-usually within a day.",
+                "Create an account, then request a verified driver you've found or tell us what you need. Our team shortlists drivers and confirms they're available. You then pay our invoice, and the hire begins.",
             },
             {
               question: "What does it cost?",
               answer:
-                "Each driver sets a clear monthly rate you see before you request them. You pay from your Haya Drivers wallet or by bank transfer, with the platform fee itemised upfront-no hidden charges.",
+                "Each driver sets a clear monthly rate you see before you request them. You pay the driver's salary directly to them, and our service fee and VAT by bank transfer on an itemised invoice-no hidden charges.",
             },
             {
-              question: "Can I book recurring trips?",
+              question: "Can I hire for a short period?",
               answer:
-                "Yes. Hire for a single trip, a weekly schedule, or a full-time monthly engagement-the same vetted driver handles your route every time.",
+                "Yes. Hire on a contract for a set number of days, or full time on a monthly engagement-the same vetted driver works with you throughout.",
             },
             {
               question: "What if my plans change?",
               answer:
-                "You can update or cancel a request from your dashboard. For active engagements, our support team helps you adjust schedules or find a replacement driver quickly.",
+                "You can cancel a request from your dashboard until you've submitted proof of payment. Once a hire is active, talk to our support team about any changes.",
             },
             {
               question: "What support do I get on a job?",
               answer:
-                "Live chat with our support team from your dashboard, plus real-time updates from request to arrival. If anything goes wrong mid-job, we step in immediately.",
+                "Live chat with our support team from your dashboard. If your driver misses a check-in or something goes wrong, you can flag it and our team will step in.",
             },
           ]}
         />
@@ -157,12 +157,12 @@ export default function Home() {
         <CtaSection
           title={
             <>
-              Book a verified
+              Hire a verified
               <br />
               driver today
             </>
           }
-          body="Tell Haya Drivers what you need and get matched with a verified professional-usually within a day."
+          body="Tell Haya Drivers what you need and we'll shortlist verified professionals for you."
           ctaLabel="Start hiring"
           ctaHref="/auth/signup"
         />

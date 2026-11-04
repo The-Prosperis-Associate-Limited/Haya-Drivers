@@ -53,7 +53,9 @@ export const ReferralHero = function ({ overview }: Props) {
       </h2>
       <p className="mt-1.5 max-w-xl text-sm text-white/80">
         Share your code. When a driver signs up with it and submits their
-        documents for verification, {reward} lands in your wallet.
+        documents for verification, {reward} lands in your wallet. You can
+        withdraw once it reaches{" "}
+        {formatMoney(overview.payout_step_minor, overview.currency)}.
       </p>
 
       <div className="mt-5 flex max-w-md items-center gap-3 rounded-2xl border-[1.5px] border-dashed border-white/50 bg-white/10 py-2 pr-2 pl-4">

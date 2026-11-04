@@ -13,7 +13,7 @@ import { WhySection } from "@/components/landing/why-section";
 export const metadata: Metadata = {
   title: "Drive with us - steady, fairly-paid work",
   description:
-    "Join a network that values professional drivers: see pay upfront, set your own schedule, and work with verified clients. Contract, private, corporate, executive and expatriate engagements.",
+    "Join a network that values professional drivers: set your own monthly rate and working hours, and say yes only to the jobs that suit you. Contract, private, corporate, executive and expatriate engagements.",
   keywords: [
     "driver jobs Nigeria",
     "professional driver work",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Drive on your terms. Earn what you're worth - Haya Drivers",
     description:
-      "Clear pay, fair terms, verified clients. Apply, get verified, and pick the driving jobs that suit you.",
+      "Set your rate, get verified, and say yes only to the driving jobs that suit you.",
     type: "website",
     siteName: "Haya Drivers",
     url: "/drivers",
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Drive on your terms. Earn what you're worth - Haya Drivers",
     description:
-      "Clear pay, fair terms, verified clients. Pick the driving jobs that suit you.",
+      "Set your rate and say yes only to the driving jobs that suit you.",
     images: ["/og-image.png"],
   },
   alternates: {
@@ -56,18 +56,18 @@ export default function DriversLanding() {
           features={[
             {
               icon: Wallet,
-              title: "Clear earnings",
-              body: "See what a job pays before you accept, no hidden deductions.",
+              title: "Your rate, your salary",
+              body: "Set your monthly rate. Clients pay your salary directly, and we take nothing from it.",
             },
             {
               icon: CalendarCheck,
               title: "Your schedule",
-              body: "Set your availability and choose only the jobs that suit you.",
+              body: "Set your working hours, and say yes only to the jobs that suit you.",
             },
             {
               icon: ShieldCheck,
-              title: "Verified clients",
-              body: "Every request comes through a trusted, accountable network.",
+              title: "Serious clients",
+              body: "A job only starts once the client has paid our service fee.",
             },
           ]}
           ctaLabel="Sign up"
@@ -77,19 +77,19 @@ export default function DriversLanding() {
         />
 
         <StepsSection
-          heading="From application to first payout in three steps"
+          heading="From application to first job in three steps"
           steps={[
             {
               title: "Apply and get verified",
-              body: "Share your details and complete identity, licence, and insurance checks.",
+              body: "Share your details and complete our identity, licence and guarantor checks.",
             },
             {
-              title: "Pick the jobs you want",
-              body: "Browse opportunities with routes, schedules, and earnings shown upfront.",
+              title: "Get shortlisted",
+              body: "We invite you to jobs that fit. See the schedule, hours and location before you reply.",
             },
             {
               title: "Drive and get paid",
-              body: "Complete trips with full support and receive reliable payouts.",
+              body: "Check in each day with full support, and your client pays your salary directly to your bank.",
             },
           ]}
         />
@@ -129,22 +129,22 @@ export default function DriversLanding() {
             {
               question: "How do I join the network?",
               answer:
-                "Create a free account, complete the onboarding steps - personal details, experience, guarantors and documents - then submit for verification. Once your identity, licence and record checks clear, your profile goes live to clients.",
+                "Create a free account, complete the onboarding steps - personal details, experience, guarantors and documents - then submit for verification. Once your identity, licence and guarantor checks clear, your profile goes live to clients.",
             },
             {
               question: "How do I get paid?",
               answer:
-                "Earnings land in your Haya Drivers wallet when a job completes, and you withdraw to your own bank account whenever you choose. You always see the full pay for a job before you accept it.",
+                "Your client pays your salary directly into your own bank account, at the rate agreed for the engagement. Haya Drivers never holds it or takes a cut. Referral rewards go to your wallet, and you can withdraw them in multiples of ₦10,000.",
             },
             {
               question: "Can I choose my own schedule?",
               answer:
-                "Yes. You set your availability and only receive requests that fit it - accept the jobs that suit you and decline the ones that don't, without penalty.",
+                "Yes. You set your working hours, and you can turn off open to work whenever you're not taking new jobs. When you're shortlisted, you have 24 hours to say if you're available. Saying no doesn't affect your trust score.",
             },
             {
               question: "What kinds of jobs are available?",
               answer:
-                "Contract, private, corporate, executive, spy and expatriate engagements - from one-off trips to full-time monthly placements.",
+                "Contract, private, corporate, executive, spy and expatriate engagements - from short contracts to full-time monthly placements.",
             },
             {
               question: "What support do I get on a job?",

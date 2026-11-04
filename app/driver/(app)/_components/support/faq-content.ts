@@ -54,9 +54,14 @@ export const FAQ_SECTIONS: FaqSection[] = [
           "Your salary is paid to you directly by the client - it never passes through Haya Drivers and nothing is deducted from it. Agree the schedule with your client when the engagement starts.",
       },
       {
+        question: "When can I withdraw from my wallet?",
+        answer:
+          "Once your balance reaches ₦10,000, and always in multiples of ₦10,000. With ₦15,000 you can withdraw ₦10,000, and the ₦5,000 left waits until it grows by another ₦5,000. Our team sends the transfer and we notify you when it has gone.",
+      },
+      {
         question: "How do I change my payout account?",
         answer:
-          "Settings, then Earnings, then Payout accounts. We confirm the account name with your bank rather than asking you to type it, so a mistyped number cannot pay a stranger.",
+          "Open Wallet, then Payout account. Remove the old account and add the new one - we transfer to exactly what you enter, so check the bank, number and name.",
       },
     ],
   },
