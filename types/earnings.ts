@@ -51,7 +51,6 @@ export interface EarningsTrendPoint {
 export interface BankOption {
   name: string;
   code: string;
-  currency: string;
 }
 
 export interface BankAccount {

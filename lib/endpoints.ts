@@ -111,9 +111,7 @@ export const API_ENDPOINTS = {
       `/driver/earnings/history?page=${page}&limit=${limit}`,
     trend: "/driver/earnings/trend",
     statement: (month: string) => `/driver/earnings/statements/${month}`,
-    banks: ({ country, currency }: { country: string; currency: string }) =>
-      `/driver/earnings/banks?country=${country}&currency=${currency}`,
-    resolveAccount: "/driver/earnings/bank-accounts/resolve",
+    banks: "/driver/earnings/banks",
     bankAccounts: "/driver/earnings/bank-accounts",
     setDefaultBankAccount: (id: string) =>
       `/driver/earnings/bank-accounts/${id}/default`,

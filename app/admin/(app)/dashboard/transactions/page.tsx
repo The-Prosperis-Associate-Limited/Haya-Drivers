@@ -46,11 +46,11 @@ export default function AdminTransactions() {
         <StatCard
           icon={Hourglass}
           tone="amber"
-          label="Awaiting release"
-          value={stats ? String(stats.awaiting_release.count) : "-"}
+          label="Awaiting transfer"
+          value={stats ? String(stats.awaiting_transfer.count) : "-"}
           caption={
             stats
-              ? `${formatMoneyCompact(stats.awaiting_release.amount_minor, currency)} escrowed`
+              ? `${formatMoneyCompact(stats.awaiting_transfer.amount_minor, currency)} to send`
               : " "
           }
           captionTone="muted"

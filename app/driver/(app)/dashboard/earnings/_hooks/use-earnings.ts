@@ -1,6 +1,7 @@
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
+import type { BankAccountFormValues } from "@/schemas/earnings/bank-account";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type {
   BankAccount,
@@ -57,26 +58,13 @@ export const useBankAccounts = function () {
   return { bankAccounts: data?.data ?? [], isFetching };
 };
 
-export const useBanks = function ({
-  country,
-  currency,
-  shouldFetch,
-}: {
-  country: string;
-  currency: string;
-  shouldFetch: boolean;
-}) {
+export const useBanks = function ({ shouldFetch }: { shouldFetch: boolean }) {
   const { data, isFetching } = useGetData<APIResponse<BankOption[]>>({
-    url: API_ENDPOINTS.earnings.banks({ country, currency }),
+    url: API_ENDPOINTS.earnings.banks,
     shouldFetch,
   });
 
-  // Paystack repeats a bank code across variants; keep the first of each.
-  const banks = Array.from(
-    new Map((data?.data ?? []).map((bank) => [bank.code, bank])).values(),
-  );
-
-  return { banks, isFetching };
+  return { banks: data?.data ?? [], isFetching };
 };
 
 export const useAddBankAccount = function ({
@@ -85,12 +73,7 @@ export const useAddBankAccount = function ({
   onSuccess?: () => void;
 }) {
   const { mutate, isPending } = useSubmitData<
-    {
-      bank_code: string;
-      bank_name: string;
-      account_number: string;
-      currency: string;
-    },
+    BankAccountFormValues,
     APIResponse<BankAccount>
   >({
     url: API_ENDPOINTS.earnings.bankAccounts,
@@ -102,23 +85,19 @@ export const useAddBankAccount = function ({
   return { addBankAccount: mutate, isPending };
 };
 
-export const useResolveBankAccount = function ({
-  onResolved,
+export const useRemoveBankAccount = function ({
+  onSuccess,
 }: {
-  onResolved: (accountName: string) => void;
+  onSuccess?: () => void;
 }) {
-  const { mutate, isPending } = useSubmitData<
-    { bank_code: string; account_number: string; currency: string },
-    APIResponse<{ account_name: string }>
-  >({
-    url: API_ENDPOINTS.earnings.resolveAccount,
-    method: "post",
-    silent: true,
-    skipRefetch: true,
-    onSuccess: (response) => onResolved(response.data.account_name),
+  const { mutate, isPending } = useSubmitData<{ id: string }>({
+    url: ({ id }) => API_ENDPOINTS.earnings.deleteBankAccount(id),
+    method: "delete",
+    onSuccessMessage: "Bank account removed",
+    onSuccess: () => onSuccess?.(),
   });
 
-  return { resolveAccount: mutate, isResolving: isPending };
+  return { removeBankAccount: mutate, isRemoving: isPending };
 };
 
 export const useRequestWithdrawal = function ({

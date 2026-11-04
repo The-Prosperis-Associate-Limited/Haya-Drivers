@@ -1,74 +1,70 @@
 "use client";
 
-import { AppInput } from "@/components/shared/app-input";
+import { FormNumberStepper } from "@/components/form/form-choices";
+import { AppDialog } from "@/components/shared/app-dialog";
 import { AppSelect } from "@/components/shared/app-select";
 import { AppText } from "@/components/shared/app-text";
-import { Button } from "@/components/ui/button";
-import { AppDialog } from "@/components/shared/app-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
-import { Landmark, Wallet } from "lucide-react";
-import { showToast } from "@/lib/show-toast";
+import { Button } from "@/components/ui/button";
 import { formatMoney, toMajorUnits } from "@/lib/utils";
+import { Landmark, Wallet } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useBankAccounts, useRequestWithdrawal } from "../_hooks/use-earnings";
 
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  availableMinor: number;
+  withdrawableMinor: number;
+  stepMinor: number;
   currency: string;
 }
 
 export const WithdrawDialog = function ({
   open,
   onOpenChange,
-  availableMinor,
+  withdrawableMinor,
+  stepMinor,
   currency,
 }: Props) {
   const { bankAccounts } = useBankAccounts();
 
-  const defaultAccount = bankAccounts.find((account) => account.is_default);
+  const defaultAccount =
+    bankAccounts.find((account) => account.is_default) ?? bankAccounts[0];
+  const maxSteps = Math.floor(withdrawableMinor / stepMinor);
 
-  const [amount, setAmount] = useState("");
   const [bankAccountId, setBankAccountId] = useState<string | null>(null);
 
-  const { requestWithdrawal, isPending } = useRequestWithdrawal({
-    onSuccess: () => {
-      setAmount("");
-      onOpenChange(false);
-    },
+  const { control, getValues } = useForm<{ steps: number }>({
+    defaultValues: { steps: maxSteps },
   });
 
-  const onSubmit = () => {
-    const value = Number(amount);
+  const { requestWithdrawal, isPending } = useRequestWithdrawal({
+    onSuccess: () => onOpenChange(false),
+  });
 
-    if (!value || value <= 0)
-      return showToast("error", "Enter an amount to withdraw");
-    if (value > toMajorUnits(availableMinor)) {
-      return showToast(
-        "error",
-        `You can withdraw up to ${formatMoney(availableMinor, currency)} right now`,
-      );
-    }
-
+  const onSubmit = () =>
     requestWithdrawal({
-      amount: value,
+      amount: toMajorUnits(getValues("steps") * stepMinor),
       bankAccountId: bankAccountId ?? defaultAccount?.id,
     });
-  };
 
   return (
     <AppDialog
       isOpen={open}
       onOpenChange={onOpenChange}
       title="Withdraw funds"
-      description="Money goes to your confirmed bank account."
+      description="Our team transfers the money to your bank account and we'll notify you once it's sent."
       width="480px"
       isSubmitting={isPending}
       primaryAction={
         bankAccounts.length
-          ? { label: "Withdraw", onClick: onSubmit, isLoading: isPending }
+          ? {
+              label: "Request withdrawal",
+              onClick: onSubmit,
+              isLoading: isPending,
+            }
           : undefined
       }
     >
@@ -77,7 +73,7 @@ export const WithdrawDialog = function ({
           size="compact"
           icon={Landmark}
           title="Add a bank account first"
-          description="We confirm the account name with your bank, so your money can only land in an account that is yours."
+          description="Tell us which account your withdrawals should land in."
           action={
             <Button asChild className="h-10 rounded-xl px-5">
               <Link href="/driver/dashboard/wallet">Add a bank account</Link>
@@ -101,19 +97,21 @@ export const WithdrawDialog = function ({
                 type="label"
                 className="block text-xl font-semibold tracking-tight"
               >
-                {formatMoney(availableMinor, currency)}
+                {formatMoney(withdrawableMinor, currency)}
               </AppText>
             </div>
           </div>
 
-          <AppInput
-            label={`Amount (${currency === "NGN" ? "₦" : currency})`}
-            type="number"
-            min={0}
-            placeholder="0"
-            value={amount}
-            onChange={(event) => setAmount(event.target.value)}
-          />
+          {maxSteps > 1 && (
+            <FormNumberStepper
+              control={control}
+              name="steps"
+              label={`Amount, in multiples of ${formatMoney(stepMinor, currency)}`}
+              min={1}
+              max={maxSteps}
+              format={(steps) => formatMoney(steps * stepMinor, currency)}
+            />
+          )}
 
           <AppSelect
             label="Pay into"

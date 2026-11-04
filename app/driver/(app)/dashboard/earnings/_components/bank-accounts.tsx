@@ -1,93 +1,63 @@
 "use client";
 
-import { AppInput } from "@/components/shared/app-input";
-import { AppSelect } from "@/components/shared/app-select";
+import { FormInput } from "@/components/form/form-input";
+import { FormSelect } from "@/components/form/form-select";
 import { AppText } from "@/components/shared/app-text";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { showToast } from "@/lib/show-toast";
 import {
-  Banknote,
-  BadgeCheck,
-  Check,
-  Landmark,
-  Loader2,
-  Plus,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+  bankAccountSchema,
+  type BankAccountFormValues,
+} from "@/schemas/earnings/bank-account";
+import type { BankAccount } from "@/types/earnings";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Banknote, Check, Landmark, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   useAddBankAccount,
   useBankAccounts,
   useBanks,
-  useResolveBankAccount,
+  useRemoveBankAccount,
 } from "../_hooks/use-earnings";
+
+const EMPTY_FORM: BankAccountFormValues = {
+  bank_code: "",
+  account_number: "",
+  account_name: "",
+};
 
 export const BankAccounts = function () {
   const [adding, setAdding] = useState(false);
-  const [bankCode, setBankCode] = useState<string | null>(null);
-  const [accountNumber, setAccountNumber] = useState("");
-  const [resolved, setResolved] = useState<{
-    key: string;
-    name: string;
-  } | null>(null);
+  const [removing, setRemoving] = useState<BankAccount | null>(null);
 
   const { bankAccounts, isFetching } = useBankAccounts();
-  const { banks } = useBanks({
-    country: "nigeria",
-    currency: "NGN",
-    shouldFetch: adding,
+  const { banks } = useBanks({ shouldFetch: adding });
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<BankAccountFormValues>({
+    resolver: zodResolver(bankAccountSchema),
+    defaultValues: EMPTY_FORM,
   });
+
+  const closeForm = () => {
+    setAdding(false);
+    reset(EMPTY_FORM);
+  };
 
   const { addBankAccount, isPending } = useAddBankAccount({
-    onSuccess: () => {
-      setAdding(false);
-      setBankCode(null);
-      setAccountNumber("");
-      setResolved(null);
-    },
+    onSuccess: closeForm,
   });
 
-  const selectedBank = banks.find((option) => option.code === bankCode);
-  const lookupKey = `${selectedBank?.code ?? ""}:${accountNumber}`;
-  const accountName = resolved?.key === lookupKey ? resolved.name : null;
-
-  const { resolveAccount, isResolving } = useResolveBankAccount({
-    onResolved: (name) => setResolved({ key: lookupKey, name }),
+  const { removeBankAccount, isRemoving } = useRemoveBankAccount({
+    onSuccess: () => setRemoving(null),
   });
-
-  // The name always comes from the bank, never the driver - so a typo can't send money to a stranger.
-  useEffect(() => {
-    if (!selectedBank || !/^\d{10}$/.test(accountNumber)) return;
-
-    resolveAccount({
-      bank_code: selectedBank.code,
-      account_number: accountNumber,
-      currency: selectedBank.currency || "NGN",
-    });
-  }, [selectedBank?.code, accountNumber]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const onSubmit = () => {
-    const bank = banks.find((option) => option.code === bankCode);
-
-    if (!bank) return showToast("error", "Select your bank");
-    if (!/^\d{8,20}$/.test(accountNumber)) {
-      return showToast("error", "Enter a valid account number");
-    }
-    if (!accountName) {
-      return showToast(
-        "error",
-        "Wait for your bank to confirm the account name",
-      );
-    }
-
-    addBankAccount({
-      bank_code: bank.code,
-      bank_name: bank.name,
-      account_number: accountNumber,
-      currency: bank.currency || "NGN",
-    });
-  };
 
   return (
     <div className="space-y-4">
@@ -120,17 +90,33 @@ export const BankAccounts = function () {
                       type="caption"
                       className="text-muted-foreground block truncate"
                     >
-                      {account.bank_name} · {account.account_number}
+                      {account.bank_name}
+                    </AppText>
+                    <AppText
+                      type="caption"
+                      className="text-muted-foreground block"
+                    >
+                      {account.account_number}
                     </AppText>
                   </div>
                 </div>
 
-                {account.is_default && (
-                  <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
-                    <Check className="h-3.5 w-3.5" />
-                    Default
-                  </span>
-                )}
+                <div className="flex shrink-0 items-center gap-1.5">
+                  {account.is_default && (
+                    <span className="flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                      <Check className="h-3.5 w-3.5" />
+                      Default
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    aria-label={`Remove ${account.bank_name} account`}
+                    onClick={() => setRemoving(account)}
+                    className="text-muted-foreground hover:text-destructive grid size-8 place-items-center rounded-lg transition-colors hover:bg-slate-50"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -138,65 +124,61 @@ export const BankAccounts = function () {
       </div>
 
       {adding ? (
-        <div className="border-border space-y-4 border-t pt-4">
+        <form
+          onSubmit={handleSubmit((values) => addBankAccount(values))}
+          className="border-border space-y-4 border-t pt-4"
+        >
           <AppText type="label" className="block text-sm font-semibold">
             Add a bank account
           </AppText>
-          <AppSelect
+          <FormSelect
+            control={control}
+            name="bank_code"
+            errors={errors}
             label="Bank"
             placeholder="Select your bank"
             options={banks.map((bank) => ({
               value: bank.code,
               label: bank.name,
             }))}
-            value={bankCode}
-            onValueChange={setBankCode}
           />
 
-          <AppInput
+          <FormInput
+            control={control}
+            name="account_number"
+            errors={errors}
             label="Account number"
             placeholder="0123456789"
             inputMode="numeric"
-            value={accountNumber}
-            onChange={(event) => setAccountNumber(event.target.value)}
+            maxLength={10}
           />
 
-          {isResolving && (
-            <p className="text-muted-foreground flex items-center gap-2 text-sm">
-              <Loader2 className="size-4 animate-spin" />
-              Confirming the account name with your bank…
-            </p>
-          )}
-          {accountName && (
-            <div className="flex items-center gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3">
-              <BadgeCheck className="size-4 shrink-0 text-emerald-600" />
-              <span className="text-sm">
-                <span className="block font-semibold">{accountName}</span>
-                <span className="text-muted-foreground text-xs">
-                  Name confirmed by your bank
-                </span>
-              </span>
-            </div>
-          )}
+          <FormInput
+            control={control}
+            name="account_name"
+            errors={errors}
+            label="Account name"
+            placeholder="The name your bank has on this account"
+          />
 
           <div className="flex justify-end gap-2">
             <Button
+              type="button"
               variant="outline"
-              onClick={() => setAdding(false)}
+              onClick={closeForm}
               className="h-10 rounded-xl px-5"
             >
               Cancel
             </Button>
             <Button
+              type="submit"
               isLoading={isPending}
-              disabled={!accountName}
-              onClick={onSubmit}
               className="h-10 rounded-xl px-5"
             >
               Save account
             </Button>
           </div>
-        </div>
+        </form>
       ) : (
         <Button
           variant="outline"
@@ -207,6 +189,20 @@ export const BankAccounts = function () {
           Add a bank account
         </Button>
       )}
+
+      <ConfirmDialog
+        isOpen={!!removing}
+        onOpenChange={(open) => !open && setRemoving(null)}
+        title="Remove this bank account?"
+        description={
+          removing
+            ? `${removing.bank_name} · ${removing.account_number} will no longer be available for withdrawals.`
+            : ""
+        }
+        confirmLabel="Remove account"
+        isLoading={isRemoving}
+        onConfirm={() => removing && removeBankAccount({ id: removing.id })}
+      />
     </div>
   );
 };

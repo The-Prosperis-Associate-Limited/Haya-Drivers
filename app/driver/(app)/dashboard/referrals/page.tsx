@@ -36,6 +36,10 @@ export default function Referrals() {
 
   const reward = formatMoney(overview.reward_minor, overview.currency);
   const holdDays = Math.max(1, Math.round(overview.hold_hours / 24));
+  const payoutStep = formatMoney(overview.payout_step_minor, overview.currency);
+  const referralsPerStep = Math.ceil(
+    overview.payout_step_minor / overview.reward_minor,
+  );
 
   const steps = [
     {
@@ -53,7 +57,7 @@ export default function Referrals() {
     },
     {
       title: `You get ${reward}`,
-      body: `Credited to your wallet when they submit, and withdrawable after ${holdDays} day${holdDays > 1 ? "s" : ""}.`,
+      body: `Credited to your wallet when they submit, and cleared after ${holdDays} day${holdDays > 1 ? "s" : ""}. Withdraw in multiples of ${payoutStep} - that's ${referralsPerStep} referrals for your first withdrawal.`,
     },
   ];
 
