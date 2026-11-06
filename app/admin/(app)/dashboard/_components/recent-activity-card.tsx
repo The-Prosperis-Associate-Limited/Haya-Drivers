@@ -15,6 +15,7 @@ const PIN: Record<string, string> = {
   BOOKING_COMPLETED: "bg-emerald-500",
   PAYOUT_PAID: "bg-emerald-500",
   VERIFICATION_REJECTED: "bg-red-500",
+  VERIFICATION_PAUSED: "bg-amber-500",
   PAYOUT_FAILED: "bg-red-500",
   ACCOUNT_SUSPENDED: "bg-red-500",
   BOOKING_CANCELLED: "bg-amber-500",

@@ -1,5 +1,6 @@
 import type { AccountStatus, ClientType, User } from "./auth";
 import type {
+  DocumentType,
   DriverDocument,
   DriverProfile,
   DriverType,
@@ -369,4 +370,20 @@ export interface AdminOverview {
   needs_action: NeedsActionHire[];
   needs_action_total: number;
   invoices_paid_series: { month: string; total_minor: number }[];
+}
+
+export interface AdminDocumentUpdate {
+  id: string;
+  type: DocumentType;
+  label: string;
+  file_name: string | null;
+  updatedAt: string;
+  documents_due_at: string | null;
+  driver: {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    email: string;
+    profile_pic: string | null;
+  };
 }

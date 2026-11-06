@@ -10,11 +10,23 @@ import {
   useUploadDocument,
 } from "@/hooks/use-documents";
 import { useOnboardingProfile } from "@/hooks/use-onboarding-profile";
-import { DOCUMENT_LABELS, ONBOARDING_TIPS } from "@/lib/utils";
+import {
+  DOCUMENT_LABELS,
+  ONBOARDING_TIPS,
+  formatDate,
+  REQUIRED_DOCUMENTS,
+  WORD_MIME_TYPES,
+} from "@/lib/utils";
 import type { DocumentType, DriverDocument } from "@/types/driver";
 import { CircleAlert, Lock, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {
+  PORTRAIT_DOCUMENTS,
+  checkDocumentImage,
+  type ImageCheckResult,
+} from "@/lib/image-quality/check-document-image";
+import { getFaceDetector } from "@/lib/image-quality/face";
 import { DocumentRow } from "../_components/document-row";
 import { StepHeader } from "../_components/step-header";
 import { StepNote, StepPanel } from "../_components/step-panel";
@@ -31,7 +43,20 @@ const GUARANTOR_DOCUMENTS: DocumentType[] = [
   "GUARANTOR_NIN_SLIP",
 ];
 
-const REQUIRED_DOCUMENTS = [...YOUR_DOCUMENTS, ...GUARANTOR_DOCUMENTS];
+const UPLOAD_ANYWAY_AFTER = 3;
+
+interface QualityIssue {
+  reason: string;
+  attempts: number;
+  file: File;
+}
+
+const CV_ACCEPT = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  ...WORD_MIME_TYPES,
+].join(",");
 
 const HINTS: Partial<Record<DocumentType, string>> = {
   NIN_SLIP: "The whole slip, all four corners in the photo",
@@ -40,12 +65,13 @@ const HINTS: Partial<Record<DocumentType, string>> = {
   PROOF_OF_ADDRESS: "Utility bill or tenancy agreement from the last 3 months",
   GUARANTOR_PASSPORT: "Your guarantor's recent passport photo",
   GUARANTOR_NIN_SLIP: "Your guarantor's NIN slip",
+  CV: "PDF or Word, with your driving jobs and the dates you held them",
 };
 
 export default function DocumentsStep() {
   const router = useRouter();
   const { profile } = useOnboardingProfile();
-  const { documents, isFetching } = useGetDocuments();
+  const { documents, isFetching, dueAt } = useGetDocuments();
 
   const [uploadingType, setUploadingType] = useState<DocumentType | null>(null);
   const [pendingRemoval, setPendingRemoval] = useState<DriverDocument | null>(
@@ -57,7 +83,14 @@ export default function DocumentsStep() {
   });
   const { deleteDocument, isPending: isDeleting } = useDeleteDocument();
 
-  const handleUpload = (type: DocumentType, file: File) => {
+  const [checkingType, setCheckingType] = useState<DocumentType | null>(null);
+  const [issues, setIssues] = useState<
+    Partial<Record<DocumentType, QualityIssue>>
+  >({});
+
+  const send = (type: DocumentType, file: File) => {
+    setIssues(({ [type]: _cleared, ...rest }) => rest);
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("type", type);
@@ -65,6 +98,36 @@ export default function DocumentsStep() {
     setUploadingType(type);
     uploadDocument(formData, { onError: () => setUploadingType(null) });
   };
+
+  const handleUpload = async (type: DocumentType, file: File) => {
+    setCheckingType(type);
+    const result = await checkDocumentImage(type, file).catch(
+      (): ImageCheckResult => ({ ok: true }),
+    );
+    setCheckingType(null);
+
+    if (result.ok) return send(type, file);
+
+    setIssues((current) => ({
+      ...current,
+      [type]: {
+        reason: result.reason,
+        attempts: (current[type]?.attempts ?? 0) + 1,
+        file,
+      },
+    }));
+  };
+
+  const portraitOutstanding = PORTRAIT_DOCUMENTS.some(
+    (type) =>
+      !documents.some(
+        (document) => document.type === type && document.status !== "REJECTED",
+      ),
+  );
+
+  useEffect(() => {
+    if (portraitOutstanding) getFaceDetector().catch(() => undefined);
+  }, [portraitOutstanding]);
 
   const documentFor = (type: DocumentType) =>
     documents.find((document) => document.type === type);
@@ -76,6 +139,9 @@ export default function DocumentsStep() {
     (document) => document.status === "REJECTED",
   );
   const resubmitting = profile?.verification_status === "REJECTED";
+  const fillingGap =
+    profile?.verification_status === "APPROVED" &&
+    requiredDone < REQUIRED_DOCUMENTS.length;
 
   const row = (type: DocumentType) => {
     const document = documentFor(type);
@@ -85,12 +151,20 @@ export default function DocumentsStep() {
         type={type}
         label={DOCUMENT_LABELS[type]}
         hint={HINTS[type]}
+        accept={type === "CV" ? CV_ACCEPT : undefined}
         required
         status={document?.status}
         fileName={document?.file_name}
         rejectionReason={document?.rejection_reason}
         isUploading={uploadingType === type}
+        isChecking={checkingType === type}
+        qualityIssue={issues[type]?.reason}
         onUpload={(file) => handleUpload(type, file)}
+        onUploadAnyway={
+          (issues[type]?.attempts ?? 0) >= UPLOAD_ANYWAY_AFTER
+            ? () => send(type, issues[type]!.file)
+            : undefined
+        }
         onRemove={document ? () => setPendingRemoval(document) : undefined}
       />
     );
@@ -106,7 +180,8 @@ export default function DocumentsStep() {
         disabled:
           requiredDone < REQUIRED_DOCUMENTS.length ||
           !!rejected.length ||
-          !!uploadingType,
+          !!uploadingType ||
+          !!checkingType,
         hint: rejected.length
           ? `${rejected.length} document${rejected.length === 1 ? "" : "s"} to replace`
           : requiredDone < REQUIRED_DOCUMENTS.length
@@ -121,8 +196,19 @@ export default function DocumentsStep() {
             ? "Replace the documents we couldn't verify"
             : "Upload your documents"
         }
-        description="Clear photos taken in good light, nothing cropped or blurry. All six are required before you can submit for review."
+        description={`Clear photos taken in good light, nothing cropped or blurry. All ${REQUIRED_DOCUMENTS.length} are required before you can submit for review.`}
       />
+
+      {fillingGap && (
+        <div className="mb-3.5">
+          <StepNote icon={CircleAlert} tone="amber">
+            You&apos;re verified, and you stay verified while our team checks
+            the new upload
+            {dueAt ? ` - just upload it before ${formatDate(dueAt)}` : ""}. Your
+            other documents are untouched.
+          </StepNote>
+        </div>
+      )}
 
       {resubmitting && !!rejected.length && (
         <div className="mb-3.5">
@@ -155,6 +241,13 @@ export default function DocumentsStep() {
             }
           >
             <div className="space-y-2.5">{YOUR_DOCUMENTS.map(row)}</div>
+          </StepPanel>
+
+          <StepPanel
+            title="Your CV"
+            description="Your work history, for our verification team"
+          >
+            <div className="space-y-2.5">{row("CV")}</div>
           </StepPanel>
 
           <StepPanel

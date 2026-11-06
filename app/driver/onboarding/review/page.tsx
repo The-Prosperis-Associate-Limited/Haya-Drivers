@@ -166,11 +166,13 @@ export default function ReviewStep() {
             : "Check everything, then submit"
         }
         description={
-          status === "APPROVED"
-            ? "You're verified - your changes are already saved. Documents can only be changed through support."
-            : status === "PENDING"
-              ? "Your application is with our team. Your changes are already saved and they'll see them."
-              : "Our team reviews applications in 24-48 hours. You'll get an email and a notification either way."
+          status === "APPROVED" && !hasDocuments
+            ? "You're verified, but a required document is missing - upload it from the documents step to keep your badge."
+            : status === "APPROVED"
+              ? "You're verified - your changes are already saved. Documents can only be changed through support."
+              : status === "PENDING"
+                ? "Your application is with our team. Your changes are already saved and they'll see them."
+                : "Our team reviews applications in 24-48 hours. You'll get an email and a notification either way."
         }
       />
 
@@ -217,7 +219,11 @@ export default function ReviewStep() {
                     {row.detail}
                   </span>
                 </span>
-                {!(status === "APPROVED" && row.label === "Documents") && (
+                {!(
+                  status === "APPROVED" &&
+                  row.label === "Documents" &&
+                  row.done
+                ) && (
                   <Link
                     href={`${row.href}?from=review`}
                     className="text-brand shrink-0 text-[13px] font-semibold"

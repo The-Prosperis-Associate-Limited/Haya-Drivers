@@ -277,6 +277,8 @@ export const API_ENDPOINTS = {
     reviewDocument: (documentId: string) =>
       `/admin/verifications/documents/${documentId}`,
     reviewSubmission: (userId: string) => `/admin/verifications/${userId}`,
+    documentUpdates: "/admin/verifications/document-updates",
+    requiredDocumentsNotice: "/admin/verifications/required-documents-notice",
   },
 
   adminTransactions: {

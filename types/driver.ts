@@ -34,7 +34,8 @@ export type DocumentType =
   | "DRIVERS_LICENCE"
   | "PROOF_OF_ADDRESS"
   | "GUARANTOR_PASSPORT"
-  | "GUARANTOR_NIN_SLIP";
+  | "GUARANTOR_NIN_SLIP"
+  | "CV";
 
 export type DocumentStatus = "PENDING" | "APPROVED" | "REJECTED";
 
@@ -151,6 +152,7 @@ export interface VerificationStatus {
 export interface DocumentsResponse {
   documents: DriverDocument[];
   missing: { type: DocumentType; label: string }[];
+  documents_due_at: string | null;
 }
 
 export type TrustScoreComponent = "verification" | "completions" | "reviews";
