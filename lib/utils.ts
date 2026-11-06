@@ -15,7 +15,7 @@ import {
   MessageSquare,
   XCircle,
 } from "lucide-react";
-import type { DriverVerificationStatus, OnboardingStep } from "@/types/driver";
+import type { DocumentType, DriverVerificationStatus, OnboardingStep } from "@/types/driver";
 import type {
   BookingParty,
   BookingStatus,
@@ -133,7 +133,7 @@ export const ONBOARDING_TIPS: Record<OnboardingStep, string[]> = {
     "You can come back and fill this in at any time.",
   ],
   DOCUMENTS: [
-    "All six documents are required: yours, plus proof of address and your guarantor's passport photo and NIN slip.",
+    "Every document is required: your IDs, proof of address, your CV, and your guarantor's passport photo and NIN slip.",
     "Photograph documents flat and in good light - a reviewer has to read every detail.",
     "If one is turned down you'll get the reviewer's reason, and you only replace that one.",
   ],
@@ -626,7 +626,23 @@ export const DOCUMENT_LABELS: Record<string, string> = {
   PROOF_OF_ADDRESS: "Proof of address (e.g. a utility bill)",
   GUARANTOR_PASSPORT: "Guarantor's passport photo",
   GUARANTOR_NIN_SLIP: "Guarantor's NIN slip",
+  CV: "Your CV",
 };
+
+export const REQUIRED_DOCUMENTS: DocumentType[] = [
+  "NIN_SLIP",
+  "PASSPORT_PHOTO",
+  "DRIVERS_LICENCE",
+  "PROOF_OF_ADDRESS",
+  "CV",
+  "GUARANTOR_PASSPORT",
+  "GUARANTOR_NIN_SLIP",
+];
+
+export const WORD_MIME_TYPES = [
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
 
 export const DEFAULT_WORK_EXPERIENCE = {
   employer: "",

@@ -32,6 +32,11 @@ const REJECTION_REASONS = [
 const isPdf = (document: DriverDocument) =>
   document.mime_type === "application/pdf" || /\.pdf($|\?)/i.test(document.url);
 
+const isImage = (document: DriverDocument) =>
+  document.mime_type
+    ? document.mime_type.startsWith("image/")
+    : /\.(jpe?g|png)($|\?)/i.test(document.url);
+
 // Cloudinary stores "auto" PDFs as image resources, so swapping the extension renders page 1.
 const pdfThumbnailUrl = (url: string) =>
   url.includes("/image/upload/") ? url.replace(/\.pdf($|\?)/i, ".jpg$1") : null;
@@ -191,7 +196,9 @@ export const DriverDocuments = function ({ userId }: Props) {
         {documents.map((document) => {
           const thumbnail = isPdf(document)
             ? pdfThumbnailUrl(document.url)
-            : document.url;
+            : isImage(document)
+              ? document.url
+              : null;
 
           return (
             <div
@@ -326,6 +333,20 @@ export const DriverDocuments = function ({ userId }: Props) {
                 <ExternalLink className="h-4 w-4" />
                 Open PDF in a new tab
               </a>
+            </div>
+          ) : !isImage(viewing) ? (
+            <div className="flex flex-col items-center gap-3 rounded-lg bg-slate-50 px-6 py-12 text-center">
+              <FileText className="text-muted-foreground size-10" />
+              <AppText type="caption" className="text-muted-foreground block">
+                {viewing.file_name ?? "This file"} is a Word document and
+                can&apos;t be previewed here.
+              </AppText>
+              <Button asChild variant="outline" className="h-10 rounded-xl">
+                <a href={viewing.url} target="_blank" rel="noreferrer" download>
+                  <Download className="size-4" />
+                  Download to read
+                </a>
+              </Button>
             </div>
           ) : (
             <div className="relative h-96 w-full overflow-hidden rounded-lg bg-slate-50">

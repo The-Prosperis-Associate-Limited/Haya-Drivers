@@ -14,6 +14,7 @@ export const useGetDocuments = function () {
   return {
     documents: data?.data.documents ?? [],
     missing: data?.data.missing ?? [],
+    dueAt: data?.data.documents_due_at ?? null,
     isFetching,
     refetch,
   };

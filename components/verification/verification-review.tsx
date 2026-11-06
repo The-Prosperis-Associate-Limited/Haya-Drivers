@@ -11,6 +11,7 @@ import {
   ACADEMIC_LEVEL_OPTIONS,
   DOCUMENT_LABELS,
   DRIVER_TYPE_OPTIONS,
+  REQUIRED_DOCUMENTS,
   TRANSMISSION_OPTIONS,
   formatDate,
   formatMoney,
@@ -18,15 +19,6 @@ import {
 import { CheckCircle2, CircleAlert, Pencil } from "lucide-react";
 import Link from "next/link";
 import type { DriverDocument, DriverProfile } from "@/types/driver";
-
-const REQUIRED_DOCUMENTS = [
-  "NIN_SLIP",
-  "PASSPORT_PHOTO",
-  "DRIVERS_LICENCE",
-  "PROOF_OF_ADDRESS",
-  "GUARANTOR_PASSPORT",
-  "GUARANTOR_NIN_SLIP",
-] as const;
 
 export const getVerificationReadiness = function (
   profile: DriverProfile | undefined,

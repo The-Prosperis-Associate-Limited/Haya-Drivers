@@ -6,6 +6,7 @@ import { SupportWidget } from "./_components/support/support-widget";
 import { MobileNav } from "./_components/navbar/mobile-nav";
 import { Sidebar } from "./_components/navbar/sidebar";
 import { TopNav } from "./_components/navbar/top-nav";
+import { RequiredDocumentsNotice } from "./_components/required-documents-notice";
 
 export default function DashboardLayout({
   children,
@@ -35,6 +36,7 @@ export default function DashboardLayout({
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-7 print:overflow-visible print:p-0">
+          <RequiredDocumentsNotice status={status} />
           {children}
         </main>
       </div>

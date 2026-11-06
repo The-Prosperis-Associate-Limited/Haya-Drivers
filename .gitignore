@@ -45,3 +45,6 @@ CLAUDE.md
 
 # design mockups - local reference only
 /design/
+
+# mediapipe wasm - copied from node_modules by scripts/copy-mediapipe-wasm.mjs
+/public/mediapipe/wasm/

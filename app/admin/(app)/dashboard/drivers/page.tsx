@@ -28,6 +28,7 @@ import { useState } from "react";
 import type { APIResponse, PaginatedResponse } from "@/types/response";
 import type { AdminDriverStats, AdminUserRow } from "@/types/admin";
 import { PageHeader } from "@/components/shared/page-header";
+import { DocumentUpdates } from "./_components/document-updates";
 import { VerificationQueue } from "./_components/verification-queue";
 
 const STATUS_OPTIONS = [
@@ -123,6 +124,10 @@ export default function AdminDrivers() {
 
       <div id="verification" className="scroll-mt-24">
         <VerificationQueue />
+      </div>
+
+      <div id="document-updates" className="scroll-mt-24">
+        <DocumentUpdates />
       </div>
 
       <div className={cn(ADMIN_CARD, "overflow-hidden")}>
