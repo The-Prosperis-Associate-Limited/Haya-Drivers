@@ -59,22 +59,13 @@ export interface HireInvoiceQuote {
 }
 
 export interface HirePricingGuide {
+  fee_percent: number;
+  vat_percent: number;
   full_time: {
-    annual_fee_percent: number;
     example: { monthly_minor: number; annual_minor: number; fee_minor: number };
   };
   contract: {
-    brackets: {
-      label: string;
-      max_days: number;
-      individual_minor: number;
-      corporate_minor: number;
-    }[];
-    multi_driver_discount: {
-      min_duration_days: number;
-      individual_minor: number;
-      corporate_minor: number;
-    };
+    example: { days: number; pay_minor: number; fee_minor: number };
   };
 }
 
@@ -154,6 +145,17 @@ export interface DriverShortlist {
     state: string | null;
     nearest_area: string | null;
   };
+}
+
+export type ShortlistReplyState =
+  "PENDING" | "CONFIRMED" | "DECLINED" | "EXPIRED" | "CLOSED";
+
+export interface ShortlistReply {
+  id: string;
+  state: ShortlistReplyState;
+  respond_by: string | null;
+  first_name: string | null;
+  job: DriverShortlist["hire_request"];
 }
 
 export interface HireRequest {

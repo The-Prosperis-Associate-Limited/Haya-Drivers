@@ -28,7 +28,15 @@ export const API_ENDPOINTS = {
   onboarding: {
     preferences: "/client/onboarding",
     complete: "/client/onboarding/complete",
-    insights: ({ location, budget, categories }: { location?: string | null; budget?: number | null; categories?: string[] }) => {
+    insights: ({
+      location,
+      budget,
+      categories,
+    }: {
+      location?: string | null;
+      budget?: number | null;
+      categories?: string[];
+    }) => {
       const params = new URLSearchParams();
       if (location) params.set("location", location);
       if (budget) params.set("budget", String(budget));
@@ -103,6 +111,7 @@ export const API_ENDPOINTS = {
   shortlists: {
     list: "/driver/shortlists",
     respond: (id: string) => `/driver/shortlists/${id}/respond`,
+    reply: (token: string) => `/shortlist-replies/${token}`,
   },
 
   earnings: {
@@ -156,6 +165,7 @@ export const API_ENDPOINTS = {
     summary: "/driver/reviews/summary",
   },
 
+  pricing: "/pricing",
   push: {
     web: "/push/web",
     deviceToken: "/push/device-token",
@@ -300,7 +310,8 @@ export const API_ENDPOINTS = {
   adminReferrals: {
     overview: (range: string) => `/admin/referrals/overview?range=${range}`,
     network: (limit: number) => `/admin/referrals/network?limit=${limit}`,
-    leaderboard: (limit: number) => `/admin/referrals/leaderboard?limit=${limit}`,
+    leaderboard: (limit: number) =>
+      `/admin/referrals/leaderboard?limit=${limit}`,
     referrer: (userId: string) => `/admin/referrals/referrers/${userId}`,
     list: ({
       page,

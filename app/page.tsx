@@ -3,6 +3,7 @@ import { MapPin, ReceiptText, ShieldCheck } from "lucide-react";
 import { SiteFooter } from "@/components/shared/site-footer";
 import { ClientHero } from "@/components/landing/client/client-hero";
 import { FindDriverSection } from "@/components/landing/client/find-driver-section";
+import { PricingSection } from "@/components/landing/client/pricing-section";
 import { UseCasesSection } from "@/components/landing/client/use-cases-section";
 import { CtaSection } from "@/components/landing/cta-section";
 import { FaqSection } from "@/components/landing/faq-section";
@@ -62,7 +63,7 @@ export default function Home() {
             {
               icon: ReceiptText,
               title: "Transparent pricing",
-              body: "Know the cost upfront-no hidden fees, ever.",
+              body: "One flat service fee, shown before you pay-no hidden fees, ever.",
             },
             {
               icon: MapPin,
@@ -93,6 +94,8 @@ export default function Home() {
             },
           ]}
         />
+
+        <PricingSection />
 
         <UseCasesSection />
 
@@ -134,7 +137,7 @@ export default function Home() {
             {
               question: "What does it cost?",
               answer:
-                "Each driver sets a clear monthly rate you see before you request them. You pay the driver's salary directly to them, and our service fee and VAT by bank transfer on an itemised invoice-no hidden charges.",
+                "Our service fee is a one-off 10% per driver: of the annual salary for a full-time hire, or of the whole contract's pay for a contract hire. VAT is added on the fee only, and you pay it by bank transfer on an itemised invoice. You pay your driver's salary directly to them-no hidden charges.",
             },
             {
               question: "Can I hire for a short period?",

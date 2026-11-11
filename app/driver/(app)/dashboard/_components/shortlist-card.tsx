@@ -6,25 +6,9 @@ import { Button } from "@/components/ui/button";
 import { useGetData } from "@/hooks/use-get-data";
 import { useSubmitData } from "@/hooks/use-submit-data";
 import { API_ENDPOINTS } from "@/lib/endpoints";
-import {
-  cn,
-  driverTypeLabel,
-  formatDate,
-  formatTimeLeft,
-  TRANSMISSION_OPTIONS,
-  WORK_SCHEDULE_LABELS,
-} from "@/lib/utils";
-import {
-  CalendarDays,
-  Car,
-  Clock,
-  House,
-  MapPin,
-  Timer,
-  XCircle,
-  Zap,
-  type LucideIcon,
-} from "lucide-react";
+import { ShortlistFacts } from "@/components/shortlist/shortlist-facts";
+import { cn, driverTypeLabel, formatDate, formatTimeLeft } from "@/lib/utils";
+import { Timer, XCircle, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { APIResponse } from "@/types/response";
 import type { DriverShortlist } from "@/types/hire";
@@ -79,36 +63,6 @@ export const ShortlistCard = function () {
       <div className="grid gap-3 md:grid-cols-2">
         {shortlists.map((entry) => {
           const request = entry.hire_request;
-          const area = [request.nearest_area, request.state]
-            .filter(Boolean)
-            .join(", ");
-          const facts = [
-            {
-              icon: CalendarDays,
-              label: WORK_SCHEDULE_LABELS[request.schedule],
-            },
-            request.resumption_time && request.closing_time
-              ? {
-                  icon: Clock,
-                  label: `${request.resumption_time} - ${request.closing_time}`,
-                }
-              : null,
-            request.transmission
-              ? {
-                  icon: Car,
-                  label: TRANSMISSION_OPTIONS.find(
-                    (option) => option.value === request.transmission,
-                  )?.label,
-                }
-              : null,
-            area ? { icon: MapPin, label: area } : null,
-            request.provides_accommodation
-              ? { icon: House, label: "Accommodation provided" }
-              : null,
-          ].filter((fact): fact is { icon: LucideIcon; label: string } =>
-            Boolean(fact?.label),
-          );
-
           return (
             <div
               key={entry.id}
@@ -126,17 +80,7 @@ export const ShortlistCard = function () {
                 </span>
               </div>
 
-              <div className="flex flex-wrap gap-1.5">
-                {facts.map(({ icon: Icon, label }) => (
-                  <span
-                    key={label}
-                    className="border-border text-foreground/80 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11.5px] font-medium"
-                  >
-                    <Icon className="size-3.5" />
-                    {label}
-                  </span>
-                ))}
-              </div>
+              <ShortlistFacts request={request} />
 
               {entry.respond_by && (
                 <span
