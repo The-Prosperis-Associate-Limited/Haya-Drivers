@@ -142,12 +142,10 @@ export default function TermsOfService() {
             never to the driver's salary.
           </li>
           <li>
-            Our service fee depends on the engagement: for full-time hires it is
-            a percentage of the driver's annual gross salary, and for contract
-            hires it is a one-time fee based on the contract length and your
-            client type, with a discount when hiring multiple drivers on longer
-            contracts. The exact fee and its breakdown are shown on every
-            invoice before you pay.
+            Our service fee is a one-off percentage per driver, published on our
+            pricing page: of the driver's annual gross salary for a full-time
+            hire, and of the whole contract's pay for a contract hire. The exact
+            fee and its breakdown are shown on every invoice before you pay.
           </li>
           <li>
             Fees are non-refundable once a payment has been confirmed and the

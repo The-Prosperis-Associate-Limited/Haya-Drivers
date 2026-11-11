@@ -54,15 +54,11 @@ export const PricingGuideDialog = function () {
                 type="caption"
                 className="text-muted-foreground mt-1 block text-xs"
               >
-                The service fee is {guide.full_time.annual_fee_percent}% of the
-                driver&apos;s annual gross salary, per driver. Example: a driver
-                on {formatMoney(guide.full_time.example.monthly_minor)}
-                /month earns {formatMoney(
-                  guide.full_time.example.annual_minor,
-                )}{" "}
-                a year, so the fee is{" "}
-                {formatMoney(guide.full_time.example.fee_minor)}. VAT is then
-                added on the fee - never on the salary.
+                A one-off fee of {guide.fee_percent}% of the driver&apos;s
+                annual gross salary, per driver. Example: a driver on{" "}
+                {formatMoney(guide.full_time.example.monthly_minor)}/month earns{" "}
+                {formatMoney(guide.full_time.example.annual_minor)} a year, so
+                the fee is {formatMoney(guide.full_time.example.fee_minor)}.
               </AppText>
             </section>
 
@@ -74,48 +70,11 @@ export const PricingGuideDialog = function () {
                 type="caption"
                 className="text-muted-foreground mt-1 block text-xs"
               >
-                A one-time fee per driver, picked by the length of the contract
-                and the client type:
-              </AppText>
-
-              <table className="border-border mt-3 w-full border-collapse overflow-hidden rounded-xl border text-xs">
-                <thead>
-                  <tr className="bg-muted/60 text-left">
-                    <th className="px-3 py-2 font-semibold">Duration</th>
-                    <th className="px-3 py-2 font-semibold">Individual</th>
-                    <th className="px-3 py-2 font-semibold">Corporate</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {guide.contract.brackets.map((bracket) => (
-                    <tr key={bracket.label} className="border-border border-t">
-                      <td className="px-3 py-2">{bracket.label}</td>
-                      <td className="px-3 py-2">
-                        {formatMoney(bracket.individual_minor)}
-                      </td>
-                      <td className="px-3 py-2">
-                        {formatMoney(bracket.corporate_minor)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              <AppText
-                type="caption"
-                className="text-muted-foreground mt-3 block text-xs"
-              >
-                Hiring more than one driver on a contract longer than{" "}
-                {guide.contract.multi_driver_discount.min_duration_days - 1}{" "}
-                days earns a discount of{" "}
-                {formatMoney(
-                  guide.contract.multi_driver_discount.individual_minor,
-                )}{" "}
-                (individual) or{" "}
-                {formatMoney(
-                  guide.contract.multi_driver_discount.corporate_minor,
-                )}{" "}
-                (corporate) for every driver after the first.
+                The same {guide.fee_percent}%, on the whole contract&apos;s pay,
+                per driver. Example: a {guide.contract.example.days}-day
+                contract paying {formatMoney(guide.contract.example.pay_minor)}{" "}
+                has a fee of {formatMoney(guide.contract.example.fee_minor)}.
+                Client type and the number of drivers do not change the rate.
               </AppText>
             </section>
 
@@ -127,9 +86,9 @@ export const PricingGuideDialog = function () {
                 type="caption"
                 className="text-muted-foreground mt-1 block text-xs"
               >
-                Service fee + VAT on the fee. The driver&apos;s salary is agreed
-                on the request and paid by the client to the driver directly -
-                it never appears on our invoice.
+                Service fee + {guide.vat_percent}% VAT on the fee. The
+                driver&apos;s salary is agreed on the request and paid by the
+                client to the driver directly - it never appears on our invoice.
               </AppText>
             </section>
           </div>

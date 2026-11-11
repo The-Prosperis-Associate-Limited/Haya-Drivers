@@ -13,6 +13,7 @@ export default function robots(): MetadataRoute.Robots {
         "/driver/dashboard/",
         "/driver/onboarding/",
         "/admin/",
+        "/shortlist-reply/",
       ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
